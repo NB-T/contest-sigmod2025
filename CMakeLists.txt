@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 project(SigmodContest)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -120,6 +122,28 @@ if(NOT CMAKE_SYSTEM_PROCESSOR MATCHES "ppc|powerpc|ppc64|ppc64le")
     add_compile_options(-march=native)
 endif()
 
+
+find_package(Python3 REQUIRED COMPONENTS Interpreter)
+set(JIT_OPTIONS_HEADER ${CMAKE_BINARY_DIR}/include/JITOptions.hpp)
+add_custom_command(
+        OUTPUT ${JIT_OPTIONS_HEADER}
+        COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/include
+        COMMAND ${Python3_EXECUTABLE}
+        ${CMAKE_SOURCE_DIR}/genjit.py
+        ${CMAKE_BINARY_DIR}/compile_commands.json
+        ${JIT_OPTIONS_HEADER}
+        DEPENDS
+        ${CMAKE_BINARY_DIR}/compile_commands.json
+        ${CMAKE_SOURCE_DIR}/genjit.py
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+        COMMENT "Generating JITOptions.hpp from compile_commands.json"
+        VERBATIM
+)
+
+add_custom_target(generate_jit_options
+        DEPENDS ${JIT_OPTIONS_HEADER}
+)
+
 set(SIGMODPC_TEAMSRC
         # Our own sources
         engine/Execute.cpp
@@ -141,32 +165,20 @@ set(SIGMODPC_TEAMSRC
         engine/query/QueryPlan.cpp
         engine/pipeline/JoinPipeline.cpp
         engine/pipeline/PipelineFunction.cpp
-        engine/pipeline/PipelineGen.cpp
-        engine/pipeline/PipelineGen0.cpp
-        engine/pipeline/PipelineGen1.cpp
-        engine/pipeline/PipelineGen2.cpp
-        engine/pipeline/PipelineGen3.cpp
-        engine/pipeline/PipelineGen4.cpp
-        engine/pipeline/PipelineGen5.cpp
-        engine/pipeline/PipelineGen6.cpp
-        engine/pipeline/PipelineGen7.cpp
-        engine/pipeline/PipelineGen8.cpp
-        engine/pipeline/PipelineGen9.cpp
-        engine/pipeline/PipelineGen10.cpp
-        engine/pipeline/PipelineGen11.cpp
-        engine/pipeline/PipelineGen12.cpp
-        engine/pipeline/PipelineGen13.cpp
-        engine/pipeline/PipelineGen14.cpp
-        engine/pipeline/PipelineGen15.cpp
         engine/storage/BitLogic.cpp
         engine/storage/CopyLogic.cpp
         engine/storage/RestrictionLogic.cpp
 )
 
-set(SIGMODPC_SRC
-        # Our own sources
+add_library(engine
+        SHARED
         ${SIGMODPC_TEAMSRC}
-        # DuckDB sources
+)
+target_include_directories(engine PRIVATE include engine  ${CMAKE_CURRENT_BINARY_DIR}/include)
+add_dependencies(engine generate_jit_options)
+target_link_libraries(engine PRIVATE re2 fmt range-v3 nlohmann_json::nlohmann_json sqlparser)
+
+set(SIGMODPC_SRC
         src/build_table.cpp
         src/csv_parser.cpp
         src/execute.cpp
@@ -180,8 +192,8 @@ add_executable(
         tests/read_sql.cpp
 )
 
-target_include_directories(run PRIVATE include engine)
-target_link_libraries(run PRIVATE re2 fmt range-v3 nlohmann_json::nlohmann_json sqlparser duckdb)
+target_include_directories(run PRIVATE include)
+target_link_libraries(run PRIVATE engine re2 fmt range-v3 nlohmann_json::nlohmann_json sqlparser duckdb)
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     target_compile_definitions(run PRIVATE _CRT_SECURE_NO_WARNINGS)
 endif()
@@ -199,7 +211,7 @@ add_executable(
 )
 
 target_include_directories(internal_runner PRIVATE include engine)
-target_link_libraries(internal_runner PRIVATE re2 fmt range-v3 nlohmann_json::nlohmann_json sqlparser)
+target_link_libraries(internal_runner PRIVATE engine re2 fmt range-v3 nlohmann_json::nlohmann_json sqlparser)
 
 option(NO_DUCK "Build without duckdb" ON)
 if(NO_DUCK)
@@ -247,7 +259,7 @@ target_compile_definitions(unit_tests PRIVATE SIGMOD_LOCAL)
 target_compile_definitions(run PRIVATE SIGMOD_LOCAL)
 
 target_include_directories(unit_tests PRIVATE include engine)
-target_link_libraries(unit_tests PRIVATE range-v3 fmt Catch2::Catch2WithMain re2)
+target_link_libraries(unit_tests PRIVATE engine range-v3 fmt Catch2::Catch2WithMain re2)
 target_compile_definitions(unit_tests PRIVATE NO_DUCK)
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     target_compile_definitions(unit_tests PRIVATE _CRT_SECURE_NO_WARNINGS)

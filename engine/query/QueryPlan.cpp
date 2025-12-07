@@ -546,7 +546,7 @@ bool QueryPlan::runPipeline(const PlanPipeline& pipeline, double cardinalityEsti
         target = newInput->htBuild.get();
     }
 
-    char pipelineNameBuffer[1024];
+    char pipelineNameBuffer[2048];
     size_t offset = 0;
 #define PRINT(...) offset += std::snprintf(pipelineNameBuffer + offset, sizeof(pipelineNameBuffer) - offset, __VA_ARGS__)
     // Write target name, scan name, and number of probes
@@ -554,26 +554,36 @@ bool QueryPlan::runPipeline(const PlanPipeline& pipeline, double cardinalityEsti
     auto scanName = scan.getName();
 
     // Write target name, scan name, and number of probes
-    PRINT("%.*s,%.*s,%zu,(", static_cast<int>(targetName.size()), targetName.data(), static_cast<int>(scanName.size()), scanName.data(), pipeline.probes.size());
+    PRINT("%.*s,%.*s,%zu,std::index_sequence<", static_cast<int>(targetName.size()), targetName.data(), static_cast<int>(scanName.size()), scanName.data(), pipeline.probes.size());
 
     // Append probeOps
-    for (unsigned op : probeOps)
+    bool first = true;
+    for (unsigned op : probeOps) {
+        if (first) first = false;
+        else PRINT(",");
         PRINT("%u", op);
+    }
 
     // Separator between probeSources and attrSources
-    PRINT("),(");
+    PRINT(">,std::index_sequence<");
 
     // Append outputOps
-    for (unsigned op : outputOps)
+    first = true;
+    for (unsigned op : outputOps) {
+        if (first) first = false;
+        else PRINT(",");
         PRINT("%u", op);
+    }
 
     // Final closing parenthesis
-    PRINT(")");
+    PRINT(">");
 #undef PRINT
+    if (offset == sizeof(pipelineNameBuffer))
+        throw std::runtime_error("pipeline name exceeded buffer size");
 
     std::string_view pipelineName{pipelineNameBuffer, offset};
 
-    PipelineFunction pipelineFunction = PipelineFunctions::lookupPipeline(pipelineName);
+    PipelineFunction pipelineFunction = PipelineFunctions::compilePipeline(pipelineName);
     // Run the pipeline
     pipelineFunction(*target, scan, probeTables, probeOffsets, outputOffsets);
 

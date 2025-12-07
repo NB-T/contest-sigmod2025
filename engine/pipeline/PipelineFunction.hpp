@@ -27,10 +27,7 @@ class JoinPipelineBase {
 };
 //---------------------------------------------------------------------------
 struct PipelineFunctions {
-    static size_t numFunctions;
-    static std::pair<std::string_view, PipelineFunction> functions[];
-
-    static PipelineFunction lookupPipeline(std::string_view name);
+    static PipelineFunction compilePipeline(std::string_view name);
 
     template <typename Target, typename Scan, size_t NumJoins, typename Keys, typename Attrs>
     static void runPipeline(TargetBase& target, ScanBase& scan, engine::span<const DefaultProbeParameter> probeParams, engine::span<const unsigned> keyOffsets, engine::span<const unsigned> attrOffsets);
