@@ -4,7 +4,7 @@
 //---------------------------------------------------------------------------
 namespace engine {
 //---------------------------------------------------------------------------
-class Hashtable;
+class BT;
 //---------------------------------------------------------------------------
 /// A restriction
 struct Restriction {
@@ -26,7 +26,7 @@ struct Restriction {
     /// The constant value compared with
     RuntimeValue cst;
     /// The hash table for join filters
-    Hashtable* joinFilter;
+    BT* joinFilter;
     /// The selectivity estimation for the restriction
     double selectivity = 1.0;
 

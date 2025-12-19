@@ -39,6 +39,7 @@ TEST_CASE("SmallVec") {
     REQUIRE(smallVec.size() == 2);
 
     for (auto i = 0; i < 10; i++) {
+        fmt::print("still cooking {}\n", i);
         smallVec.push_back(i);
         REQUIRE(smallVec[i + 2] == i);
         REQUIRE(smallVec.size() == 3 + i);

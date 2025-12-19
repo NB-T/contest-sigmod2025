@@ -1,15 +1,17 @@
 #include "query/QueryPlan.hpp"
 #include "infra/Scheduler.hpp"
 #include "infra/SmallVec.hpp"
+#include "op/BT.hpp"
 #include "op/CollectorTarget.hpp"
-#include "op/Hashtable.hpp"
 #include "op/TableScan.hpp"
 #include "op/TableTarget.hpp"
 #include "pipeline/PipelineFunction.hpp"
 #include "query/QueryGraph.hpp"
 #include "storage/RestrictionLogic.hpp"
 #include <chrono>
+#include <iostream>
 #include <plan.h>
+
 //---------------------------------------------------------------------------
 namespace engine {
 //---------------------------------------------------------------------------
@@ -29,11 +31,11 @@ struct QueryPlan::Input {
     /// The cardinality estimation
     double cardinality = 1.0;
 
-    /// The hash table
-    UniquePtr<Hashtable> ht;
-    /// The hash table build
-    UniquePtr<HashtableBuild> htBuild;
-    /// The restriction based on this hash table
+    /// The B+ tree
+    UniquePtr<BT> bt;
+    /// The B+ tree build
+    UniquePtr<BTBuild> btBuild;
+    /// The restriction based on this B+ tree
     UniquePtr<RestrictionLogic> restrictionLogic;
     /// The additional restrictions if this was a singleton
     SmallVec<UniquePtr<RestrictionLogic>> additionalRestrictionLogics;
@@ -78,7 +80,7 @@ struct QueryPlan::Input {
         if (isBase())
             return table->numRows;
         else
-            return ht->getNumTuples();
+            return bt->getNumTuples();
     }
     /// Is singleton?
     bool isSingleton() const {
@@ -131,8 +133,8 @@ TableScan QueryPlan::buildScan(Input& input, BitSet requiredEqs, double mult) {
 //---------------------------------------------------------------------------
 void QueryPlan::estimateCardinality(Input& input) {
     if (!input.isBase()) {
-        assert(input.ht);
-        input.cardinality = double(input.ht->getNumTuples());
+        assert(input.bt);
+        input.cardinality = double(input.bt->getNumTuples());
         return;
     }
     // TODO: We want to estimate based on the sample in the future
@@ -412,6 +414,7 @@ static std::tuple<uint64_t, uint64_t, uint64_t> printPlanRec(Vector<std::string>
 }
 //---------------------------------------------------------------------------
 bool QueryPlan::runPipeline(const PlanPipeline& pipeline, double cardinalityEstimate) {
+    // std::cout << "RUNNING PIPELINE" << std::endl;
     // Build up the pipeline
     auto& scanInput = *inputs[pipeline.scanInput];
 
@@ -442,7 +445,7 @@ bool QueryPlan::runPipeline(const PlanPipeline& pipeline, double cardinalityEsti
     uint64_t zeroColumnValue = ~0ull;
     unsigned zeroColumnPos = scanRequiredEqs.size();
     // Compute the probes
-    SmallVec<const Hashtable*> probeTables;
+    SmallVec<const BT*> probeTables;
     probeTables.reserve(pipeline.probes.size());
     SmallVec<unsigned> probeOps;
     probeOps.reserve(pipeline.probes.size());
@@ -453,8 +456,8 @@ bool QueryPlan::runPipeline(const PlanPipeline& pipeline, double cardinalityEsti
         auto& probe = pipeline.probes[ind];
         Input& input = *inputs[probe.probeInput];
         assert(!input.isBase());
-        assert(input.ht);
-        probeTables.push_back(input.ht.get());
+        assert(input.bt);
+        probeTables.push_back(input.bt.get());
         newInput->sourceProbes.push_back(&input);
         // We restrict cross products to be left deep to ensure only one probe per pipeline
         if (input.isCrossProduct) {
@@ -489,8 +492,8 @@ bool QueryPlan::runPipeline(const PlanPipeline& pipeline, double cardinalityEsti
     SmallVec<std::pair<SourceInfo, unsigned>> outputSources;
     outputSources.reserve(requiredEqs.size() + 1);
     if (!pipeline.isOutput()) {
-        newInput->ht = makeUnique<Hashtable>();
-        newInput->htBuild = makeUnique<HashtableBuild>(*newInput->ht, cardinalityEstimate);
+        newInput->bt = makeUnique<BT>();
+        newInput->btBuild = makeUnique<BTBuild>(*newInput->bt, cardinalityEstimate);
         if (pipeline.keyEq == crossProductEq) {
             // The key will come from the last column of scan
             if (zeroColumnValue == ~0ull) {
@@ -498,7 +501,7 @@ bool QueryPlan::runPipeline(const PlanPipeline& pipeline, double cardinalityEsti
                 newInput->keyEq = pipeline.keyEq;
             }
             newInput->isCrossProduct = true;
-            newInput->htBuild->isCrossProduct = true;
+            newInput->btBuild->isCrossProduct = true;
             outputSources.emplace_back(SourceInfo{0, zeroColumnPos}, crossProductEq);
         } else {
             newInput->keyEq = pipeline.keyEq;
@@ -526,8 +529,8 @@ bool QueryPlan::runPipeline(const PlanPipeline& pipeline, double cardinalityEsti
     }
 
     double mult = 1.0;
-    for (auto* ht : probeTables)
-        mult *= double(ht->getNumTuples()) / ht->getNumKeysEstimate();
+    for (auto* bt : probeTables)
+        mult *= double(bt->getNumTuples()) / bt->getNumKeysEstimate();
 
     TableScan scan = buildScan(scanInput, scanRequiredEqs, mult);
     if (zeroColumnValue != ~0ull)
@@ -542,8 +545,8 @@ bool QueryPlan::runPipeline(const PlanPipeline& pipeline, double cardinalityEsti
         tableTarget = makeUnique<TableTarget>(std::move(types));
         target = tableTarget.get();
     } else {
-        newInput->ht->pretty = scan.getTableName();
-        target = newInput->htBuild.get();
+        newInput->bt->pretty = scan.getTableName();
+        target = newInput->btBuild.get();
     }
 
     char pipelineNameBuffer[2048];
@@ -558,9 +561,12 @@ bool QueryPlan::runPipeline(const PlanPipeline& pipeline, double cardinalityEsti
 
     // Append probeOps
     bool first = true;
+
     for (unsigned op : probeOps) {
-        if (first) first = false;
-        else PRINT(",");
+        if (first)
+            first = false;
+        else
+            PRINT(",");
         PRINT("%u", op);
     }
 
@@ -569,21 +575,41 @@ bool QueryPlan::runPipeline(const PlanPipeline& pipeline, double cardinalityEsti
 
     // Append outputOps
     first = true;
+
     for (unsigned op : outputOps) {
-        if (first) first = false;
-        else PRINT(",");
+        if (first)
+            first = false;
+
+        else
+            PRINT(",");
+
         PRINT("%u", op);
     }
-
     // Final closing parenthesis
     PRINT(">");
 #undef PRINT
+
     if (offset == sizeof(pipelineNameBuffer))
+
         throw std::runtime_error("pipeline name exceeded buffer size");
 
     std::string_view pipelineName{pipelineNameBuffer, offset};
 
     PipelineFunction pipelineFunction = PipelineFunctions::compilePipeline(pipelineName);
+    /*
+    std::cout << "====================" << std::endl;
+    std::cout << "pipelineName: " << pipelineName << std::endl;
+    std::cout << "target: " << target << std::endl;
+    std::cout << "target name: " << targetName << std::endl;
+    std::cout << "scan: " << scan.getName() << std::endl;
+    std::cout << "eq constants: " << eqConstants.size() << std::endl;
+    std::cout << "output sources: " << outputSources.size() << std::endl;
+    std::cout << "output eqs: " << outputEqs.size() << std::endl;
+    std::cout << "output table target: " << tableTarget.get() << std::endl;
+    std::cout << "output new input: " << newInput.get() << std::endl;
+    std::cout << "====================" << std::endl;
+    */
+
     // Run the pipeline
     pipelineFunction(*target, scan, probeTables, probeOffsets, outputOffsets);
 
@@ -605,15 +631,15 @@ bool QueryPlan::runPipeline(const PlanPipeline& pipeline, double cardinalityEsti
         return true;
     }
     assert(!pipeline.isOutput());
-    if (newInput->ht->getNumTuples() == 0) {
+    if (newInput->bt->getNumTuples() == 0) {
         inputs.clear();
         return false;
     }
-    bool singleton = newInput->ht->getNumTuples() == 1;
+    bool singleton = newInput->bt->getNumTuples() == 1;
     // Do not use singleton to simplify for now
     // TODO: cries... Why is this so complicated?
     // We just need to be producing a single value that others also have, and the ht needs to be duplicate free
-    bool simplified = (requiredEqs.single() && equivalenceSets[requiredEqs.front()].size() > 1 && newInput->ht->isDuplicateFree());
+    bool simplified = (requiredEqs.single() && equivalenceSets[requiredEqs.front()].size() > 1 && newInput->bt->isDuplicateFree());
     if (simplified) {
         for (size_t i = 0; i < inputs.size(); i++) {
             if (pipeline.rels.contains(i))
@@ -627,12 +653,16 @@ bool QueryPlan::runPipeline(const PlanPipeline& pipeline, double cardinalityEsti
         }
     }
 
-    Restriction rest{simplified ? Restriction::JoinPrecise : Restriction::Join, {}, newInput->ht.get()};
+    Restriction rest{simplified ? Restriction::JoinPrecise : Restriction::Join, {}, newInput->bt.get()};
     newInput->restrictionLogic = RestrictionLogic::setupRestriction(rest);
+    // std::cerr << "Restriction type: " << int(rest.type)
+    //           << " numTuples=" << newInput->bt->getNumTuples()
+    //           << " htSize=" << newInput->bt->htSize() << "\n";
+
     assert(newInput->restrictionLogic);
     auto* newRestriction = newInput->restrictionLogic.get();
     eqRestrictions[pipeline.keyEq] = newRestriction;
-    newInput->cardinality = double(newInput->ht->getNumTuples());
+    newInput->cardinality = double(newInput->bt->getNumTuples());
     auto* newInputPtr = newInput.get();
 
     SmallVec<UniquePtr<Input>> newInputs;
@@ -646,7 +676,7 @@ bool QueryPlan::runPipeline(const PlanPipeline& pipeline, double cardinalityEsti
     }
     if (singleton) {
         uint64_t* tuple = nullptr;
-        newInputPtr->ht->iterateAll([&](uint64_t& key) {
+        newInputPtr->bt->iterateAll([&](uint64_t& key) {
             assert(!tuple);
             tuple = &key;
         });
@@ -776,7 +806,7 @@ ColumnarTable QueryPlan::run() {
             assert(input->isBase() == (input->keyEq == ~0u));
             double mult = 1.0;
             if (!input->isBase())
-                mult = double(input->ht->getNumTuples()) / input->ht->getNumKeysEstimate();
+                mult = double(input->bt->getNumTuples()) / input->bt->getNumKeysEstimate();
             qgInputs.push_back({input->producedEq - constants, input->cardinality, mult, input->keyEq});
         }
         QueryGraph qg(*this, qgInputs);

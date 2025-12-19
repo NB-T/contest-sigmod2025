@@ -1255,6 +1255,46 @@ std::pair<bool, size_t> run(const std::unordered_map<std::string, std::vector<st
     auto results = Contest::execute(plan, context);
     auto end     = std::chrono::steady_clock::now();
 
+    auto result_table = Table::from_columnar(results);
+
+    // write to file "new.log"
+    /* std::ofstream log_file("new.log");
+    log_file << "Results: " << results.num_rows << " rows, " << results.columns.size() << " columns\n";
+    for (size_t row_idx = 0; row_idx < result_table.table().size(); ++row_idx) {
+        for (size_t col_idx = 0; col_idx < result_table.table()[row_idx].size(); ++col_idx) {
+            auto& val = result_table.table()[row_idx][col_idx];
+            log_file << fmt::format("{}", val) << "\t";
+        }
+        log_file << "\n";
+    }
+
+    // write result->Print() to new.log
+    log_file << result->ToString();
+    // Print dimensions
+    fmt::print("Results: {} rows, {} columns\n", results.num_rows, results.columns.size());
+
+    // Print data
+    for (size_t row_idx = 0; row_idx < result_table.table().size(); ++row_idx) {
+        for (size_t col_idx = 0; col_idx < result_table.table()[row_idx].size(); ++col_idx) {
+            auto& val = result_table.table()[row_idx][col_idx];
+            
+            // Print based on the Data variant type
+            std::visit([](auto&& arg) {
+                using T = std::decay_t<decltype(arg)>;
+                if constexpr (std::is_same_v<T, std::monostate>) {
+                    fmt::print("NULL\t");
+                } else if constexpr (std::is_same_v<T, std::string>) {
+                    fmt::print("{}\t", arg);
+                } else {
+                    fmt::print("{}\t", arg);
+                }
+            }, val);
+        }
+        fmt::print("\n");
+    }
+ */
+
+
 
     const auto compare_result = compare(*result, results);
     fmt::println("Query {} >> \t\t Runtime: {} ms - Result correct: {}",

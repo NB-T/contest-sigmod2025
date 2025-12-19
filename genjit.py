@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-import json, shlex
+import json, shlex, shutil
+
+ccache = shutil.which("ccache") is not None
 
 with open("compile_commands.json") as f:
     data = json.load(f)
@@ -22,12 +24,24 @@ for p in parts:
         continue
     result.append(p)
 
-result = [result[0]] + ["-fPIC", "-fvisibility=hidden"] + result[1:]
-cleaned = " ".join(result)
+comp = result[0]
+comp_parts = [comp] + ["-fPIC", "-fvisibility=hidden"] + result[1:]
+
+if ccache:
+    comp_parts.insert(0, "ccache")
+    
+
+# result = [result[0]] + ["-fPIC", "-fvisibility=hidden"] + result[1:]
+cleaned = " ".join(comp_parts)
+
+link = f"{comp} -shared -fPIC"
+
+if ccache:
+    link = f"ccache {link}"
 
 with open("include/JITOptions.hpp", "w") as f:
     f.write("#pragma once\n")
     f.write("namespace engine::jit {\n")
     f.write(f'static constexpr const char* compileCommand = R"JITFLAGS({cleaned} )JITFLAGS";\n')
-    f.write(f'static constexpr const char* linkCommand = R"JITFLAGS({result[0]} -shared -fPIC )JITFLAGS";\n')
+    f.write(f'static constexpr const char* linkCommand = R"JITFLAGS({link} )JITFLAGS";\n')
     f.write("}\n")

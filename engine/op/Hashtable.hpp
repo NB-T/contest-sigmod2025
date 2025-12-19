@@ -77,27 +77,12 @@ class Hashtable {
         /// TODO: we don't know, so return false to be safe
         return isCertainlyDuplicateFree;
     }
-    /// Join filter
+    /// Join filter - always return false (empty table)
     [[gnu::always_inline]] inline bool joinFilter(uint64_t key) const {
-        auto [h, b] = computeHashes(key);
-        auto entry = bloom[h >> shift];
-        return JoinFilter::checkEntry(b, entry);
+        return false;
     }
-    /// Precise join filter
+    /// Precise join filter - always return false (empty table)
     [[gnu::always_inline]] inline bool joinFilterPrecise(uint64_t key) const {
-        auto [h, b] = computeHashes(key);
-        auto entry = bloom[h >> shift];
-        if (!JoinFilter::checkEntry(b, entry))
-            return false;
-        auto* current = reinterpret_cast<Entry*>(ht[h >> shift]);
-        // We assert current as join filters guarantee the slot won't be empty
-        // Note that finish consume also relies on this assumption to not check the pointer when removing duplicates
-        assert(current);
-        do {
-            if (current->tuple[Hashtable::keyOffset] == key)
-                return true;
-            current = current->next;
-        } while (current);
         return false;
     }
     /// Allocate the hashtable to a reasonable size. Approx 12.5% larger than numElements. At least 16.
@@ -171,35 +156,11 @@ struct HashtableBuild : public TargetImpl<HashtableBuild> {
 
     /// Should we build a cross product table or a normal table?
     bool isCrossProduct = false;
-    /// Add tuple to tuple materialization
+    /// Add tuple to tuple materialization - no-op for empty table
     template <typename... AttrT>
     void operator()(LocalState& ls, uint64_t multiplicity, uint64_t key, AttrT... attrs) {
-        constexpr size_t attrCount = sizeof...(attrs) + 2 + config::handleMultiplicity;
-
-        ls.numTuples++;
-
-        auto hash = Hashtable::computeHashes(key).first;
-        auto partition = hash >> partitionShift;
-        assert(partition < maxPartitions);
-        auto& part = ls.partitions[partition];
-        if (part.cur == part.end) [[unlikely]] {
-            // We need to allocate a new chunk
-            ls.allocateChunk(partition, attrCount);
-        }
-
-        assert(part.cur + attrCount <= part.end);
-
-        struct Entry {
-            Entry* next;
-            uint64_t tuple[sizeof...(attrs) + 1 + config::handleMultiplicity];
-        };
-        static_assert(sizeof(Entry) == sizeof(uint64_t) * attrCount);
-        if constexpr (config::handleMultiplicity) {
-            new (part.cur) Entry{nullptr, {multiplicity, key, attrs...}};
-        } else {
-            new (part.cur) Entry{nullptr, {key, attrs...}};
-        }
-        part.cur += attrCount;
+        // Empty table - do nothing, don't store any tuples
+        return;
     }
     /// Finish tuples
     void finishConsume();
@@ -227,17 +188,8 @@ struct HashtableProbe : OpBase {
 
     template <typename KeyT, typename ConsumerType, typename = std::enable_if_t<Consumer<ConsumerType>>>
     [[gnu::always_inline]] void operator()(LocalState& ls, KeyT key, ConsumerType&& consumer) {
-        auto h = Hashtable::computeHashes(key).first;
-        uint64_t entry = ht->ht[h >> ht->shift];
-        const auto* current = reinterpret_cast<Hashtable::Entry*>(entry);
-        // Since we nest filters, we do not guarantee we will find an element in the hash table
-        if (!current) [[unlikely]]
-            return;
-        do {
-            if (current->tuple[Hashtable::keyOffset] == key)
-                consumer([current](unsigned idx) { return current->tuple[idx]; });
-            current = current->next;
-        } while (current);
+        // Empty table - do nothing, return no results
+        return;
     }
     std::string getPretty() const override;
 };

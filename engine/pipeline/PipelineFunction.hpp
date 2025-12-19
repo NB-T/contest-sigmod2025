@@ -1,24 +1,24 @@
 #pragma once
 //---------------------------------------------------------------------------
-#include "pipeline/PipelineConcepts.hpp"
-#include "infra/helper/Span.hpp"
 #include "infra/Util.hpp"
+#include "infra/helper/Span.hpp"
 #include "op/ScanBase.hpp"
 #include "op/TargetBase.hpp"
+#include "pipeline/PipelineConcepts.hpp"
 #include <cassert>
 #include <string_view>
 //---------------------------------------------------------------------------
 namespace engine {
 //---------------------------------------------------------------------------
-class Hashtable;
-class HashtableBuild;
-class HashtableProbe;
+class BT;
+class BTBuild;
+class BTProbe;
 class TableScan;
 class TableTarget;
 //---------------------------------------------------------------------------
-using DefaultProbe = HashtableProbe;
+using DefaultProbe = BTProbe;
 //---------------------------------------------------------------------------
-using DefaultProbeParameter = const Hashtable*;
+using DefaultProbeParameter = const BT*;
 //---------------------------------------------------------------------------
 using PipelineFunction = void (*)(TargetBase& target, ScanBase& scan, engine::span<const DefaultProbeParameter> probes, engine::span<const unsigned> keyOffsets, engine::span<const unsigned> outputAttributeOffsets);
 //---------------------------------------------------------------------------

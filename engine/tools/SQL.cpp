@@ -1,15 +1,15 @@
-#include "query/PlanImport.hpp"
-#include "tools/ParsedSQL.hpp"
-#include "tools/JoinPipelineLoader.hpp"
 #include "tools/SQL.hpp"
+#include "query/PlanImport.hpp"
 #include "tools/DuckDB.hpp"
+#include "tools/JoinPipelineLoader.hpp"
+#include "tools/ParsedSQL.hpp"
 #include "tools/Setting.hpp"
 #pragma GCC push_options
 #pragma GCC optimize("O3")
 #include <nlohmann/json.hpp>
 #pragma GCC pop_options
-#include <common.h>
 #include <unordered_set>
+#include <common.h>
 //---------------------------------------------------------------------------
 using json = nlohmann::json;
 namespace fs = std::filesystem;
@@ -59,7 +59,8 @@ SQL::Batch SQL::parse(const std::string& planFile, std::vector<std::string> sele
     for (; nameIter != names.end() && plansIter != plans.end(); ++nameIter, ++plansIter) {
         auto& name = *nameIter;
         auto& plan_json = *plansIter;
-        if (selected_plans.empty() || (selected_plans.find(name) != selected_plans.end())) {
+        // Only execute if plans are explicitly selected
+        if (selected_plans.find(name) != selected_plans.end()) {
             auto sql_path = fs::path(sql_directory) / fmt::format("{}.sql", name);
             auto sql = read_file(sql_path);
 

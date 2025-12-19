@@ -5,7 +5,7 @@ if [ $# -ne 1 ]; then
     exit 1
 fi
 
-BINARY=$1
+BINARY=../$1
 
 echo "Extracting global constructors from: $BINARY"
 

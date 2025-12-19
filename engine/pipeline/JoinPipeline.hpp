@@ -123,8 +123,7 @@ struct JoinPipeline<Target, Scan, std::tuple<Probes...>, std::index_sequence<Key
                 } else {
                     mult = 1;
                 }
-                consumeProbe<Ind + 1>(localState, target, mult, providers..., provider);
-            });
+                consumeProbe<Ind + 1>(localState, target, mult, providers..., provider); });
         } else {
             consumeTarget(localState, target, multiplicity, std::make_index_sequence<sizeof...(Attrs)>{}, providers...);
         }

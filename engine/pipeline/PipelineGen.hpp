@@ -1,6 +1,6 @@
 #pragma once
 //---------------------------------------------------------------------------
-#include "op/Hashtable.hpp"
+#include "op/BT.hpp"
 #include "op/TableScan.hpp"
 #include "op/TableTarget.hpp"
 #include "pipeline/JoinPipeline.hpp"
@@ -8,7 +8,7 @@
 //---------------------------------------------------------------------------
 namespace engine {
 //---------------------------------------------------------------------------
-template<size_t ... Is>
+template <size_t... Is>
 auto genProbes(engine::span<const DefaultProbeParameter>& probeParams, std::index_sequence<Is...>) {
     return std::tuple{DefaultProbe{probeParams[Is]}...};
 }

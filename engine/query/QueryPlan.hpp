@@ -14,8 +14,8 @@
 namespace engine {
 //---------------------------------------------------------------------------
 class TableTarget;
-class Hashtable;
-class HashtableBuild;
+class BT;
+class BTBuild;
 class TableScan;
 class RestrictionLogic;
 class QueryGraph;

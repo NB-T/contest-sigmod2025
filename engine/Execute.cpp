@@ -3,7 +3,10 @@
 #include "infra/Scheduler.hpp"
 #include "query/PlanImport.hpp"
 #include "query/QueryPlan.hpp"
+#include <iostream>
+#include <fmt/core.h>
 #include <plan.h>
+#include <signal.h>
 #include <unistd.h>
 //---------------------------------------------------------------------------
 namespace engine {
@@ -22,6 +25,19 @@ ColumnarTable execute(QueryPlan plan, [[maybe_unused]] void* context) {
 }
 //---------------------------------------------------------------------------
 }
+
+const inline void printColumnarTable(const ColumnarTable& result_table) {
+    std::cout << "Result table: " << std::endl;
+    for (const auto& row : result_table.columns) {
+        for (const auto& page : row.pages) {
+            for (const auto& byte : page->data) {
+                std::cout << static_cast<int>(byte) << " ";
+            }
+        }
+        std::cout << "\n";
+    }
+}
+
 //---------------------------------------------------------------------------
 namespace Contest {
 //---------------------------------------------------------------------------
@@ -46,6 +62,30 @@ void* build_context() {
 }
 //---------------------------------------------------------------------------
 void destroy_context([[maybe_unused]] void* context) { engine::Scheduler::teardown(); }
+
+static bool cleanup_registered = false;
+
+// super cleanup function
+void emergency_cleanup() {
+    if (cleanup_registered) {
+        engine::Scheduler::teardown();
+        cleanup_registered = false;
+    }
+}
+
+// engine-specific cleanup
+void engine_cleanup_handler(int sig) {
+    fmt::print(stderr, "Engine cleanup on signal {}\n", sig);
+    emergency_cleanup();
+}
+
+void register_engine_cleanup() {
+    if (!cleanup_registered) {
+        signal(SIGINT, engine_cleanup_handler);
+        signal(SIGTERM, engine_cleanup_handler);
+        cleanup_registered = true;
+    }
+}
 //---------------------------------------------------------------------------
 } // namespace Contest
 //---------------------------------------------------------------------------

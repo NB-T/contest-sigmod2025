@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 url="https://event.cwi.nl/da/job/imdb.tgz"
-output_file="imdb.tgz"
-target_dir="imdb"
+output_file="../imdb.tgz"
+target_dir="../imdb"
 
 # Detect and select downloader
 if command -v wget &> /dev/null; then

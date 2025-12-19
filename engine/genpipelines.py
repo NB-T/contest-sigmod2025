@@ -13,7 +13,7 @@ def subsets_with_replacement(p, r):
             yield v
 
 targets = [
-    "engine::HashtableBuild",
+    "engine::BTBuild",
     "engine::TableTarget"
 ]
 scans = [

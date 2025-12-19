@@ -1,7 +1,7 @@
 #include "attribute.h"
 #include "infra/Random.hpp"
 #include "infra/Scheduler.hpp"
-#include "op/Hashtable.hpp"
+#include "op/BT.hpp"
 #include "op/ScanBase.hpp"
 #include "op/TableScan.hpp"
 #include "op/TableTarget.hpp"
@@ -19,8 +19,8 @@
 
 using namespace std;
 
-/*
-TEST_CASE("Scheduler") {
+/// NOT FOR USE! Never! That I know of
+/* TEST_CASE("Scheduler") {
     atomic<size_t> numWorkers{0};
     atomic<size_t> numIncrements{0};
     engine::Scheduler::run([&](size_t workerId) {
@@ -30,8 +30,7 @@ TEST_CASE("Scheduler") {
         }
     });
     REQUIRE(numWorkers.load() > 1);
-}
-*/
+} */
 
 using namespace engine;
 
@@ -168,43 +167,43 @@ static vector<vector<uint64_t>> doCrossJoin(vector<vector<uint64_t>>& vR1, vecto
     return res;
 }
 
-TEST_CASE("HashTable") {
+TEST_CASE("B+-tree") {
     ContextWrapper context{};
 
     // fill the hash table by running the build side
-    using HT = Hashtable;
-    HT ht2;
-    CHECK(ht2.isEmpty());
-    HashtableBuild ht2build(ht2, 16);
+    using T = BT;
+    T bt2;
+    CHECK(bt2.isEmpty());
+    BTBuild bt2build(bt2, 16);
 
     auto vR0 = generateTuple(1000, 2, [](size_t index) { return index + 1; }, [](size_t index, size_t) { return static_cast<uint64_t>(100 * std::pow(10, index % 4)); });
 
     ValueScanner R0{vR0};
     ValueCollector result;
 
-    JoinPipeline<HashtableBuild, ValueScanner, std::tuple<>, std::index_sequence<>, std::index_sequence<0, 0>> pipelineScan1(ht2build, R0, {}, {}, {0, 1});
+    JoinPipeline<BTBuild, ValueScanner, std::tuple<>, std::index_sequence<>, std::index_sequence<0, 0>> pipelineScan1(bt2build, R0, {}, {}, {0, 1});
     pipelineScan1();
 
-    // ht2 is populated, so now look up the keys in the bloom filter
+    // bt2 is populated, so now look up the keys in the bloom filter
     std::set<uint64_t> keys;
     for (auto& tuple : vR0) {
-        CHECK(ht2.joinFilter(tuple[0]));
-        CHECK(ht2.joinFilterPrecise(tuple[0]));
+        CHECK(bt2.joinFilter(tuple[0]));
+        CHECK(bt2.joinFilterPrecise(tuple[0]));
         keys.insert(tuple[0]);
     }
 
-    // generate 1000 random values not in the ht
-    std::set<uint64_t> notInHT;
+    // generate 1000 random values not in the bt
+    std::set<uint64_t> notInBT;
     Random r;
     for (size_t i = 0; i < 1000; i++) {
         auto number = r();
         while (keys.count(number)) number = r();
-        notInHT.insert(number);
+        notInBT.insert(number);
     }
 
-    // check that the generated random number are not in the ht
-    for (auto& n : notInHT) {
-        CHECK(!ht2.joinFilterPrecise(n));
+    // check that the generated random number are not in the bt
+    for (auto& n : notInBT) {
+        CHECK(!bt2.joinFilterPrecise(n));
     }
 }
 
@@ -217,13 +216,11 @@ TEST_CASE("HashJoin") {
     for (auto a : sizes) {
         for (auto b : sizes) {
             for (auto c : sizes) {
-                std::cout << a << " " << b << " " << c << std::endl;
-                using HT = Hashtable;
-                HT ht1, ht2;
-                CHECK(ht1.isEmpty());
-                CHECK(ht2.isEmpty());
-                HashtableBuild ht1build(ht1, 16);
-                HashtableBuild ht2build(ht2, 16);
+                BT bt1, bt2;
+                CHECK(bt1.isEmpty());
+                CHECK(bt2.isEmpty());
+                BTBuild bt1build(bt1, 16);
+                BTBuild bt2build(bt2, 16);
 
                 auto vR0 = generateTuple(a, 2, [](size_t index) { return index + 1; }, [](size_t index, size_t) { return static_cast<uint64_t>(100 * std::pow(10, index % 4)); });
                 auto vR1 = generateTuple(b, 2, [](size_t index) { return index + 1; }, [](size_t index, size_t) { return 10 * index; });
@@ -234,13 +231,13 @@ TEST_CASE("HashJoin") {
                 ValueScanner R2{vR2};
                 ValueCollector result;
 
-                JoinPipeline<HashtableBuild, ValueScanner, std::tuple<>, std::index_sequence<>, std::index_sequence<0, 0>> pipelineScan1(ht2build, R2, {}, {}, {0, 1});
+                JoinPipeline<BTBuild, ValueScanner, std::tuple<>, std::index_sequence<>, std::index_sequence<0, 0>> pipelineScan1(bt2build, R2, {}, {}, {0, 1});
                 pipelineScan1();
 
-                JoinPipeline<HashtableBuild, ValueScanner, std::tuple<>, std::index_sequence<>, std::index_sequence<0, 0>> pipelineScan2(ht1build, R1, {}, {}, {0, 1});
+                JoinPipeline<BTBuild, ValueScanner, std::tuple<>, std::index_sequence<>, std::index_sequence<0, 0>> pipelineScan2(bt1build, R1, {}, {}, {0, 1});
                 pipelineScan2();
 
-                JoinPipeline<ValueCollector, ValueScanner, std::tuple<HashtableProbe, HashtableProbe>, std::index_sequence<0, 0>, std::index_sequence<0, 0, 1, 2>> pipelineJoin(result, R0, {HashtableProbe{&ht1}, HashtableProbe{&ht2}}, {0, 1}, {0, 1, 1, 1});
+                JoinPipeline<ValueCollector, ValueScanner, std::tuple<BTProbe, BTProbe>, std::index_sequence<0, 0>, std::index_sequence<0, 0, 1, 2>> pipelineJoin(result, R0, {BTProbe{&bt1}, BTProbe{&bt2}}, {0, 1}, {0, 1, 1, 1});
                 pipelineJoin();
 
                 // join R0 and R1 on the first attribute
@@ -414,16 +411,16 @@ TEST_CASE("TableScan") {
              {7, "c"}});
     }
     // Vector with many values
-    /*SECTION("many values") {
+    SECTION("many values") {
         vector<vector<PlanImport::Data>> data{
             {std::monostate{}, "a"},
             {6, "b"},
             {7, std::monostate{}}};
         for (int i = 0; i < 8'000; i++) {
-            data.push_back({PlanImport::Data{i}, PlanImport::Data{engine::fmt::format("{}", i)}});
+            data.push_back({PlanImport::Data{i}, PlanImport::Data{fmt::format("{}", i)}});
         }
         testTableScan<2>({DataType::INT32, DataType::VARCHAR}, data);
-    }*/
+    }
 }
 
 TEST_CASE("TableTarget") {
@@ -642,14 +639,23 @@ TEST_CASE("TableTarget") {
             const auto table = tt.extract();
 
             const auto data = Table::from_columnar(table).table();
-            REQUIRE(data.size() == 7);
-            REQUIRE(data.front().size() == 1);
-            REQUIRE(std::holds_alternative<std::monostate>(data[0].front()));
-            for (int i = 0; i < 5; i++) {
-                REQUIRE(std::holds_alternative<T>(data[1 + i].front()));
-                REQUIRE(std::get<T>(data[1 + i].front()) == std::string(42'174, 'a'));
+            if (engine::config::handleMultiplicity) {
+                REQUIRE(data.size() == 7);
+                REQUIRE(data.front().size() == 1);
+                REQUIRE(std::holds_alternative<std::monostate>(data[0].front()));
+                for (int i = 0; i < 5; i++) {
+                    REQUIRE(std::holds_alternative<T>(data[1 + i].front()));
+                    REQUIRE(std::get<T>(data[1 + i].front()) == std::string(42'174, 'a'));
+                }
+                REQUIRE(std::holds_alternative<std::monostate>(data[6].front()));
+            } else {
+                REQUIRE(data.size() == 3);
+                REQUIRE(data.front().size() == 1);
+                REQUIRE(std::holds_alternative<std::monostate>(data[0].front()));
+                REQUIRE(std::holds_alternative<T>(data[1].front()));
+                REQUIRE(std::get<T>(data[1].front()) == std::string(42'174, 'a'));
+                REQUIRE(std::holds_alternative<std::monostate>(data[2].front()));
             }
-            REQUIRE(std::holds_alternative<std::monostate>(data[6].front()));
         }
         SECTION("many items") {
             for (unsigned i = 0; i < 10'000; i++) tt(ls, 1, short_string.val());

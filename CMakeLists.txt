@@ -1,5 +1,17 @@
 cmake_minimum_required(VERSION 3.16)
 
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
+# ccache
+find_program(CCACHE_PROGRAM ccache)
+if(CCACHE_PROGRAM)
+    message(STATUS "ccache found, using ${CCACHE_PROGRAM}")
+    set(CMAKE_C_COMPILER_LAUNCHER ${CCACHE_PROGRAM})
+    set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE_PROGRAM})
+else()
+    message(STATUS "ccache not found, using default compiler")
+endif()
+
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 project(SigmodContest)
@@ -132,6 +144,7 @@ add_custom_command(
         ${CMAKE_SOURCE_DIR}/genjit.py
         ${CMAKE_BINARY_DIR}/compile_commands.json
         ${JIT_OPTIONS_HEADER}
+        ${CCACHE_PROGRAM}
         DEPENDS
         ${CMAKE_BINARY_DIR}/compile_commands.json
         ${CMAKE_SOURCE_DIR}/genjit.py
@@ -153,7 +166,7 @@ set(SIGMODPC_TEAMSRC
         engine/infra/PageMemory.cpp
         engine/infra/JoinFilter.cpp
         engine/op/CollectorTarget.cpp
-        engine/op/Hashtable.cpp
+        engine/op/BT.cpp
         engine/op/OpBase.cpp
         engine/op/ScanBase.cpp
         engine/op/TableScan.cpp
@@ -193,6 +206,8 @@ add_executable(
 )
 
 target_include_directories(run PRIVATE include)
+add_subdirectory(parlaylib EXCLUDE_FROM_ALL)
+target_link_libraries(run PRIVATE parlay)
 target_link_libraries(run PRIVATE engine re2 fmt range-v3 nlohmann_json::nlohmann_json sqlparser duckdb)
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     target_compile_definitions(run PRIVATE _CRT_SECURE_NO_WARNINGS)
