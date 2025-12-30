@@ -11,13 +11,13 @@
 //---------------------------------------------------------------------------
 namespace engine {
 //---------------------------------------------------------------------------
-ColumnarTable execute(QueryPlan plan, [[maybe_unused]] void* context) {
+ColumnarTable execute(QueryPlan plan, [[maybe_unused]] void* context, std::chrono::microseconds& total_ignored_compile_time) {
     Scheduler::start_query();
     pagememory::start_query();
     ColumnarTable output;
     {
         QueryPlan pp = std::move(plan);
-        output = pp.run();
+        output = pp.run(total_ignored_compile_time);
     }
     querymemory::end_query();
     Scheduler::end_query();
@@ -41,14 +41,15 @@ const inline void printColumnarTable(const ColumnarTable& result_table) {
 //---------------------------------------------------------------------------
 namespace Contest {
 //---------------------------------------------------------------------------
-ColumnarTable execute(const Plan& plan, [[maybe_unused]] void* context) {
+ColumnarTable execute(const Plan& plan, [[maybe_unused]] void* context, std::chrono::microseconds& total_ignored_compile_time) {
+    std::cout << "cooking" << std::endl;
     engine::Scheduler::start_query();
     engine::pagememory::start_query();
     ColumnarTable output;
     {
         engine::DataSource ds;
         auto imported = engine::PlanImport::importPlan(ds, plan);
-        output = imported.run();
+        output = imported.run(total_ignored_compile_time);
     }
     engine::querymemory::end_query();
     engine::Scheduler::end_query();

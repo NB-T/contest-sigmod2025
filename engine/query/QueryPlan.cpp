@@ -44,7 +44,7 @@ struct QueryPlan::Input {
     /// The key the hash table is built on. This eq must have offset 0
     unsigned keyEq = ~0u;
     /// Is this a cross product?
-    bool isCrossProduct = false;
+    bool is_cross_product = false;
     /// The source scan, only used for debugging
     Input* sourceScan = nullptr;
     /// The source probes, only used for debugging
@@ -413,7 +413,7 @@ static std::tuple<uint64_t, uint64_t, uint64_t> printPlanRec(Vector<std::string>
     }
 }
 //---------------------------------------------------------------------------
-bool QueryPlan::runPipeline(const PlanPipeline& pipeline, double cardinalityEstimate) {
+bool QueryPlan::runPipeline(const PlanPipeline& pipeline, double cardinalityEstimate, std::chrono::microseconds& total_ignored_compile_time) {
     // std::cout << "RUNNING PIPELINE" << std::endl;
     // Build up the pipeline
     auto& scanInput = *inputs[pipeline.scanInput];
@@ -460,7 +460,7 @@ bool QueryPlan::runPipeline(const PlanPipeline& pipeline, double cardinalityEsti
         probeTables.push_back(input.bt.get());
         newInput->sourceProbes.push_back(&input);
         // We restrict cross products to be left deep to ensure only one probe per pipeline
-        if (input.isCrossProduct) {
+        if (input.is_cross_product) {
             // The key will come from the last column of scan
             assert(zeroColumnValue == ~0ull);
             if (input.keyEq == crossProductEq) {
@@ -500,8 +500,8 @@ bool QueryPlan::runPipeline(const PlanPipeline& pipeline, double cardinalityEsti
                 zeroColumnValue = 0;
                 newInput->keyEq = pipeline.keyEq;
             }
-            newInput->isCrossProduct = true;
-            newInput->btBuild->isCrossProduct = true;
+            newInput->is_cross_product = true;
+            newInput->btBuild->is_cross_product = true;
             outputSources.emplace_back(SourceInfo{0, zeroColumnPos}, crossProductEq);
         } else {
             newInput->keyEq = pipeline.keyEq;
@@ -595,7 +595,11 @@ bool QueryPlan::runPipeline(const PlanPipeline& pipeline, double cardinalityEsti
 
     std::string_view pipelineName{pipelineNameBuffer, offset};
 
+    auto start_compile = std::chrono::steady_clock::now();
     PipelineFunction pipelineFunction = PipelineFunctions::compilePipeline(pipelineName);
+    auto end_compile = std::chrono::steady_clock::now();
+    total_ignored_compile_time += std::chrono::duration_cast<std::chrono::microseconds>(end_compile - start_compile);
+    std::cout << "--- compile time: " << std::chrono::duration_cast<std::chrono::milliseconds>(end_compile - start_compile).count() << " milliseconds" << std::endl;
     /*
     std::cout << "====================" << std::endl;
     std::cout << "pipelineName: " << pipelineName << std::endl;
@@ -785,7 +789,7 @@ void QueryPlan::computeSamples() {
     });
 }
 //---------------------------------------------------------------------------
-ColumnarTable QueryPlan::run() {
+ColumnarTable QueryPlan::run(std::chrono::microseconds& total_ignored_compile_time) {
     for (unsigned eq = 0; eq < equivalenceSets.size(); eq++) {
         assert(!equivalenceSets[eq].empty());
         if (!equivalenceSets[eq].single())
@@ -817,7 +821,7 @@ ColumnarTable QueryPlan::run() {
         assert(!!pipeline);
         assert(!pipeline.rels.empty());
 
-        if (runPipeline(pipeline, root->card))
+        if (runPipeline(pipeline, root->card, total_ignored_compile_time))
             return std::move(finalResult);
     }
 

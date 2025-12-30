@@ -4,42 +4,43 @@
 #include "infra/helper/BitOps.hpp"
 #include "query/DataSource.hpp"
 #include "query/RuntimeValue.hpp"
+
+#include <parlay/primitives.h>
+#include <parlay/slice.h>
+
+#include <algorithm>
 #include <numeric>
 #include <unordered_set>
 //---------------------------------------------------------------------------
 namespace engine {
 //---------------------------------------------------------------------------
-namespace {
-// The maximum partition shift in a hashtable
-constexpr size_t htPartitionShiftLimit = HashtableBuild::maxPartitionsShift;
-}
-//---------------------------------------------------------------------------
-/// The size of a chunk
-static constexpr size_t chunkSize = 8048;
-/// The number of attrs in a chunk
-static constexpr size_t chunkCount = chunkSize / sizeof(uint64_t) - 2;
+/// The size of a chunk for entry allocation
+static constexpr size_t chunk_size = 8048;
+/// The number of uint64_t values in a chunk (minus header)
+static constexpr size_t chunk_count = chunk_size / sizeof(uint64_t) - 2;
 /// The number of chunks in a block
-static constexpr size_t blockChunks = HashtableBuild::maxPartitions - 1;
-static_assert(blockChunks < (1ull << 16));
+static constexpr size_t block_chunks = HashtableBuild::maxPartitions - 1;
+static_assert(block_chunks < (1ull << 16));
 //---------------------------------------------------------------------------
-/// An chunk
+/// A chunk for entry allocation
 struct HashtableBuild::Chunk {
-    /// The next chunk within partition
+    /// The next chunk
     Chunk* next;
-    /// The end of the data
-    size_t end;
+    /// Current position in data
+    size_t pos;
     /// The data
-    uint64_t data[chunkCount];
+    uint64_t data[chunk_count];
 };
-static_assert(sizeof(HashtableBuild::Chunk) == chunkSize);
-/// A block
+static_assert(sizeof(HashtableBuild::Chunk) == chunk_size);
+
+/// A block containing multiple chunks
 struct alignas(4096) HashtableBuild::Block {
-    /// The next block within allocated blocks
+    /// The next block
     Block* next;
-    /// The upcoming chunk to allocate
-    size_t currentChunk;
+    /// The next chunk to allocate
+    size_t current_chunk;
     /// The chunks
-    Chunk chunks[blockChunks];
+    Chunk chunks[block_chunks];
 };
 //---------------------------------------------------------------------------
 std::string HashtableBuild::getPretty() const {
@@ -50,294 +51,370 @@ std::string HashtableProbe::getPretty() const {
     return ht->pretty;
 }
 //---------------------------------------------------------------------------
-HashtableBuild::LocalState::LocalState(HashtableBuild& build) : partitionShift(build.partitionShift) {
-    auto numPartitions = 1ull << (Hashtable::hashBits - partitionShift);
-    memset(partitions.data(), 0, sizeof(ChunkRef) * numPartitions);
-    memset(chunks.data(), 0, sizeof(Chunk*) * numPartitions);
-    next = build.localStateRefs.exchange(this);
+HashtableBuild::LocalState::LocalState(HashtableBuild& build) {
+    next = build.local_state_refs.exchange(this);
 }
 //---------------------------------------------------------------------------
-void HashtableBuild::LocalState::allocateChunk(uint32_t partition, size_t attrCountInp) {
-    // Allocate a block if full
-    if (!blocks || (blocks->currentChunk == blockChunks)) {
-        attrCount = attrCountInp;
-        static_assert(sizeof(Block) % DataSource::PAGE_SIZE == 0);
-        auto* newBlock = static_cast<Block*>(querymemory::allocate(sizeof(Block)));
-        newBlock->next = blocks;
-        newBlock->currentChunk = 0;
-        blocks = newBlock;
-        if (!tail)
-            tail = newBlock;
+Hashtable::Entry* HashtableBuild::LocalState::allocateEntry(size_t attr_count_inp) {
+    // entry has data and next pointer
+    size_t entry_size = 1 + attr_count_inp; // next pointer counts as 1 uint64_t
+
+    // if chunk has no space
+    if (!chunk_pos || chunk_pos + entry_size > chunk_end) {
+        // allocate new chunk
+        if (!blocks || blocks->current_chunk == block_chunks) {
+            // block
+            static_assert(sizeof(Block) % DataSource::PAGE_SIZE == 0);
+            auto* new_block = static_cast<Block*>(querymemory::allocate(sizeof(Block)));
+            new_block->next = blocks;
+            new_block->current_chunk = 0;
+            blocks = new_block;
+        }
+
+        attr_count = attr_count_inp;
+
+        // chunk
+        auto* new_chunk = &blocks->chunks[blocks->current_chunk++];
+        new_chunk->next = current_chunk;
+        new_chunk->pos = 0;
+        current_chunk = new_chunk;
+
+        chunk_pos = new_chunk->data;
+        chunk_end = new_chunk->data + chunk_count - (chunk_count % entry_size);
     }
-    assert(attrCountInp == attrCount);
 
-    auto& part = partitions[partition];
-    // Update the end position of the previous chunk
-    if (chunks[partition]) {
-        assert(part.cur);
-        assert(part.cur >= chunks[partition]->data);
-        assert(part.cur <= chunks[partition]->data + chunkCount);
-        chunks[partition]->end = part.cur - chunks[partition]->data;
-    }
-
-    // Allocate the new chunk
-    auto* newChunk = &blocks->chunks[blocks->currentChunk++];
-    newChunk->next = chunks[partition];
-    newChunk->end = 0;
-    chunks[partition] = newChunk;
-
-    // Setup the partition
-    part.cur = newChunk->data;
-    part.end = newChunk->data + chunkCount - (chunkCount % attrCount);
+    // allocate entry from current chunk
+    auto* entry = reinterpret_cast<Hashtable::Entry*>(chunk_pos);
+    chunk_pos += entry_size;
+    return entry;
 }
 //---------------------------------------------------------------------------
-void Hashtable::allocateHashtable(size_t numElements) {
-    auto sizeShift = std::max(engine::bit_width(numElements), 4);
-    shift = hashBits - sizeShift;
-
-    // Allocate the hashtable
-    auto numEntries = htSize();
-    auto allocBytes = numEntries * (sizeof(uint64_t) + sizeof(uint16_t));
-    void* mem = querymemory::allocate(allocBytes);
-    ht = static_cast<uint64_t*>(mem);
-    bloom = reinterpret_cast<uint16_t*>(ht + numEntries);
+void Hashtable::allocateHashtable(size_t num_elements) {
+    // obsolete
 }
 //---------------------------------------------------------------------------
 void Hashtable::filterEq(const EqRestriction& restriction) {
-    auto morselSize = std::max<size_t>(htSize() / Scheduler::concurrency(), 100);
-    uint64_t* foundSlot = nullptr;
-    Scheduler::parallelFor(0, htSize(), morselSize, [&](size_t workerId, size_t start) {
-        uint64_t removedTupleCount = 0;
-        uint64_t removedSlotCount = 0;
-        for (size_t i = start; i < std::min(start + morselSize, htSize()); i++) {
-            if (!ht[i])
-                continue;
-            uint64_t* owner = &ht[i];
-            while (true) {
-                auto* tuple = reinterpret_cast<uint64_t*>(*owner);
-                assert(tuple[restriction.offset + 1] != RuntimeValue::nullValue);
-                if (tuple[restriction.offset + 1] != restriction.value) {
-                    // Remove the tuple
-                    *owner = tuple[0];
-                    removedTupleCount++;
+    // filter entries in leaf pages
+    for (auto* leaf : leaf_pages_) {
+        size_t write_pos = 0;
+        for (size_t i = 0; i < leaf->header.num_keys; ++i) {
+            auto* entry = leaf->entries[i];
+            if (entry && entry->tuple[restriction.offset + 1] == restriction.value) {
+                // Keep this entry
+                if (write_pos != i) {
+                    leaf->keys[write_pos] = leaf->keys[i];
+                    leaf->entries[write_pos] = leaf->entries[i];
                 }
-                if (!*owner)
-                    break;
-                owner = reinterpret_cast<uint64_t*>(*owner);
-                if (!*owner)
-                    break;
-            }
-            if (!ht[i])
-                removedSlotCount++;
-        }
-        // std::atomic_ref(numKeys).fetch_sub(removedSlotCount);
-        __atomic_fetch_sub(&numKeys, removedSlotCount, __ATOMIC_SEQ_CST);
-        // std::atomic_ref(numTuples).fetch_sub(removedTupleCount);
-        __atomic_fetch_sub(&numTuples, removedTupleCount, __ATOMIC_SEQ_CST);
-    });
-}
-//---------------------------------------------------------------------------
-template <typename Callback>
-static void iterateTuples(HashtableBuild* htb, size_t partition, Callback&& callback) {
-    for (auto* ls = htb->localStateRefs.load(); ls; ls = ls->next) {
-        auto attrCount = ls->attrCount;
-        // Update the start position of the last chunk
-        if (ls->chunks[partition]) {
-            HashtableBuild::Chunk* chunk = ls->chunks[partition];
-            assert(ls->partitions[partition].cur);
-            assert(ls->partitions[partition].cur >= chunk->data);
-            assert(ls->partitions[partition].cur <= chunk->data + chunkCount);
-            chunk->end = ls->partitions[partition].cur - chunk->data;
-
-            do {
-                for (auto *tuple = chunk->data, *end = chunk->data + chunk->end; tuple < end; tuple += attrCount) {
-                    callback(*reinterpret_cast<Hashtable::Entry*>(tuple));
-                }
-                chunk = chunk->next;
-            } while (chunk);
-        }
-    }
-};
-//---------------------------------------------------------------------------
-template <size_t AttributeCount>
-[[gnu::always_inline]] static bool tupleEqual(Hashtable::Entry& t1, Hashtable::Entry& t2) {
-    // Attribute count contains the header (the next pointer) as well
-    return memcmp(t1.tuple + Hashtable::keyOffset, t2.tuple + Hashtable::keyOffset, (AttributeCount - 1 - Hashtable::keyOffset) * sizeof(uint64_t)) == 0;
-}
-//---------------------------------------------------------------------------
-template <size_t AttributeCount>
-[[gnu::always_inline]] static bool tupleRestEqual(Hashtable::Entry& t1, Hashtable::Entry& t2) {
-    if constexpr (AttributeCount - 1 - Hashtable::keyOffset - 1 == 0)
-        return true;
-    // Attribute count contains the header (the next pointer) as well
-    return memcmp(t1.tuple + Hashtable::keyOffset + 1, t2.tuple + Hashtable::keyOffset + 1, (AttributeCount - 1 - Hashtable::keyOffset - 1) * sizeof(uint64_t)) == 0;
-}
-//---------------------------------------------------------------------------
-template <size_t AttributeCount>
-static void finishConsumeCrossProductLogic(HashtableBuild* htb, size_t partition) {
-    using namespace std;
-    auto& ht = htb->ht;
-
-    Hashtable::Entry* head = nullptr;
-    Hashtable::Entry* tail = nullptr;
-    iterateTuples(htb, partition, [&](Hashtable::Entry& tuple) {
-        if (!head) {
-            head = &tuple;
-            tail = &tuple;
-            if (config::handleMultiplicity && tuple.tuple[0] > 1)
-                ht.isCertainlyDuplicateFree = false;
-        } else {
-            assert(!ht.isCertainlyDuplicateFree);
-            if (config::handleMultiplicity && tupleEqual<AttributeCount>(*tail, tuple)) {
-                tail->tuple[0] += tuple.tuple[0];
+                write_pos++;
             } else {
-                tail->next = &tuple;
-                tail = &tuple;
+                // remove entry
+                if (num_tuples > 0) num_tuples--;
             }
         }
+        leaf->header.num_keys = write_pos;
+    }
+
+    // recount unique keys
+    std::unordered_set<uint64_t> unique_keys;
+    for (auto* leaf : leaf_pages_) {
+        for (size_t i = 0; i < leaf->header.num_keys; ++i) {
+            unique_keys.insert(leaf->keys[i]);
+        }
+    }
+    num_keys = unique_keys.size();
+}
+//---------------------------------------------------------------------------
+Vector<HashtableBuild::BufferEntry> HashtableBuild::collectAndSort() {
+    // count
+    size_t total_tuples = 0;
+    for (auto* ls = local_state_refs.load(); ls; ls = ls->next) {
+        total_tuples += ls->num_tuples;
+    }
+
+    if (total_tuples == 0) {
+        return Vector<BufferEntry>();
+    }
+
+    // merge local buffers
+    Vector<BufferEntry> all_entries;
+    all_entries.reserve(total_tuples);
+
+    for (auto* ls = local_state_refs.load(); ls; ls = ls->next) {
+        for (const auto& entry : ls->buffer) {
+            all_entries.push_back(entry);
+        }
+    }
+
+    // sort with parlay::integer_sort_inplace
+    auto slice = parlay::make_slice(all_entries.data(), all_entries.data() + all_entries.size());
+    parlay::integer_sort_inplace(slice, [](const BufferEntry& e) {
+        return e.key;
     });
-    if (head) {
-        auto [h, b] = Hashtable::computeHashes(0);
-        auto ind = h >> ht.shift;
-        // tail[0] = std::atomic_ref(ht.ht[ind]).exchange(reinterpret_cast<uint64_t>(head));
-        __atomic_exchange(&ht.ht[ind], reinterpret_cast<uint64_t*>(&head), reinterpret_cast<uint64_t*>(&tail->next), __ATOMIC_SEQ_CST);
+
+    return all_entries;
+}
+//---------------------------------------------------------------------------
+void HashtableBuild::buildBloomFilter(const Vector<BufferEntry>& sorted_data) {
+    if (sorted_data.empty()) return;
+
+    // determine bloom filter size
+    size_t bits = bloom_filter_bits_;
+    if (bits == 0) {
+        // Default: 10 bits per key for ~1% false positive rate
+        bits = std::max(sorted_data.size() * 10, size_t(1024));
+    }
+
+    ht.bloom_filter_.allocate(bits);
+
+    // add keys in parallel
+    size_t n = sorted_data.size();
+    if (n > 256) {
+        Scheduler::parallelFor(0, n, [&](size_t, size_t i) {
+            ht.bloom_filter_.add(sorted_data[i].key);
+        });
+    } else {
+        for (size_t i = 0; i < n; ++i) {
+            ht.bloom_filter_.add(sorted_data[i].key);
+        }
     }
 }
 //---------------------------------------------------------------------------
-template <size_t AttributeCount>
-static void finishConsumeLogic(HashtableBuild* htb, size_t partition) {
-    using namespace std;
-    auto partitionCountShift = Hashtable::hashBits - htb->partitionShift;
-    auto& ht = htb->ht;
-    auto size = ht.htSize() >> partitionCountShift;
-
-    {
-        memset(ht.ht + partition * size, 0, size * sizeof(uint64_t));
-        memset(ht.bloom + partition * size, 0, size * sizeof(uint16_t));
+void HashtableBuild::buildTreeBottomUp(Vector<BufferEntry>& sorted_data) {
+    if (sorted_data.empty()) {
+        ht.root_ = nullptr;
+        ht.height_ = 0;
+        return;
     }
-    uint64_t localNumKeys = 0;
-    uint64_t localRemovedTuples = 0;
-    bool possibleDuplicate = false;
-    const auto htShift = ht.shift;
-    const auto htBuckets = ht.ht;
-    iterateTuples(htb, partition, [&](Hashtable::Entry& tuple) {
-        auto key = tuple.tuple[Hashtable::keyOffset];
-        auto [h, b] = Hashtable::computeHashes(key);
-        assert(h >> htb->partitionShift == partition);
-        auto ind = h >> htShift;
-        assert(ind >= partition * size);
-        assert(ind < (partition + 1) * size);
 
-        auto old = reinterpret_cast<Hashtable::Entry*>(htBuckets[ind]);
-        auto mask = JoinFilter::getMask(b);
-        auto& bloomEntry = ht.bloom[ind];
-        if (config::handleMultiplicity)
-            possibleDuplicate |= tuple.tuple[0] > 1;
-        if (JoinFilter::checkMaskWithEntry(mask, bloomEntry)) {
-            auto keyEq = old->tuple[Hashtable::keyOffset] == key;
-            bool pd = keyEq || old->next;
-            possibleDuplicate |= pd;
-            localNumKeys += !pd;
-            if (config::handleMultiplicity && keyEq && tupleRestEqual<AttributeCount>(*old, tuple)) {
-                localRemovedTuples++;
-                // Add multiplicities
-                assert(tuple.tuple[0] >= 1);
-                assert(old->tuple[0] >= 1);
-                old->tuple[0] += tuple.tuple[0];
-                return;
+    size_t n = sorted_data.size();
+    size_t entries_per_page = Hashtable::LeafPage::MAX_ENTRIES;
+    size_t num_leaf_pages = (n + entries_per_page - 1) / entries_per_page;
+
+    // create leaf pages in parallel
+    ht.leaf_pages_.resize(num_leaf_pages);
+
+    if (num_leaf_pages > 16) {
+        Scheduler::parallelFor(0, num_leaf_pages, [&](size_t, size_t page_idx) {
+            auto* page = static_cast<Hashtable::LeafPage*>(
+                querymemory::allocate(BTREE_PAGE_SIZE));
+
+            page->header.is_leaf = 1;
+            page->header.num_keys = 0;
+            page->header.reserved = 0;
+            page->header.next_page_idx = (page_idx + 1 < num_leaf_pages) ? static_cast<uint32_t>(page_idx + 1) : 0xFFFFFFFF;
+
+            size_t start = page_idx * entries_per_page;
+            size_t end = std::min(start + entries_per_page, n);
+
+            for (size_t i = start; i < end; ++i) {
+                size_t slot = i - start;
+                page->keys[slot] = sorted_data[i].key;
+                page->entries[slot] = sorted_data[i].entry;
+                page->header.num_keys++;
             }
-        } else {
-            localNumKeys++;
-        }
-        tuple.next = old;
-        htBuckets[ind] = reinterpret_cast<uint64_t>(&tuple);
-        bloomEntry |= mask;
-    });
 
-    // std::atomic_ref(ht.numKeys).fetch_add(localNumKeys);
-    __atomic_fetch_add(&ht.numKeys, localNumKeys, __ATOMIC_SEQ_CST);
-    if constexpr (config::handleMultiplicity)
-        __atomic_fetch_sub(&ht.numTuples, localRemovedTuples, __ATOMIC_SEQ_CST);
-    if (possibleDuplicate)
-        __atomic_store_n(&ht.isCertainlyDuplicateFree, false, __ATOMIC_SEQ_CST);
-};
-//---------------------------------------------------------------------------
-std::array<void (*)(HashtableBuild*, size_t), 16> finishConsumeLogics = ([]<size_t... Is>(std::index_sequence<Is...>) {
-    return std::array<void (*)(HashtableBuild*, size_t), 16>{&finishConsumeLogic<Is>...};
-})(std::make_index_sequence<16>{});
-std::array<void (*)(HashtableBuild*, size_t), 16> finishConsumeCrossProductLogics = ([]<size_t... Is>(std::index_sequence<Is...>) {
-    return std::array<void (*)(HashtableBuild*, size_t), 16>{&finishConsumeCrossProductLogic<Is>...};
-})(std::make_index_sequence<16>{});
+            ht.leaf_pages_[page_idx] = page;
+        });
+    } else {
+        for (size_t page_idx = 0; page_idx < num_leaf_pages; ++page_idx) {
+            auto* page = static_cast<Hashtable::LeafPage*>(
+                querymemory::allocate(BTREE_PAGE_SIZE));
+
+            page->header.is_leaf = 1;
+            page->header.num_keys = 0;
+            page->header.reserved = 0;
+            page->header.next_page_idx = (page_idx + 1 < num_leaf_pages) ? static_cast<uint32_t>(page_idx + 1) : 0xFFFFFFFF;
+
+            size_t start = page_idx * entries_per_page;
+            size_t end = std::min(start + entries_per_page, n);
+
+            for (size_t i = start; i < end; ++i) {
+                size_t slot = i - start;
+                page->keys[slot] = sorted_data[i].key;
+                page->entries[slot] = sorted_data[i].entry;
+                page->header.num_keys++;
+            }
+
+            ht.leaf_pages_[page_idx] = page;
+        }
+    }
+
+    // singleton tree just has root
+    if (num_leaf_pages == 1) {
+        ht.root_ = ht.leaf_pages_[0];
+        ht.height_ = 1;
+        return;
+    }
+
+    // build internal levels bottom up
+    Vector<void*> current_level;
+    current_level.reserve(num_leaf_pages);
+    for (auto* leaf : ht.leaf_pages_) {
+        current_level.push_back(leaf);
+    }
+
+    bool children_are_leaves = true;
+    size_t height = 1;
+
+    while (current_level.size() > 1) {
+        size_t num_children = current_level.size();
+        size_t children_per_page = Hashtable::InternalPage::MAX_KEYS + 1;
+        size_t num_parent_pages = (num_children + children_per_page - 1) / children_per_page;
+
+        Vector<Hashtable::InternalPage*> parent_pages;
+        parent_pages.resize(num_parent_pages);
+
+        if (num_parent_pages > 16) {
+            Scheduler::parallelFor(0, num_parent_pages, [&](size_t, size_t page_idx) {
+                auto* page = static_cast<Hashtable::InternalPage*>(
+                    querymemory::allocate(BTREE_PAGE_SIZE));
+
+                page->header.is_leaf = 0;
+                page->header.num_keys = 0;
+                page->header.reserved = 0;
+                page->header.next_page_idx = 0xFFFFFFFF;
+
+                size_t start = page_idx * children_per_page;
+                size_t end = std::min(start + children_per_page, num_children);
+                size_t num_children_in_page = end - start;
+
+                // children
+                // get high keys
+                for (size_t i = 0; i < num_children_in_page; ++i) {
+                    page->children[i] = current_level[start + i];
+
+                    if (i < num_children_in_page - 1) {
+                        uint64_t high_key;
+                        if (children_are_leaves) {
+                            auto* leaf = static_cast<Hashtable::LeafPage*>(current_level[start + i]);
+                            high_key = leaf->keys[leaf->header.num_keys - 1];
+                        } else {
+                            // DEBUG 19d:
+                            // For internal pages, we need the high key of the rightmost leaf
+                            // in the subtree, not the last separator key
+                            void* rightmost = current_level[start + i];
+                            while (true) {
+                                auto* internal_node = static_cast<Hashtable::InternalPage*>(rightmost);
+                                rightmost = internal_node->children[internal_node->header.num_keys];
+                                if (static_cast<Hashtable::PageHeader*>(rightmost)->is_leaf) break;
+                            }
+                            auto* leaf = static_cast<Hashtable::LeafPage*>(rightmost);
+                            high_key = leaf->keys[leaf->header.num_keys - 1];
+                        }
+                        page->keys[page->header.num_keys++] = high_key;
+                    }
+                }
+
+                parent_pages[page_idx] = page;
+            });
+        } else {
+            for (size_t page_idx = 0; page_idx < num_parent_pages; ++page_idx) {
+                auto* page = static_cast<Hashtable::InternalPage*>(
+                    querymemory::allocate(BTREE_PAGE_SIZE));
+
+                page->header.is_leaf = 0;
+                page->header.num_keys = 0;
+                page->header.reserved = 0;
+                page->header.next_page_idx = 0xFFFFFFFF;
+
+                size_t start = page_idx * children_per_page;
+                size_t end = std::min(start + children_per_page, num_children);
+                size_t num_children_in_page = end - start;
+
+                for (size_t i = 0; i < num_children_in_page; ++i) {
+                    page->children[i] = current_level[start + i];
+
+                    if (i < num_children_in_page - 1) {
+                        uint64_t high_key;
+                        if (children_are_leaves) {
+                            auto* leaf = static_cast<Hashtable::LeafPage*>(current_level[start + i]);
+                            high_key = leaf->keys[leaf->header.num_keys - 1];
+                        } else {
+                            void* rightmost = current_level[start + i];
+                            while (true) {
+                                auto* internal_node = static_cast<Hashtable::InternalPage*>(rightmost);
+                                rightmost = internal_node->children[internal_node->header.num_keys];
+                                if (static_cast<Hashtable::PageHeader*>(rightmost)->is_leaf) break;
+                            }
+                            auto* leaf = static_cast<Hashtable::LeafPage*>(rightmost);
+                            high_key = leaf->keys[leaf->header.num_keys - 1];
+                        }
+                        page->keys[page->header.num_keys++] = high_key;
+                    }
+                }
+
+                parent_pages[page_idx] = page;
+            }
+        }
+
+        // next level
+        current_level.clear();
+        for (auto* p : parent_pages) {
+            current_level.push_back(p);
+        }
+        children_are_leaves = false;
+        height++;
+    }
+
+    ht.root_ = current_level[0];
+    ht.height_ = height;
+}
 //---------------------------------------------------------------------------
 void HashtableBuild::finishConsume() {
-    using namespace std;
+    // collect and sort
+    auto sorted_data = collectAndSort();
 
-    ht.numTuples = 0;
-    size_t attrCount = 2;
-    for (auto* current = localStateRefs.load(); current; current = current->next) {
-        ht.numTuples += current->numTuples;
-        if (current->numTuples)
-            attrCount = current->attrCount;
+    ht.num_tuples = sorted_data.size();
+
+    if (sorted_data.empty()) {
+        ht.root_ = nullptr;
+        ht.num_tuples = 0;
+        ht.num_keys = 0;
+        ht.height_ = 0;
+        return;
     }
 
-    auto partitionCountShift = Hashtable::hashBits - partitionShift;
-    auto numPartitions = 1ull << partitionCountShift;
-
-    if (isCrossProduct) {
-        // We will later check if that tuple has a multiplicity greater than 1g
-        ht.isCertainlyDuplicateFree = ht.numTuples == 1;
-        ht.numKeys = 1;
-        ht.allocateHashtable(1);
-        memset(ht.ht, 0, ht.htSize() * sizeof(uint64_t));
-        memset(ht.bloom, 0, ht.htSize() * sizeof(uint16_t));
-        auto [h, b] = Hashtable::computeHashes(0);
-        ht.bloom[h >> ht.shift] = 0xffff;
-    } else {
-        ht.allocateHashtable(std::max<size_t>(ht.numTuples, numPartitions));
-    }
-
-    auto* logic = finishConsumeLogics[attrCount];
-    if (isCrossProduct) {
-        logic = finishConsumeCrossProductLogics[attrCount];
-    }
-
-    if (ht.numTuples <= 256 || !localStateRefs.load()->next) {
-        for (size_t partition = 0; partition < numPartitions; ++partition) {
-            logic(this, partition);
+    // count unique keys
+    size_t unique_keys = 1;
+    bool has_duplicates = false;
+    for (size_t i = 1; i < sorted_data.size(); ++i) {
+        if (sorted_data[i].key != sorted_data[i - 1].key) {
+            unique_keys++;
+        } else {
+            has_duplicates = true;
         }
-    } else {
-        Scheduler::parallelFor(0, numPartitions, [this, logic](size_t, size_t partition) { return logic(this, partition); });
     }
 
-    // Compute duplicate freeness for small tables
-    if (ht.numTuples <= 32) {
-        std::unordered_set<uint32_t> keys;
-        keys.reserve(ht.numTuples);
-        bool hasMult = false;
-        ht.iterateAll([&](uint64_t& key) {
-            if constexpr (config::handleMultiplicity) {
-                assert((&key)[-1] >= 1);
-                if ((&key)[-1] != 1)
-                    hasMult = true;
+    ht.num_keys = unique_keys;
+    ht.is_certainly_duplicate_free = !has_duplicates;
+
+    // duplicates
+    if constexpr (config::handleMultiplicity) {
+        for (const auto& entry : sorted_data) {
+            if (entry.entry->tuple[0] > 1) {
+                ht.is_certainly_duplicate_free = false;
+                break;
             }
-            keys.insert(key);
-        });
-        [[maybe_unused]] bool prev = ht.isCertainlyDuplicateFree;
-        ht.isCertainlyDuplicateFree = !hasMult && keys.size() == ht.numTuples;
-        assert(!prev || ht.isCertainlyDuplicateFree);
+        }
     }
 
+    // bloom filter
+    buildBloomFilter(sorted_data);
+
+    // build tree bottom up
+    buildTreeBottomUp(sorted_data);
+
+    // cleanup local states
     if constexpr (!std::is_trivially_destructible_v<LocalState>) {
-        for (auto* current = localStateRefs.load(); current; current = current->next)
+        for (auto* current = local_state_refs.load(); current; current = current->next) {
             current->~LocalState();
+        }
     }
 }
 //---------------------------------------------------------------------------
-HashtableBuild::HashtableBuild(Hashtable& ht, size_t cardEstimate) : ht(ht) {
-    auto upper = std::min<size_t>(maxPartitionsShift, htPartitionShiftLimit);
-    upper = std::min<size_t>(upper, Scheduler::concurrency() * 2);
-    auto partitionCountShift = std::min<size_t>(std::max(engine::bit_width(cardEstimate / 1024), 2), upper);
-    partitionShift = Hashtable::hashBits - partitionCountShift;
+HashtableBuild::HashtableBuild(Hashtable& ht, size_t card_estimate, size_t bloom_filter_bits)
+    : ht(ht), bloom_filter_bits_(bloom_filter_bits) {
 }
 //---------------------------------------------------------------------------
 }
+//---------------------------------------------------------------------------

@@ -1251,55 +1251,19 @@ std::pair<bool, size_t> run(const std::unordered_map<std::string, std::vector<st
         return {true, 0};
     }
 
+    std::chrono::microseconds total_ignored_compile_time{0};
+    std::cout << "you, fool, are here" << std::endl;
     auto start   = std::chrono::steady_clock::now();
-    auto results = Contest::execute(plan, context);
+    auto results = Contest::execute(plan, context, total_ignored_compile_time);
     auto end     = std::chrono::steady_clock::now();
+    std::chrono::microseconds duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start) - total_ignored_compile_time;
 
     auto result_table = Table::from_columnar(results);
-
-    // write to file "new.log"
-    /* std::ofstream log_file("new.log");
-    log_file << "Results: " << results.num_rows << " rows, " << results.columns.size() << " columns\n";
-    for (size_t row_idx = 0; row_idx < result_table.table().size(); ++row_idx) {
-        for (size_t col_idx = 0; col_idx < result_table.table()[row_idx].size(); ++col_idx) {
-            auto& val = result_table.table()[row_idx][col_idx];
-            log_file << fmt::format("{}", val) << "\t";
-        }
-        log_file << "\n";
-    }
-
-    // write result->Print() to new.log
-    log_file << result->ToString();
-    // Print dimensions
-    fmt::print("Results: {} rows, {} columns\n", results.num_rows, results.columns.size());
-
-    // Print data
-    for (size_t row_idx = 0; row_idx < result_table.table().size(); ++row_idx) {
-        for (size_t col_idx = 0; col_idx < result_table.table()[row_idx].size(); ++col_idx) {
-            auto& val = result_table.table()[row_idx][col_idx];
-            
-            // Print based on the Data variant type
-            std::visit([](auto&& arg) {
-                using T = std::decay_t<decltype(arg)>;
-                if constexpr (std::is_same_v<T, std::monostate>) {
-                    fmt::print("NULL\t");
-                } else if constexpr (std::is_same_v<T, std::string>) {
-                    fmt::print("{}\t", arg);
-                } else {
-                    fmt::print("{}\t", arg);
-                }
-            }, val);
-        }
-        fmt::print("\n");
-    }
- */
-
-
 
     const auto compare_result = compare(*result, results);
     fmt::println("Query {} >> \t\t Runtime: {} ms - Result correct: {}",
         name,
-        std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count(),
+        static_cast<double>(duration.count()) / 1000.0,
         compare_result);
     fflush(stdout);
 
@@ -1309,7 +1273,7 @@ std::pair<bool, size_t> run(const std::unordered_map<std::string, std::vector<st
        fmt::print(stderr, "Query {} >> \t\t Result correct\n", name);
     }
    
-    return {compare_result, std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()};
+    return {compare_result, duration.count()};
 }
 
 int main(int argc, char* argv[]) {

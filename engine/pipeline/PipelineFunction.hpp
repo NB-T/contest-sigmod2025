@@ -10,9 +10,12 @@
 //---------------------------------------------------------------------------
 namespace engine {
 //---------------------------------------------------------------------------
-class BT;
-class BTBuild;
-class BTProbe;
+class Hashtable;
+class HashtableBuild;
+class HashtableProbe;
+using BT = Hashtable;
+using BTBuild = HashtableBuild;
+using BTProbe = HashtableProbe;
 class TableScan;
 class TableTarget;
 //---------------------------------------------------------------------------

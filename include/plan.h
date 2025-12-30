@@ -21,6 +21,7 @@
 #include <attribute.h>
 #include <statement.h>
 // #include <table.h>
+#include <chrono>
 
 // supported attribute data types
 
@@ -336,9 +337,11 @@ struct ColumnInserter<std::string> {
 
 namespace Contest {
 
+static std::chrono::microseconds ignored_compile_time_default;
+
 void* build_context();
 void  destroy_context(void*);
 
-ColumnarTable execute(const Plan& plan, void* context);
+ColumnarTable execute(const Plan& plan, void* context, std::chrono::microseconds& total_ignored_compile_time = ignored_compile_time_default);
 
 } // namespace Contest

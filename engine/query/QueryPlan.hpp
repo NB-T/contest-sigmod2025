@@ -6,6 +6,7 @@
 #include "query/DataSource.hpp"
 #include "query/Restriction.hpp"
 #include "query/RuntimeValue.hpp"
+#include <chrono>
 #include <variant>
 #include <vector>
 #include <attribute.h>
@@ -14,8 +15,6 @@
 namespace engine {
 //---------------------------------------------------------------------------
 class TableTarget;
-class BT;
-class BTBuild;
 class TableScan;
 class RestrictionLogic;
 class QueryGraph;
@@ -63,7 +62,7 @@ class QueryPlan {
     /// Compute samples
     void computeSamples();
     /// Run a pipeline
-    bool runPipeline(const PlanPipeline& pipeline, double cardinalityEstimate);
+    bool runPipeline(const PlanPipeline& pipeline, double cardinalityEstimate, std::chrono::microseconds& total_ignored_compile_time);
     /// Print a query plan
     void printPlan(Input& root) const;
 
@@ -87,7 +86,7 @@ class QueryPlan {
     void setOutput(engine::span<const unsigned> attrs);
 
     /// Run the query
-    ColumnarTable run();
+    ColumnarTable run(std::chrono::microseconds& total_ignored_compile_time);
 };
 //---------------------------------------------------------------------------
 }

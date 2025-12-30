@@ -4,7 +4,10 @@
 //---------------------------------------------------------------------------
 namespace engine {
 //---------------------------------------------------------------------------
-class BT;
+class Hashtable;
+struct HashtableBuild;
+using BT = Hashtable;
+using BTBuild = HashtableBuild;
 //---------------------------------------------------------------------------
 /// A restriction
 struct Restriction {

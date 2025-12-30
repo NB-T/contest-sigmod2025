@@ -167,6 +167,7 @@ set(SIGMODPC_TEAMSRC
         engine/infra/JoinFilter.cpp
         engine/op/CollectorTarget.cpp
         engine/op/BT.cpp
+        engine/op/Hashtable.cpp
         engine/op/OpBase.cpp
         engine/op/ScanBase.cpp
         engine/op/TableScan.cpp

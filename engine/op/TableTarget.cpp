@@ -422,7 +422,7 @@ ColumnarTable TableTarget::prepareAndExtract(const SmallVec<std::variant<unsigne
     for (size_t colIdx = 0; colIdx < columns.size(); colIdx++) {
         auto& column = columns[colIdx];
         if (std::holds_alternative<unsigned>(column)) {
-            const auto idx = get<unsigned>(column);
+            const auto idx = std::get<unsigned>(column);
             auto& col = result.columns.emplace_back(types[idx]);
             size_t totCount = 0;
             for (auto& state : localStates)
@@ -450,7 +450,7 @@ ColumnarTable TableTarget::prepareAndExtract(const SmallVec<std::variant<unsigne
                 copyPage(col.pages, engine::span{reinterpret_cast<DataSource::Page**>(srcCol.data()), srcCol.size()}, 1, false);
             }
         } else {
-            auto value = get<RuntimeValue>(column);
+            auto value = std::get<RuntimeValue>(column);
             auto& col = result.columns.emplace_back(value.type);
             auto vv = value.value;
 

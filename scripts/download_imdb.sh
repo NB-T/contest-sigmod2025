@@ -1,8 +1,12 @@
 #!/usr/bin/env bash
 
+ROOT_DIR=$(cd "$(dirname "$0")/.." && pwd)
+
 url="https://event.cwi.nl/da/job/imdb.tgz"
-output_file="../imdb.tgz"
-target_dir="../imdb"
+output_file="${ROOT_DIR}/imdb.tgz"
+target_dir="${ROOT_DIR}/imdb"
+
+echo "Downloading IMDB dataset to ${output_file}"
 
 # Detect and select downloader
 if command -v wget &> /dev/null; then
