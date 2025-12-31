@@ -19,6 +19,7 @@
 #pragma once
 
 #include <attribute.h>
+#include <chrono>
 #include <statement.h>
 // #include <table.h>
 
@@ -336,9 +337,11 @@ struct ColumnInserter<std::string> {
 
 namespace Contest {
 
+static std::chrono::microseconds ignored_compile_time_default = std::chrono::microseconds{0};
+
 void* build_context();
 void  destroy_context(void*);
 
-ColumnarTable execute(const Plan& plan, void* context);
+ColumnarTable execute(const Plan& plan, void* context, std::chrono::microseconds& total_ignored_compile_time = ignored_compile_time_default);
 
 } // namespace Contest

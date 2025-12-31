@@ -192,23 +192,26 @@ static std::tuple<bool, size_t, std::string_view> run(engine::DataSource& db, en
 
     auto rpts = repeats.get();
 
+    std::chrono::microseconds total_ignored_compile_time{0};
+
     auto start = std::chrono::steady_clock::now();
     ColumnarTable results;
     {
         for (size_t i = 0; i < rpts; i++) {
             results.columns = std::vector<Column>{};
 
-            results = engine::execute(query.planMaker->makePlan(), context);
+            results = engine::execute(query.planMaker->makePlan(), context, total_ignored_compile_time);
         }
     }
     auto end = std::chrono::steady_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() - total_ignored_compile_time.count();
 
     fmt::print("\rChecking query: {}         ", query.name);
     fflush(stdout);
 
     auto compare_result = checkResult.get() && compare(db.relations[query.resultRelation], results);
 
-    return {compare_result, std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() / rpts, query.name};
+    return {compare_result, duration / rpts, query.name};
 }
 //---------------------------------------------------------------------------
 int main(int argc, char* argv[]) {

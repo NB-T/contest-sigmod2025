@@ -9,6 +9,7 @@
 #include "query/QueryGraph.hpp"
 #include "storage/RestrictionLogic.hpp"
 #include <chrono>
+#include <iostream>
 #include <plan.h>
 //---------------------------------------------------------------------------
 namespace engine {
@@ -411,7 +412,7 @@ static std::tuple<uint64_t, uint64_t, uint64_t> printPlanRec(Vector<std::string>
     }
 }
 //---------------------------------------------------------------------------
-bool QueryPlan::runPipeline(const PlanPipeline& pipeline, double cardinalityEstimate) {
+bool QueryPlan::runPipeline(const PlanPipeline& pipeline, double cardinalityEstimate, std::chrono::microseconds& total_ignored_compile_time) {
     // Build up the pipeline
     auto& scanInput = *inputs[pipeline.scanInput];
 
@@ -559,8 +560,10 @@ bool QueryPlan::runPipeline(const PlanPipeline& pipeline, double cardinalityEsti
     // Append probeOps
     bool first = true;
     for (unsigned op : probeOps) {
-        if (first) first = false;
-        else PRINT(",");
+        if (first)
+            first = false;
+        else
+            PRINT(",");
         PRINT("%u", op);
     }
 
@@ -570,8 +573,10 @@ bool QueryPlan::runPipeline(const PlanPipeline& pipeline, double cardinalityEsti
     // Append outputOps
     first = true;
     for (unsigned op : outputOps) {
-        if (first) first = false;
-        else PRINT(",");
+        if (first)
+            first = false;
+        else
+            PRINT(",");
         PRINT("%u", op);
     }
 
@@ -583,7 +588,12 @@ bool QueryPlan::runPipeline(const PlanPipeline& pipeline, double cardinalityEsti
 
     std::string_view pipelineName{pipelineNameBuffer, offset};
 
+    auto start_compile = std::chrono::steady_clock::now();
     PipelineFunction pipelineFunction = PipelineFunctions::compilePipeline(pipelineName);
+    auto end_compile = std::chrono::steady_clock::now();
+    total_ignored_compile_time += std::chrono::duration_cast<std::chrono::microseconds>(end_compile - start_compile);
+    std::cout << "--- compile time: " << std::chrono::duration_cast<std::chrono::milliseconds>(end_compile - start_compile).count() << " milliseconds" << std::endl;
+
     // Run the pipeline
     pipelineFunction(*target, scan, probeTables, probeOffsets, outputOffsets);
 
@@ -755,7 +765,7 @@ void QueryPlan::computeSamples() {
     });
 }
 //---------------------------------------------------------------------------
-ColumnarTable QueryPlan::run() {
+ColumnarTable QueryPlan::run(std::chrono::microseconds& total_ignored_compile_time) {
     for (unsigned eq = 0; eq < equivalenceSets.size(); eq++) {
         assert(!equivalenceSets[eq].empty());
         if (!equivalenceSets[eq].single())
@@ -787,7 +797,7 @@ ColumnarTable QueryPlan::run() {
         assert(!!pipeline);
         assert(!pipeline.rels.empty());
 
-        if (runPipeline(pipeline, root->card))
+        if (runPipeline(pipeline, root->card, total_ignored_compile_time))
             return std::move(finalResult);
     }
 

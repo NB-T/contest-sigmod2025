@@ -1251,15 +1251,18 @@ std::pair<bool, size_t> run(const std::unordered_map<std::string, std::vector<st
         return {true, 0};
     }
 
+    std::chrono::microseconds total_ignored_compile_time{0};
+    std::cout << "you, fool, are here" << std::endl;
     auto start   = std::chrono::steady_clock::now();
-    auto results = Contest::execute(plan, context);
+    auto results = Contest::execute(plan, context, total_ignored_compile_time);
     auto end     = std::chrono::steady_clock::now();
+    std::chrono::microseconds duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start) - total_ignored_compile_time;
 
 
     const auto compare_result = compare(*result, results);
     fmt::println("Query {} >> \t\t Runtime: {} ms - Result correct: {}",
         name,
-        std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count(),
+        static_cast<double>(duration.count()) / 1000.0,
         compare_result);
     fflush(stdout);
 
@@ -1269,7 +1272,7 @@ std::pair<bool, size_t> run(const std::unordered_map<std::string, std::vector<st
        fmt::print(stderr, "Query {} >> \t\t Result correct\n", name);
     }
    
-    return {compare_result, std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()};
+    return {compare_result, duration.count()};
 }
 
 int main(int argc, char* argv[]) {

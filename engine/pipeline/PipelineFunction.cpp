@@ -97,7 +97,7 @@ R"(>(target, scan, probes, keyOffsets, outputAttributeOffsets);
     cmd += " -o ";
     cmd += oPath;
 
-    std::cerr << cmd << std::endl;
+    // std::cerr << cmd << std::endl;
     int rc = std::system(cmd.c_str());
     if (rc != 0)
         throw std::runtime_error("Compilation failed with command " + cmd);
@@ -108,7 +108,7 @@ R"(>(target, scan, probes, keyOffsets, outputAttributeOffsets);
     cmd += " -o ";
     cmd += soPath;
 
-    std::cerr << cmd << std::endl;
+    // std::cerr << cmd << std::endl;
     rc = std::system(cmd.c_str());
     if (rc != 0)
         throw std::runtime_error("Linking failed with command " + cmd);
