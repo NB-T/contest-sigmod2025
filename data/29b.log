@@ -1,0 +1,65 @@
+you, fool, are here
+cooking
+--- compile time: 139 milliseconds
+--- compile time: 131 milliseconds
+--- compile time: 142 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 142 milliseconds
+--- compile time: 140 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1662 milliseconds
+--- compile time: 131 milliseconds
+Query 29b >> 		 Runtime: 7.258 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 142 milliseconds
+--- compile time: 128 milliseconds
+--- compile time: 124 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 133 milliseconds
+--- compile time: 142 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 123 milliseconds
+--- compile time: 139 milliseconds
+Query 29b >> 		 Runtime: 6.87 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 128 milliseconds
+--- compile time: 126 milliseconds
+--- compile time: 142 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 137 milliseconds
+--- compile time: 140 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 128 milliseconds
+--- compile time: 144 milliseconds
+Query 29b >> 		 Runtime: 6.533 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 131 milliseconds
+--- compile time: 139 milliseconds
+--- compile time: 141 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 144 milliseconds
+--- compile time: 142 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 131 milliseconds
+--- compile time: 133 milliseconds
+Query 29b >> 		 Runtime: 6.212 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 137 milliseconds
+--- compile time: 124 milliseconds
+--- compile time: 128 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 141 milliseconds
+--- compile time: 133 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 140 milliseconds
+--- compile time: 135 milliseconds
+Query 29b >> 		 Runtime: 6.975 ms - Result correct: true

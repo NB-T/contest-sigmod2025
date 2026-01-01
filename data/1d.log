@@ -1,0 +1,30 @@
+you, fool, are here
+cooking
+--- compile time: 138 milliseconds
+--- compile time: 137 milliseconds
+--- compile time: 142 milliseconds
+Query 1d >> 		 Runtime: 2.47 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 141 milliseconds
+--- compile time: 145 milliseconds
+--- compile time: 140 milliseconds
+Query 1d >> 		 Runtime: 3.403 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 120 milliseconds
+--- compile time: 134 milliseconds
+--- compile time: 115 milliseconds
+Query 1d >> 		 Runtime: 3.5 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 111 milliseconds
+--- compile time: 145 milliseconds
+--- compile time: 118 milliseconds
+Query 1d >> 		 Runtime: 4.631 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 140 milliseconds
+--- compile time: 128 milliseconds
+--- compile time: 143 milliseconds
+Query 1d >> 		 Runtime: 4.849 ms - Result correct: true

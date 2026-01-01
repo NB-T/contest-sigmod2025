@@ -1,0 +1,20 @@
+you, fool, are here
+cooking
+--- compile time: 135 milliseconds
+Query 5b >> 		 Runtime: 0.273 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 126 milliseconds
+Query 5b >> 		 Runtime: 0.216 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 127 milliseconds
+Query 5b >> 		 Runtime: 0.224 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 108 milliseconds
+Query 5b >> 		 Runtime: 0.233 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 116 milliseconds
+Query 5b >> 		 Runtime: 0.194 ms - Result correct: true

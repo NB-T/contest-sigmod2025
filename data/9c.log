@@ -1,0 +1,50 @@
+you, fool, are here
+cooking
+--- compile time: 133 milliseconds
+--- compile time: 130 milliseconds
+--- compile time: 127 milliseconds
+--- compile time: 123 milliseconds
+--- compile time: 119 milliseconds
+--- compile time: 126 milliseconds
+--- compile time: 116 milliseconds
+Query 9c >> 		 Runtime: 60.044 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 131 milliseconds
+--- compile time: 112 milliseconds
+--- compile time: 101 milliseconds
+--- compile time: 129 milliseconds
+--- compile time: 117 milliseconds
+--- compile time: 124 milliseconds
+--- compile time: 118 milliseconds
+Query 9c >> 		 Runtime: 50.076 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 123 milliseconds
+--- compile time: 111 milliseconds
+--- compile time: 127 milliseconds
+--- compile time: 125 milliseconds
+--- compile time: 124 milliseconds
+--- compile time: 123 milliseconds
+--- compile time: 113 milliseconds
+Query 9c >> 		 Runtime: 51.539 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 132 milliseconds
+--- compile time: 116 milliseconds
+--- compile time: 120 milliseconds
+--- compile time: 121 milliseconds
+--- compile time: 103 milliseconds
+--- compile time: 114 milliseconds
+--- compile time: 137 milliseconds
+Query 9c >> 		 Runtime: 47.324 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 123 milliseconds
+--- compile time: 109 milliseconds
+--- compile time: 123 milliseconds
+--- compile time: 115 milliseconds
+--- compile time: 120 milliseconds
+--- compile time: 110 milliseconds
+--- compile time: 120 milliseconds
+Query 9c >> 		 Runtime: 57.501 ms - Result correct: true

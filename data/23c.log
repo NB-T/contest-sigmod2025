@@ -1,0 +1,60 @@
+you, fool, are here
+cooking
+--- compile time: 136 milliseconds
+--- compile time: 124 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 125 milliseconds
+--- compile time: 133 milliseconds
+--- compile time: 1616 milliseconds
+--- compile time: 120 milliseconds
+--- compile time: 136 milliseconds
+--- compile time: 139 milliseconds
+Query 23c >> 		 Runtime: 5.279 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 126 milliseconds
+--- compile time: 114 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 120 milliseconds
+--- compile time: 137 milliseconds
+--- compile time: 133 milliseconds
+--- compile time: 135 milliseconds
+--- compile time: 136 milliseconds
+--- compile time: 136 milliseconds
+Query 23c >> 		 Runtime: 6.319 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 135 milliseconds
+--- compile time: 119 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 136 milliseconds
+--- compile time: 125 milliseconds
+--- compile time: 124 milliseconds
+--- compile time: 137 milliseconds
+--- compile time: 135 milliseconds
+--- compile time: 108 milliseconds
+Query 23c >> 		 Runtime: 5.817 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 121 milliseconds
+--- compile time: 117 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 124 milliseconds
+--- compile time: 137 milliseconds
+--- compile time: 134 milliseconds
+--- compile time: 128 milliseconds
+--- compile time: 137 milliseconds
+--- compile time: 116 milliseconds
+Query 23c >> 		 Runtime: 6.176 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 131 milliseconds
+--- compile time: 118 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 129 milliseconds
+--- compile time: 124 milliseconds
+--- compile time: 141 milliseconds
+--- compile time: 146 milliseconds
+--- compile time: 139 milliseconds
+--- compile time: 138 milliseconds
+Query 23c >> 		 Runtime: 5.627 ms - Result correct: true

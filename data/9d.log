@@ -1,0 +1,50 @@
+you, fool, are here
+cooking
+--- compile time: 138 milliseconds
+--- compile time: 120 milliseconds
+--- compile time: 128 milliseconds
+--- compile time: 108 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 100 milliseconds
+--- compile time: 108 milliseconds
+Query 9d >> 		 Runtime: 91.093 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 128 milliseconds
+--- compile time: 105 milliseconds
+--- compile time: 127 milliseconds
+--- compile time: 122 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 104 milliseconds
+--- compile time: 113 milliseconds
+Query 9d >> 		 Runtime: 90.638 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 131 milliseconds
+--- compile time: 130 milliseconds
+--- compile time: 116 milliseconds
+--- compile time: 117 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 109 milliseconds
+--- compile time: 118 milliseconds
+Query 9d >> 		 Runtime: 92.179 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 136 milliseconds
+--- compile time: 136 milliseconds
+--- compile time: 126 milliseconds
+--- compile time: 103 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 102 milliseconds
+--- compile time: 114 milliseconds
+Query 9d >> 		 Runtime: 88.993 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 117 milliseconds
+--- compile time: 117 milliseconds
+--- compile time: 115 milliseconds
+--- compile time: 114 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 100 milliseconds
+--- compile time: 111 milliseconds
+Query 9d >> 		 Runtime: 95.485 ms - Result correct: true

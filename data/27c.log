@@ -1,0 +1,60 @@
+you, fool, are here
+cooking
+--- compile time: 122 milliseconds
+--- compile time: 120 milliseconds
+--- compile time: 120 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 118 milliseconds
+--- compile time: 118 milliseconds
+--- compile time: 118 milliseconds
+Query 27c >> 		 Runtime: 18.605 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 142 milliseconds
+--- compile time: 120 milliseconds
+--- compile time: 137 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 103 milliseconds
+--- compile time: 114 milliseconds
+--- compile time: 138 milliseconds
+Query 27c >> 		 Runtime: 17.749 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 129 milliseconds
+--- compile time: 132 milliseconds
+--- compile time: 140 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 126 milliseconds
+--- compile time: 136 milliseconds
+--- compile time: 130 milliseconds
+Query 27c >> 		 Runtime: 22.823 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 125 milliseconds
+--- compile time: 123 milliseconds
+--- compile time: 109 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 122 milliseconds
+--- compile time: 123 milliseconds
+--- compile time: 128 milliseconds
+Query 27c >> 		 Runtime: 19.826 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 138 milliseconds
+--- compile time: 131 milliseconds
+--- compile time: 123 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 110 milliseconds
+--- compile time: 134 milliseconds
+--- compile time: 131 milliseconds
+Query 27c >> 		 Runtime: 15.887 ms - Result correct: true
