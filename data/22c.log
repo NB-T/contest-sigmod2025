@@ -1,0 +1,60 @@
+you, fool, are here
+cooking
+--- compile time: 1077 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1097 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1245 milliseconds
+--- compile time: 1332 milliseconds
+--- compile time: 1307 milliseconds
+Query 22c >> 		 Runtime: 7.148 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1099 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1059 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1281 milliseconds
+--- compile time: 1342 milliseconds
+--- compile time: 1289 milliseconds
+Query 22c >> 		 Runtime: 7.165 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1096 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1096 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1269 milliseconds
+--- compile time: 1273 milliseconds
+--- compile time: 1304 milliseconds
+Query 22c >> 		 Runtime: 7.788 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1098 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1090 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1196 milliseconds
+--- compile time: 1305 milliseconds
+--- compile time: 1305 milliseconds
+Query 22c >> 		 Runtime: 6.614 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1069 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1075 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1216 milliseconds
+--- compile time: 1332 milliseconds
+--- compile time: 1286 milliseconds
+Query 22c >> 		 Runtime: 6.714 ms - Result correct: true

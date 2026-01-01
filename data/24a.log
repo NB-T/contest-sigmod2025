@@ -1,0 +1,65 @@
+you, fool, are here
+cooking
+--- compile time: 1092 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1260 milliseconds
+--- compile time: 1323 milliseconds
+--- compile time: 1195 milliseconds
+--- compile time: 1330 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1240 milliseconds
+--- compile time: 1227 milliseconds
+Query 24a >> 		 Runtime: 5.766 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1070 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1193 milliseconds
+--- compile time: 1207 milliseconds
+--- compile time: 1083 milliseconds
+--- compile time: 1336 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1233 milliseconds
+--- compile time: 1243 milliseconds
+Query 24a >> 		 Runtime: 5.731 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1088 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1249 milliseconds
+--- compile time: 1258 milliseconds
+--- compile time: 1210 milliseconds
+--- compile time: 1182 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1264 milliseconds
+--- compile time: 1192 milliseconds
+Query 24a >> 		 Runtime: 5.767 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1068 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1202 milliseconds
+--- compile time: 1236 milliseconds
+--- compile time: 1183 milliseconds
+--- compile time: 1325 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1293 milliseconds
+--- compile time: 1238 milliseconds
+Query 24a >> 		 Runtime: 5.698 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1076 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1233 milliseconds
+--- compile time: 1246 milliseconds
+--- compile time: 1182 milliseconds
+--- compile time: 1325 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1317 milliseconds
+--- compile time: 1240 milliseconds
+Query 24a >> 		 Runtime: 5.665 ms - Result correct: true

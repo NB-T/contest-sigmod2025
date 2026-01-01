@@ -1,0 +1,60 @@
+you, fool, are here
+cooking
+--- compile time: 1038 milliseconds
+--- compile time: 1088 milliseconds
+--- compile time: 1202 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1288 milliseconds
+--- compile time: 1272 milliseconds
+--- compile time: 1185 milliseconds
+Query 27c >> 		 Runtime: 3.952 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1203 milliseconds
+--- compile time: 1179 milliseconds
+--- compile time: 1246 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1329 milliseconds
+--- compile time: 1248 milliseconds
+--- compile time: 1266 milliseconds
+Query 27c >> 		 Runtime: 4.061 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1167 milliseconds
+--- compile time: 1168 milliseconds
+--- compile time: 1157 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1314 milliseconds
+--- compile time: 1255 milliseconds
+--- compile time: 1245 milliseconds
+Query 27c >> 		 Runtime: 3.884 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1104 milliseconds
+--- compile time: 1206 milliseconds
+--- compile time: 1233 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1337 milliseconds
+--- compile time: 1254 milliseconds
+--- compile time: 1232 milliseconds
+Query 27c >> 		 Runtime: 4.067 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1165 milliseconds
+--- compile time: 1175 milliseconds
+--- compile time: 1249 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1316 milliseconds
+--- compile time: 1253 milliseconds
+--- compile time: 1235 milliseconds
+Query 27c >> 		 Runtime: 4.078 ms - Result correct: true

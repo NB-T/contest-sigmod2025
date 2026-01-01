@@ -1,0 +1,65 @@
+you, fool, are here
+cooking
+--- compile time: 1110 milliseconds
+--- compile time: 1079 milliseconds
+--- compile time: 1312 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1255 milliseconds
+--- compile time: 1346 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1323 milliseconds
+--- compile time: 1238 milliseconds
+Query 29b >> 		 Runtime: 5.32 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1150 milliseconds
+--- compile time: 1071 milliseconds
+--- compile time: 1305 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1114 milliseconds
+--- compile time: 1171 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1237 milliseconds
+--- compile time: 1178 milliseconds
+Query 29b >> 		 Runtime: 3.604 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1164 milliseconds
+--- compile time: 1095 milliseconds
+--- compile time: 1273 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1275 milliseconds
+--- compile time: 1344 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1286 milliseconds
+--- compile time: 1255 milliseconds
+Query 29b >> 		 Runtime: 4.356 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1188 milliseconds
+--- compile time: 1161 milliseconds
+--- compile time: 1326 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1256 milliseconds
+--- compile time: 1342 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1326 milliseconds
+--- compile time: 1278 milliseconds
+Query 29b >> 		 Runtime: 5.318 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1069 milliseconds
+--- compile time: 1093 milliseconds
+--- compile time: 1329 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1137 milliseconds
+--- compile time: 1231 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1311 milliseconds
+--- compile time: 1193 milliseconds
+Query 29b >> 		 Runtime: 5.28 ms - Result correct: true

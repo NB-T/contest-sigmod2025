@@ -1,0 +1,50 @@
+you, fool, are here
+cooking
+--- compile time: 1097 milliseconds
+--- compile time: 1184 milliseconds
+--- compile time: 1261 milliseconds
+--- compile time: 1220 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1175 milliseconds
+--- compile time: 1113 milliseconds
+Query 16c >> 		 Runtime: 21.557 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1168 milliseconds
+--- compile time: 1189 milliseconds
+--- compile time: 1254 milliseconds
+--- compile time: 1207 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1208 milliseconds
+--- compile time: 1158 milliseconds
+Query 16c >> 		 Runtime: 22.267 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1088 milliseconds
+--- compile time: 1205 milliseconds
+--- compile time: 1253 milliseconds
+--- compile time: 1212 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1202 milliseconds
+--- compile time: 1135 milliseconds
+Query 16c >> 		 Runtime: 20.855 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1078 milliseconds
+--- compile time: 1181 milliseconds
+--- compile time: 1169 milliseconds
+--- compile time: 1224 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1211 milliseconds
+--- compile time: 1121 milliseconds
+Query 16c >> 		 Runtime: 21.914 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1062 milliseconds
+--- compile time: 1112 milliseconds
+--- compile time: 1247 milliseconds
+--- compile time: 1219 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1155 milliseconds
+--- compile time: 1135 milliseconds
+Query 16c >> 		 Runtime: 20.293 ms - Result correct: true

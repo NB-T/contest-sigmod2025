@@ -1,0 +1,35 @@
+you, fool, are here
+cooking
+--- compile time: 1100 milliseconds
+--- compile time: 1196 milliseconds
+--- compile time: 1166 milliseconds
+--- compile time: 1214 milliseconds
+Query 2d >> 		 Runtime: 7.656 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1116 milliseconds
+--- compile time: 1206 milliseconds
+--- compile time: 1174 milliseconds
+--- compile time: 1215 milliseconds
+Query 2d >> 		 Runtime: 7.189 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1187 milliseconds
+--- compile time: 1178 milliseconds
+--- compile time: 1249 milliseconds
+--- compile time: 1208 milliseconds
+Query 2d >> 		 Runtime: 7.066 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1095 milliseconds
+--- compile time: 1199 milliseconds
+--- compile time: 1160 milliseconds
+--- compile time: 1205 milliseconds
+Query 2d >> 		 Runtime: 7.149 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1083 milliseconds
+--- compile time: 1186 milliseconds
+--- compile time: 1180 milliseconds
+--- compile time: 1204 milliseconds
+Query 2d >> 		 Runtime: 7.195 ms - Result correct: true

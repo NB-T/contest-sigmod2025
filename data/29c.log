@@ -1,0 +1,70 @@
+you, fool, are here
+cooking
+--- compile time: 1108 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1205 milliseconds
+--- compile time: 1278 milliseconds
+--- compile time: 1150 milliseconds
+--- compile time: 1324 milliseconds
+--- compile time: 1163 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1285 milliseconds
+--- compile time: 1324 milliseconds
+--- compile time: 1255 milliseconds
+Query 29c >> 		 Runtime: 10.153 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1179 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1137 milliseconds
+--- compile time: 1331 milliseconds
+--- compile time: 1245 milliseconds
+--- compile time: 1313 milliseconds
+--- compile time: 1163 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1306 milliseconds
+--- compile time: 1292 milliseconds
+--- compile time: 1170 milliseconds
+Query 29c >> 		 Runtime: 10.428 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1158 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1115 milliseconds
+--- compile time: 1294 milliseconds
+--- compile time: 1231 milliseconds
+--- compile time: 1263 milliseconds
+--- compile time: 1185 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1224 milliseconds
+--- compile time: 1325 milliseconds
+--- compile time: 1246 milliseconds
+Query 29c >> 		 Runtime: 12.017 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1080 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1182 milliseconds
+--- compile time: 1326 milliseconds
+--- compile time: 1200 milliseconds
+--- compile time: 1338 milliseconds
+--- compile time: 1193 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1331 milliseconds
+--- compile time: 1337 milliseconds
+--- compile time: 1255 milliseconds
+Query 29c >> 		 Runtime: 11.204 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1183 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1170 milliseconds
+--- compile time: 1301 milliseconds
+--- compile time: 1237 milliseconds
+--- compile time: 1308 milliseconds
+--- compile time: 1139 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1205 milliseconds
+--- compile time: 1218 milliseconds
+--- compile time: 1258 milliseconds
+Query 29c >> 		 Runtime: 11.654 ms - Result correct: true

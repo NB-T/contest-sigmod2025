@@ -1,0 +1,45 @@
+you, fool, are here
+cooking
+--- compile time: 1077 milliseconds
+--- compile time: 1164 milliseconds
+--- compile time: 1240 milliseconds
+--- compile time: 1197 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1198 milliseconds
+Query 17f >> 		 Runtime: 27.887 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1107 milliseconds
+--- compile time: 1194 milliseconds
+--- compile time: 1143 milliseconds
+--- compile time: 1205 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1189 milliseconds
+Query 17f >> 		 Runtime: 28.896 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1103 milliseconds
+--- compile time: 1181 milliseconds
+--- compile time: 1145 milliseconds
+--- compile time: 1223 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1231 milliseconds
+Query 17f >> 		 Runtime: 28.751 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1117 milliseconds
+--- compile time: 1115 milliseconds
+--- compile time: 1252 milliseconds
+--- compile time: 1200 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1213 milliseconds
+Query 17f >> 		 Runtime: 28.406 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1076 milliseconds
+--- compile time: 1181 milliseconds
+--- compile time: 1140 milliseconds
+--- compile time: 1152 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1134 milliseconds
+Query 17f >> 		 Runtime: 26.796 ms - Result correct: true

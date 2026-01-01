@@ -1,0 +1,50 @@
+you, fool, are here
+cooking
+--- compile time: 1076 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1116 milliseconds
+--- compile time: 1169 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1313 milliseconds
+--- compile time: 1314 milliseconds
+Query 7c >> 		 Runtime: 25.26 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1095 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1132 milliseconds
+--- compile time: 1087 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1235 milliseconds
+--- compile time: 1198 milliseconds
+Query 7c >> 		 Runtime: 24.286 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1088 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1151 milliseconds
+--- compile time: 1116 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1332 milliseconds
+--- compile time: 1305 milliseconds
+Query 7c >> 		 Runtime: 24.479 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1051 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1150 milliseconds
+--- compile time: 1069 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1337 milliseconds
+--- compile time: 1204 milliseconds
+Query 7c >> 		 Runtime: 24.165 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1092 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1154 milliseconds
+--- compile time: 1106 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1335 milliseconds
+--- compile time: 1189 milliseconds
+Query 7c >> 		 Runtime: 23.963 ms - Result correct: true

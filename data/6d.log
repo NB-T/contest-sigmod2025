@@ -1,0 +1,40 @@
+you, fool, are here
+cooking
+--- compile time: 1062 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1132 milliseconds
+--- compile time: 1149 milliseconds
+--- compile time: 1198 milliseconds
+Query 6d >> 		 Runtime: 8.096 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1075 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1091 milliseconds
+--- compile time: 1244 milliseconds
+--- compile time: 1225 milliseconds
+Query 6d >> 		 Runtime: 7.926 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1059 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1133 milliseconds
+--- compile time: 1152 milliseconds
+--- compile time: 1204 milliseconds
+Query 6d >> 		 Runtime: 7.822 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1062 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1106 milliseconds
+--- compile time: 1159 milliseconds
+--- compile time: 1221 milliseconds
+Query 6d >> 		 Runtime: 7.873 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1073 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1084 milliseconds
+--- compile time: 1137 milliseconds
+--- compile time: 1217 milliseconds
+Query 6d >> 		 Runtime: 8.147 ms - Result correct: true

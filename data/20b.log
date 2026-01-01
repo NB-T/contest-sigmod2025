@@ -1,0 +1,55 @@
+you, fool, are here
+cooking
+--- compile time: 1086 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1302 milliseconds
+--- compile time: 1150 milliseconds
+Query 20b >> 		 Runtime: 8.946 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1178 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1285 milliseconds
+--- compile time: 1244 milliseconds
+Query 20b >> 		 Runtime: 8.976 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1075 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1297 milliseconds
+--- compile time: 1210 milliseconds
+Query 20b >> 		 Runtime: 8.806 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1095 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1308 milliseconds
+--- compile time: 1221 milliseconds
+Query 20b >> 		 Runtime: 9.041 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1062 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1311 milliseconds
+--- compile time: 1226 milliseconds
+Query 20b >> 		 Runtime: 8.582 ms - Result correct: true

@@ -1,0 +1,75 @@
+you, fool, are here
+cooking
+--- compile time: 1068 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1097 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1310 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1321 milliseconds
+--- compile time: 1229 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1241 milliseconds
+--- compile time: 1239 milliseconds
+Query 33c >> 		 Runtime: 6.446 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1088 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1090 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1328 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1293 milliseconds
+--- compile time: 1247 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1330 milliseconds
+--- compile time: 1181 milliseconds
+Query 33c >> 		 Runtime: 6.992 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1086 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1175 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1339 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1235 milliseconds
+--- compile time: 1249 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1288 milliseconds
+--- compile time: 1230 milliseconds
+Query 33c >> 		 Runtime: 7.193 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1089 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1095 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1311 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1314 milliseconds
+--- compile time: 1265 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1319 milliseconds
+--- compile time: 1162 milliseconds
+Query 33c >> 		 Runtime: 6.784 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1100 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1103 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1357 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1234 milliseconds
+--- compile time: 1274 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1185 milliseconds
+--- compile time: 1085 milliseconds
+Query 33c >> 		 Runtime: 7.13 ms - Result correct: true

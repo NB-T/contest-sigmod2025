@@ -1,0 +1,60 @@
+you, fool, are here
+cooking
+--- compile time: 1173 milliseconds
+--- compile time: 1121 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1220 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1230 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1193 milliseconds
+--- compile time: 1245 milliseconds
+Query 24b >> 		 Runtime: 3.729 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1096 milliseconds
+--- compile time: 1191 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1310 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1328 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1158 milliseconds
+--- compile time: 1158 milliseconds
+Query 24b >> 		 Runtime: 4.3 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1085 milliseconds
+--- compile time: 1085 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1220 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1205 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1224 milliseconds
+--- compile time: 1253 milliseconds
+Query 24b >> 		 Runtime: 4.067 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1178 milliseconds
+--- compile time: 1104 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1345 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1325 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1268 milliseconds
+--- compile time: 1270 milliseconds
+Query 24b >> 		 Runtime: 4.193 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1095 milliseconds
+--- compile time: 1103 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1334 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1328 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1240 milliseconds
+--- compile time: 1172 milliseconds
+Query 24b >> 		 Runtime: 4.475 ms - Result correct: true

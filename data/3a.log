@@ -1,0 +1,35 @@
+you, fool, are here
+cooking
+--- compile time: 1111 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1234 milliseconds
+Query 3a >> 		 Runtime: 3.025 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1095 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1210 milliseconds
+Query 3a >> 		 Runtime: 2.804 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1084 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1217 milliseconds
+Query 3a >> 		 Runtime: 2.683 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1116 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1216 milliseconds
+Query 3a >> 		 Runtime: 2.596 ms - Result correct: true
+you, fool, are here
+cooking
+--- compile time: 1077 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 0 milliseconds
+--- compile time: 1215 milliseconds
+Query 3a >> 		 Runtime: 2.489 ms - Result correct: true
