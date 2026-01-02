@@ -592,7 +592,7 @@ bool QueryPlan::runPipeline(const PlanPipeline& pipeline, double cardinalityEsti
     PipelineFunction pipelineFunction = PipelineFunctions::compilePipeline(pipelineName);
     auto end_compile = std::chrono::steady_clock::now();
     total_ignored_compile_time += std::chrono::duration_cast<std::chrono::microseconds>(end_compile - start_compile);
-    std::cout << "--- compile time: " << std::chrono::duration_cast<std::chrono::milliseconds>(end_compile - start_compile).count() << " milliseconds" << std::endl;
+    // std::cout << "--- compile time: " << std::chrono::duration_cast<std::chrono::milliseconds>(end_compile - start_compile).count() << " milliseconds" << std::endl;
 
     // Run the pipeline
     pipelineFunction(*target, scan, probeTables, probeOffsets, outputOffsets);

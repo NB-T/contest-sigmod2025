@@ -29,7 +29,7 @@ ColumnarTable execute(QueryPlan plan, [[maybe_unused]] void* context, std::chron
 namespace Contest {
 //---------------------------------------------------------------------------
 ColumnarTable execute(const Plan& plan, [[maybe_unused]] void* context, std::chrono::microseconds& total_ignored_compile_time) {
-    std::cout << "cooking" << std::endl;
+    // std::cout << "cooking" << std::endl;
 
     engine::Scheduler::start_query();
     engine::pagememory::start_query();

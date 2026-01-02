@@ -1252,7 +1252,7 @@ std::pair<bool, size_t> run(const std::unordered_map<std::string, std::vector<st
     }
 
     std::chrono::microseconds total_ignored_compile_time{0};
-    std::cout << "you, fool, are here" << std::endl;
+    // std::cout << "you, fool, are here" << std::endl;
     auto start   = std::chrono::steady_clock::now();
     auto results = Contest::execute(plan, context, total_ignored_compile_time);
     auto end     = std::chrono::steady_clock::now();
