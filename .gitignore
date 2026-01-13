@@ -30,3 +30,4 @@ scaling_bench.pdf
 /schema-domain.json.gz
 /dump
 *.png
+callgrind.out.*

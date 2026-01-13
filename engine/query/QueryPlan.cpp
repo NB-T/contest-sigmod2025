@@ -614,6 +614,18 @@ bool QueryPlan::runPipeline(const PlanPipeline& pipeline, double cardinalityEsti
     std::cout << "====================" << std::endl;
     */
 
+   std::cerr << "[ Probe side (scan): " << scan.getTableName()
+             << " | rows=" << scanInput.getUnfilteredRows()
+             << " | estimated_card=" << scanInput.cardinality << " ]" << std::endl;
+   for (size_t i = 0; i < probeTables.size(); ++i) {
+      auto* bt = probeTables[i];
+      std::cerr << "[ Build side [" << i << "]: " << bt->pretty
+                << " | tuples=" << bt->getNumTuples()
+                << " | unique_keys=" << bt->getNumKeysEstimate()
+                << " | leaf_pages=" << bt->htSize() << " ]" << std::endl;
+   }
+   std::cerr << "=====================" << std::endl;
+
    // Run the pipeline
    pipelineFunction(*target, scan, probeTables, probeOffsets, outputOffsets);
 
