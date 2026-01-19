@@ -2,6 +2,8 @@
 #include "infra/PageMemory.hpp"
 #include "infra/QueryMemory.hpp"
 #include "infra/Random.hpp"
+#include "op/Hashtable.hpp"
+#include "tools/Setting.hpp"
 #include <algorithm>
 #include <atomic>
 #include <cassert>
@@ -12,6 +14,8 @@
 #if __has_include(<hardware.h>)
 #include <hardware.h>
 #endif
+//---------------------------------------------------------------------------
+static engine::Setting bloomStats("BLOOM_STATS", engine::setting::Bool(false));
 //---------------------------------------------------------------------------
 namespace engine {
 //---------------------------------------------------------------------------
@@ -336,11 +340,21 @@ void Scheduler::start_query() {
     // We observed doMaintenance == false and maintenanceDone == true at the same time
     // as only we can modify doMaintenance.
     // Even if the worker was right before maintenanceDone.store(false), it will notice that doMaintenance is false and abort
+
+    // reset bloom filter stats for new query
+    if (bloomStats.get()) {
+        HashtableProbe::resetBloomStats();
+    }
 }
 //---------------------------------------------------------------------------
 void Scheduler::end_query() {
     assert(schedulerImpl->maintenanceDone.load());
     assert(!schedulerImpl->doMaintenance.load());
+
+    // print bloom filter stats if enabled
+    if (bloomStats.get()) {
+        HashtableProbe::printBloomStats();
+    }
 
     if (concurrency() > 1) {
         schedulerImpl->maintenanceDone.store(true);

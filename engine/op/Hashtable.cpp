@@ -51,6 +51,33 @@ std::string HashtableProbe::getPretty() const {
     return ht->pretty;
 }
 //---------------------------------------------------------------------------
+// bloom filter false positive tracking
+std::atomic<size_t> HashtableProbe::bloom_probes{0};
+std::atomic<size_t> HashtableProbe::bloom_passes{0};
+std::atomic<size_t> HashtableProbe::bloom_false_positives{0};
+
+void HashtableProbe::resetBloomStats() {
+    bloom_probes.store(0, std::memory_order_relaxed);
+    bloom_passes.store(0, std::memory_order_relaxed);
+    bloom_false_positives.store(0, std::memory_order_relaxed);
+}
+
+void HashtableProbe::printBloomStats() {
+    auto probes = bloom_probes.load(std::memory_order_relaxed);
+    auto passes = bloom_passes.load(std::memory_order_relaxed);
+    auto fps = bloom_false_positives.load(std::memory_order_relaxed);
+    auto true_positives = passes - fps;
+    auto true_negatives = probes - passes;
+    double fp_rate_among_passes = passes > 0 ? 100.0 * fps / passes : 0.0;
+    double fp_rate_actual = (true_negatives + fps) > 0 ? 100.0 * fps / (true_negatives + fps) : 0.0;
+    double rejection_rate = probes > 0 ? 100.0 * true_negatives / probes : 0.0;
+    fprintf(stderr, "Bloom filter stats: probes=%zu, passes=%zu (%.1f%%), true_pos=%zu, false_pos=%zu\n",
+            probes, passes, probes > 0 ? 100.0 * passes / probes : 0.0, true_positives, fps);
+    fprintf(stderr, "  -> BF rejection rate: %.2f%%, Actual FP rate: %.4f%%, FP rate among passes: %.2f%%\n",
+            rejection_rate, fp_rate_actual, fp_rate_among_passes);
+    fflush(stderr);
+}
+//---------------------------------------------------------------------------
 HashtableBuild::LocalState::LocalState(HashtableBuild& build) {
     next = build.local_state_refs.exchange(this);
 }
@@ -160,8 +187,8 @@ void HashtableBuild::buildBloomFilter(const Vector<BufferEntry>& sorted_data) {
     // determine bloom filter size
     size_t bits = bloom_filter_bits_;
     if (bits == 0) {
-        // Default: 10 bits per key for ~1% false positive rate
-        bits = std::max(sorted_data.size() * 10, size_t(1024));
+        // default 20 bits per key for ~0.01% false positive rate
+        bits = std::max(sorted_data.size() * 20, size_t(2048));
     }
 
     ht.bloom_filter_.allocate(bits);

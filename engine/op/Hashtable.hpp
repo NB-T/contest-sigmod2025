@@ -279,6 +279,17 @@ struct HashtableBuild : public TargetImpl<HashtableBuild> {
 struct HashtableProbe : OpBase {
     const Hashtable* ht;
 
+    // bloom filter false positive tracking
+   // total probes attempted
+    static std::atomic<size_t> bloom_probes;      
+    // bloom filter returned true
+    static std::atomic<size_t> bloom_passes;      
+    // bloom passed but no match found
+    static std::atomic<size_t> bloom_false_positives; 
+
+    static void resetBloomStats();
+    static void printBloomStats();
+
     struct LocalState {
         explicit constexpr LocalState(HashtableProbe&) noexcept {}
     };
@@ -294,13 +305,20 @@ struct HashtableProbe : OpBase {
 
     template <typename KeyT, typename ConsumerType, typename = std::enable_if_t<Consumer<ConsumerType>>>
     [[gnu::always_inline]] void operator()(LocalState& ls, KeyT key, ConsumerType&& consumer) {
+        bloom_probes.fetch_add(1, std::memory_order_relaxed);
+
         // BF early rejection
         if (!ht->bloom_filter_.mayContain(key)) {
             return;
         }
 
+        bloom_passes.fetch_add(1, std::memory_order_relaxed);
+
         // search the tree
-        if (!ht->root_) return;
+        if (!ht->root_) {
+            bloom_false_positives.fetch_add(1, std::memory_order_relaxed);
+            return;
+        }
 
         void* current = ht->root_;
 
@@ -334,11 +352,16 @@ struct HashtableProbe : OpBase {
             }
         }
 
+        bool found_match = false;
         while (leaf) {
             for (size_t i = lo; i < leaf->header.num_keys; ++i) {
-                if (leaf->keys[i] > key) return; // Done
+                if (leaf->keys[i] > key) {
+                    if (!found_match) bloom_false_positives.fetch_add(1, std::memory_order_relaxed);
+                    return;
+                }
 
                 if (leaf->keys[i] == key) {
+                    found_match = true;
                     auto* entry = leaf->entries[i];
                     if (entry) {
                         consumer([entry](unsigned col) {
@@ -351,6 +374,7 @@ struct HashtableProbe : OpBase {
             leaf = ht->leaf_pages_[leaf->header.next_page_idx];
             lo = 0;
         }
+        if (!found_match) bloom_false_positives.fetch_add(1, std::memory_order_relaxed);
     }
 
     std::string getPretty() const override;
