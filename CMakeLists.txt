@@ -182,6 +182,7 @@ set(SIGMODPC_TEAMSRC
         engine/storage/BitLogic.cpp
         engine/storage/CopyLogic.cpp
         engine/storage/RestrictionLogic.cpp
+        engine/tools/Setting.cpp
 )
 
 add_library(engine
@@ -191,6 +192,7 @@ add_library(engine
 target_include_directories(engine PRIVATE include engine  ${CMAKE_CURRENT_BINARY_DIR}/include)
 add_dependencies(engine generate_jit_options)
 target_link_libraries(engine PRIVATE re2 fmt range-v3 nlohmann_json::nlohmann_json sqlparser)
+target_compile_definitions(engine PRIVATE SIGMOD_LOCAL)
 
 set(SIGMODPC_SRC
         src/build_table.cpp
