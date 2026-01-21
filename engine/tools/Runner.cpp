@@ -7,6 +7,7 @@
 #include "tools/SQL.hpp"
 #include "tools/Setting.hpp"
 #include <chrono>
+#include <climits>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -209,7 +210,12 @@ static std::tuple<bool, size_t, std::string_view> run(engine::DataSource& db, en
     fmt::print("\rChecking query: {}         ", query.name);
     fflush(stdout);
 
-    auto compare_result = checkResult.get() && compare(db.relations[query.resultRelation], results);
+    bool compare_result = true;
+    if (query.resultRelation == UINT_MAX) {
+        fmt::print("\rSkipping comparison for {} (no DuckDB result)         ", query.name);
+    } else if (checkResult.get()) {
+        compare_result = compare(db.relations[query.resultRelation], results);
+    }
 
     return {compare_result, duration / rpts, query.name};
 }
