@@ -189,7 +189,7 @@ add_library(engine
         SHARED
         ${SIGMODPC_TEAMSRC}
 )
-target_include_directories(engine PRIVATE include engine  ${CMAKE_CURRENT_BINARY_DIR}/include)
+target_include_directories(engine PRIVATE include engine  ${CMAKE_CURRENT_BINARY_DIR}/include external/nbtlog/include)
 add_dependencies(engine generate_jit_options)
 target_link_libraries(engine PRIVATE re2 fmt range-v3 nlohmann_json::nlohmann_json sqlparser)
 target_compile_definitions(engine PRIVATE SIGMOD_LOCAL)
@@ -209,7 +209,7 @@ add_executable(
 )
 
 target_include_directories(run PRIVATE include)
-add_subdirectory(parlaylib EXCLUDE_FROM_ALL)
+add_subdirectory(external/parlaylib EXCLUDE_FROM_ALL)
 target_link_libraries(run PRIVATE parlay)
 target_link_libraries(run PRIVATE engine re2 fmt range-v3 nlohmann_json::nlohmann_json sqlparser duckdb)
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
@@ -228,7 +228,7 @@ add_executable(
         engine/tools/Setting.cpp
 )
 
-target_include_directories(internal_runner PRIVATE include engine)
+target_include_directories(internal_runner PRIVATE include engine external/nbtlog/include)
 target_link_libraries(internal_runner PRIVATE engine re2 fmt range-v3 nlohmann_json::nlohmann_json sqlparser)
 
 option(NO_DUCK "Build without duckdb" ON)

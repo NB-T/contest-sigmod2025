@@ -1,6 +1,9 @@
 #include "tools/SQL.hpp"
 #include "query/PlanImport.hpp"
+#include <climits>
+#ifndef NO_DUCK
 #include "tools/DuckDB.hpp"
+#endif
 #include "tools/JoinPipelineLoader.hpp"
 #include "tools/ParsedSQL.hpp"
 #include "tools/Setting.hpp"
@@ -41,7 +44,9 @@ SQL::Batch SQL::parse(const std::string& planFile, std::vector<std::string> sele
     auto names = query_plans["names"].get<std::vector<std::string>>();
     auto plans = query_plans["plans"];
 
+#ifndef NO_DUCK
     DuckDB duckdb;
+#endif
 
     std::unordered_set<std::string> selected_plans(selected.begin(), selected.end());
 
@@ -78,6 +83,7 @@ SQL::Batch SQL::parse(const std::string& planFile, std::vector<std::string> sele
 
             auto resultName = DataSource::Table::fixName(name + "||result");
             if (dbb.tables.find(resultName) == dbb.tables.end()) {
+#ifndef NO_DUCK
                 fmt::print("DuckDB result for {} not found, computing\n", name);
                 ColumnarTable res;
                 try {
@@ -91,6 +97,9 @@ SQL::Batch SQL::parse(const std::string& planFile, std::vector<std::string> sele
                 tbl.name = resultName;
                 dbb.db.relations.push_back(std::move(tbl));
                 dbb.tables[resultName] = dbb.columns.size() - 1;
+#else
+                fmt::print("WARNING: DuckDB result for {} not found and NO_DUCK is enabled (will skip comparison)\n", name);
+#endif
             }
 
             struct Info final : public PlanMaker {
@@ -102,7 +111,9 @@ SQL::Batch SQL::parse(const std::string& planFile, std::vector<std::string> sele
                 }
             };
             std::unique_ptr<PlanMaker> info = std::make_unique<Info>(batch.db.get(), std::move(plan));
-            batch.queries.push_back(Query{name, executed, std::move(info), dbb.tables.at(resultName)});
+            auto resultIt = dbb.tables.find(resultName);
+            unsigned resultRelation = (resultIt != dbb.tables.end()) ? static_cast<unsigned>(resultIt->second) : UINT_MAX;
+            batch.queries.push_back(Query{name, executed, std::move(info), resultRelation});
         }
     }
 

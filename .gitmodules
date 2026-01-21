@@ -1,3 +1,6 @@
-[submodule "parlaylib"]
-	path = parlaylib
-	url = git@github.com:cmuparlay/parlaylib.git
+[submodule "external/nbtlog"]
+	path = external/nbtlog
+	url = git@github.com:NB-T/nbtlog.git
+[submodule "external/parlaylib"]
+	path = external/parlaylib
+	url = https://github.com/cmuparlay/parlaylib.git
