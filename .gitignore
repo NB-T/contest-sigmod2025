@@ -29,3 +29,5 @@ scaling_bench.pdf
 /schema-domain.json
 /schema-domain.json.gz
 /dump
+oldtime/
+newtime/
