@@ -31,3 +31,5 @@ scaling_bench.pdf
 /dump
 *.png
 callgrind.out.*
+oldtime/
+newtime/
