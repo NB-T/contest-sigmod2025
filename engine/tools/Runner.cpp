@@ -1,4 +1,5 @@
 #include "Execute.hpp"
+#include "infra/JoinTiming.hpp"
 #include "infra/Scheduler.hpp"
 #include "op/TableScan.hpp"
 #include "query/PlanImport.hpp"
@@ -8,6 +9,7 @@
 #include "tools/Setting.hpp"
 #include <chrono>
 #include <climits>
+#include <cstdlib>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -20,6 +22,7 @@ static engine::Setting repeats("REPEAT", engine::setting::Size(10));
 static engine::Setting diff_count("DIFF.count_to_print", engine::setting::Size(20));
 static engine::Setting fastCompare("FASTCOMP", engine::setting::Bool(false));
 static engine::Setting checkResult("CHECKRESULT", engine::setting::Bool(true));
+static engine::Setting enableTiming("TIMING", engine::setting::Bool(false));
 //---------------------------------------------------------------------------
 namespace {
 //---------------------------------------------------------------------------
@@ -186,10 +189,15 @@ static bool compare(engine::DataSource::Table& duckdb_results, const ColumnarTab
 //---------------------------------------------------------------------------
 } // namespace
 //---------------------------------------------------------------------------
-static std::tuple<bool, size_t, std::string_view> run(engine::DataSource& db, engine::SQL::Query& query, [[maybe_unused]] void* context) {
+static std::tuple<bool, size_t, std::string_view> run(engine::DataSource& db, engine::SQL::Query& query, [[maybe_unused]] void* context, const std::string& timing_output_dir) {
     fmt::print("\rRunning query:  {}         ", query.name);
     fflush(stdout);
     Scheduler::start_query();
+
+    // Clear timing for this query
+    if (JoinTiming::isEnabled()) {
+        JoinTiming::clear();
+    }
 
     auto rpts = repeats.get();
 
@@ -206,6 +214,20 @@ static std::tuple<bool, size_t, std::string_view> run(engine::DataSource& db, en
     }
     auto end = std::chrono::steady_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() - total_ignored_compile_time.count();
+
+    // Output timing results
+    if (JoinTiming::isEnabled() && !timing_output_dir.empty()) {
+        std::string timing_filename = timing_output_dir + "/" + std::string(query.name) + "_timing.txt";
+        FILE* timing_file = fopen(timing_filename.c_str(), "w");
+        if (timing_file) {
+            fprintf(timing_file, "Query: %s\n", std::string(query.name).c_str());
+            fprintf(timing_file, "Total runtime: %.2f ms\n", duration / 1000.0f);
+            JoinTiming::printToFile(timing_file);
+            fclose(timing_file);
+        }
+        // Also print to stderr
+        JoinTiming::print();
+    }
 
     fmt::print("\rChecking query: {}         ", query.name);
     fflush(stdout);
@@ -225,6 +247,25 @@ int main(int argc, char* argv[]) {
     const auto record_filename = std::string{"record.csv"};
 
     fmt::print("Using {} threads\n", engine::Scheduler::concurrency());
+
+    // Check for timing environment variable (JOIN_TIMING=1 or TIMING=1)
+    const char* timing_env = std::getenv("JOIN_TIMING");
+    bool timing_enabled = enableTiming.get() || (timing_env && std::string(timing_env) == "1");
+
+    // Enable timing based on setting
+    if (timing_enabled) {
+        JoinTiming::enable();
+        fmt::print("Join timing ENABLED\n");
+    }
+
+    // Get timing output directory from environment or use default
+    std::string timing_output_dir;
+    const char* timing_dir_env = std::getenv("TIMING_OUTPUT_DIR");
+    if (timing_dir_env) {
+        timing_output_dir = timing_dir_env;
+    } else if (timing_enabled) {
+        timing_output_dir = "timing_output";
+    }
 
     void* context = nullptr;
     try {
@@ -264,7 +305,7 @@ int main(int argc, char* argv[]) {
 
         std::vector<Result> results;
         for (engine::SQL::Query& query : queries.queries)
-            results.push_back(run(*queries.db, query, context));
+            results.push_back(run(*queries.db, query, context, timing_output_dir));
         fmt::print("\n");
 
         std::sort(results.begin(), results.end(), [](auto& a, auto& b) { return std::get<1>(a) < std::get<1>(b); });

@@ -1,4 +1,5 @@
 #include "op/Hashtable.hpp"
+#include "infra/JoinTiming.hpp"
 #include "infra/QueryMemory.hpp"
 #include "infra/Scheduler.hpp"
 #include "infra/helper/BitOps.hpp"
@@ -270,6 +271,7 @@ std::array<void (*)(HashtableBuild*, size_t), 16> finishConsumeCrossProductLogic
 })(std::make_index_sequence<16>{});
 //---------------------------------------------------------------------------
 void HashtableBuild::finishConsume() {
+    ManualTimer totalBuildTimer;
     using namespace std;
 
     ht.numTuples = 0;
@@ -283,6 +285,7 @@ void HashtableBuild::finishConsume() {
     auto partitionCountShift = Hashtable::hashBits - partitionShift;
     auto numPartitions = 1ull << partitionCountShift;
 
+    ManualTimer allocTimer;
     if (isCrossProduct) {
         // We will later check if that tuple has a multiplicity greater than 1g
         ht.isCertainlyDuplicateFree = ht.numTuples == 1;
@@ -295,12 +298,14 @@ void HashtableBuild::finishConsume() {
     } else {
         ht.allocateHashtable(std::max<size_t>(ht.numTuples, numPartitions));
     }
+    allocTimer.record("htAlloc", "tuples=" + std::to_string(ht.numTuples));
 
     auto* logic = finishConsumeLogics[attrCount];
     if (isCrossProduct) {
         logic = finishConsumeCrossProductLogics[attrCount];
     }
 
+    ManualTimer buildTimer;
     if (ht.numTuples <= 256 || !localStateRefs.load()->next) {
         for (size_t partition = 0; partition < numPartitions; ++partition) {
             logic(this, partition);
@@ -308,6 +313,7 @@ void HashtableBuild::finishConsume() {
     } else {
         Scheduler::parallelFor(0, numPartitions, [this, logic](size_t, size_t partition) { return logic(this, partition); });
     }
+    buildTimer.record("htBuild", "partitions=" + std::to_string(numPartitions));
 
     // Compute duplicate freeness for small tables
     if (ht.numTuples <= 32) {
@@ -331,6 +337,8 @@ void HashtableBuild::finishConsume() {
         for (auto* current = localStateRefs.load(); current; current = current->next)
             current->~LocalState();
     }
+
+    totalBuildTimer.record("htBuildTotal", "tuples=" + std::to_string(ht.numTuples));
 }
 //---------------------------------------------------------------------------
 HashtableBuild::HashtableBuild(Hashtable& ht, size_t cardEstimate) : ht(ht) {

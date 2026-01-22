@@ -1,4 +1,4 @@
-#include "query/QueryPlan.hpp"
+#include "infra/JoinTiming.hpp"
 #include "infra/Scheduler.hpp"
 #include "infra/SmallVec.hpp"
 #include "op/CollectorTarget.hpp"
@@ -7,6 +7,7 @@
 #include "op/TableTarget.hpp"
 #include "pipeline/PipelineFunction.hpp"
 #include "query/QueryGraph.hpp"
+#include "query/QueryPlan.hpp"
 #include "storage/RestrictionLogic.hpp"
 #include <chrono>
 #include <iostream>
@@ -530,7 +531,9 @@ bool QueryPlan::runPipeline(const PlanPipeline& pipeline, double cardinalityEsti
     for (auto* ht : probeTables)
         mult *= double(ht->getNumTuples()) / ht->getNumKeysEstimate();
 
+    ManualTimer scanBuildTimer;
     TableScan scan = buildScan(scanInput, scanRequiredEqs, mult);
+    scanBuildTimer.record("scanBuild", std::string(scan.getTableName()));
     if (zeroColumnValue != ~0ull)
         scan.produceConstantColumn = zeroColumnValue;
     // Optional table target if this is the last pipeline
@@ -591,11 +594,14 @@ bool QueryPlan::runPipeline(const PlanPipeline& pipeline, double cardinalityEsti
     auto start_compile = std::chrono::steady_clock::now();
     PipelineFunction pipelineFunction = PipelineFunctions::compilePipeline(pipelineName);
     auto end_compile = std::chrono::steady_clock::now();
+    auto compile_duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end_compile - start_compile).count();
     total_ignored_compile_time += std::chrono::duration_cast<std::chrono::microseconds>(end_compile - start_compile);
-    // std::cout << "--- compile time: " << std::chrono::duration_cast<std::chrono::milliseconds>(end_compile - start_compile).count() << " milliseconds" << std::endl;
+    JoinTiming::record("pipelineCompile", std::string(pipelineName.substr(0, 50)) + "...", compile_duration_ms);
 
     // Run the pipeline
+    ManualTimer pipelineExecTimer;
     pipelineFunction(*target, scan, probeTables, probeOffsets, outputOffsets);
+    pipelineExecTimer.record("pipelineExec", std::string(scan.getTableName()) + " probes=" + std::to_string(probeTables.size()));
 
     if (pipeline.isOutput()) {
         SmallVec<std::variant<unsigned, RuntimeValue>> outputValues;
@@ -766,17 +772,31 @@ void QueryPlan::computeSamples() {
 }
 //---------------------------------------------------------------------------
 ColumnarTable QueryPlan::run(std::chrono::microseconds& total_ignored_compile_time) {
+    ManualTimer queryTimer;
+
     for (unsigned eq = 0; eq < equivalenceSets.size(); eq++) {
         assert(!equivalenceSets[eq].empty());
         if (!equivalenceSets[eq].single())
             eqRestrictions[eq] = RestrictionLogic::notNullRestriction;
     };
 
-    eliminateSingletons();
-    computeSamples();
+    {
+        ManualTimer timer;
+        eliminateSingletons();
+        timer.record("eliminateSingletons", "");
+    }
+    {
+        ManualTimer timer;
+        computeSamples();
+        timer.record("computeSamples", "");
+    }
 
+    size_t pipelineCount = 0;
     while (!inputs.empty()) {
+        size_t pipelineId = JoinTiming::startPipeline();
+
         // Optimize the join plan
+        ManualTimer optimizeTimer;
         SmallVec<QueryGraph::Input> qgInputs;
         qgInputs.reserve(inputs.size());
         BitSet constants;
@@ -796,9 +816,12 @@ ColumnarTable QueryPlan::run(std::chrono::microseconds& total_ignored_compile_ti
         PlanPipeline pipeline = CheapestPipelineFinder::findCheapestPipeline(qg, root);
         assert(!!pipeline);
         assert(!pipeline.rels.empty());
+        optimizeTimer.record("joinOptimize", "inputs=" + std::to_string(inputs.size()), pipelineId);
 
         if (runPipeline(pipeline, root->card, total_ignored_compile_time))
             return std::move(finalResult);
+
+        pipelineCount++;
     }
 
     // Empty input
