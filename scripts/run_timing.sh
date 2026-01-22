@@ -21,7 +21,7 @@ if [ -z "$PLANS_PATH" ]; then
     echo "Environment variables:"
     echo "  JOIN_TIMING=1      Enable timing (automatically set by this script)"
     echo "  TIMING_OUTPUT_DIR  Override output directory"
-    echo "  REPEAT             Number of repetitions (default: 1 for timing)"
+    echo "  REPEAT             Number of repetitions (default: 3 for timing)"
     echo ""
     echo "Example:"
     echo "  $0 /path/to/plans"
