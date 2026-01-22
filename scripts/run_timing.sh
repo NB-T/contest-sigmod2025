@@ -36,7 +36,7 @@ mkdir -p "$OUTPUT_DIR"
 # Set environment variables for timing
 export JOIN_TIMING=1
 export TIMING_OUTPUT_DIR="$OUTPUT_DIR"
-export REPEAT="${REPEAT:-1}"  # Default to 1 repeat for timing to avoid aggregating
+export REPEAT="${REPEAT:-3}"  # Default to 1 repeat for timing to avoid aggregating
 
 echo "============================================"
 echo "Join Timing Analysis"
