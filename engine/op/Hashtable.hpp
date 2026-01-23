@@ -2,6 +2,7 @@
 //---------------------------------------------------------------------------
 #include "Config.hpp"
 #include "infra/JoinFilter.hpp"
+#include "infra/ProbeTiming.hpp"
 #include "op/OpBase.hpp"
 #include "op/TargetBase.hpp"
 
@@ -227,17 +228,74 @@ struct HashtableProbe : OpBase {
 
     template <typename KeyT, typename ConsumerType, typename = std::enable_if_t<Consumer<ConsumerType>>>
     [[gnu::always_inline]] void operator()(LocalState& ls, KeyT key, ConsumerType&& consumer) {
-        auto h = Hashtable::computeHashes(key).first;
+        const bool timing_enabled = ProbeTiming::isEnabled();
+        FastTimer total_timer, phase_timer;
+
+        if (timing_enabled) {
+            total_timer.start();
+            phase_timer.start();
+            ProbeTiming::tl_probe_count++;
+        }
+
+        // Bloom filter check
+        auto [h, b] = Hashtable::computeHashes(key);
+        auto bloom_entry = ht->bloom[h >> ht->shift];
+        if (!JoinFilter::checkEntry(b, bloom_entry)) {
+            if (timing_enabled) {
+                ProbeTiming::tl_bloom_check_ns += phase_timer.elapsedNs();
+                ProbeTiming::tl_bloom_reject_count++;
+                ProbeTiming::tl_total_probe_ns += total_timer.elapsedNs();
+            }
+            return;
+        }
+
+        if (timing_enabled) {
+            ProbeTiming::tl_bloom_check_ns += phase_timer.elapsedNs();
+            phase_timer.start();
+        }
+
+        // Hash lookup
         uint64_t entry = ht->ht[h >> ht->shift];
         const auto* current = reinterpret_cast<Hashtable::Entry*>(entry);
+
+        if (timing_enabled) {
+            ProbeTiming::tl_hash_lookup_ns += phase_timer.elapsedNs();
+        }
+
         // Since we nest filters, we do not guarantee we will find an element in the hash table
-        if (!current) [[unlikely]]
+        if (!current) [[unlikely]] {
+            if (timing_enabled) {
+                ProbeTiming::tl_total_probe_ns += total_timer.elapsedNs();
+            }
             return;
+        }
+
+        if (timing_enabled) {
+            phase_timer.start();
+        }
+
+        // Chain traversal
         do {
-            if (current->tuple[Hashtable::keyOffset] == key)
+            if (current->tuple[Hashtable::keyOffset] == key) {
+                if (timing_enabled) {
+                    ProbeTiming::tl_chain_traverse_ns += phase_timer.elapsedNs();
+                    ProbeTiming::tl_chain_traverse_count++;
+                    phase_timer.start();
+                }
                 consumer([current](unsigned idx) { return current->tuple[idx]; });
+                if (timing_enabled) {
+                    ProbeTiming::tl_consumer_invoke_ns += phase_timer.elapsedNs();
+                    ProbeTiming::tl_consumer_invoke_count++;
+                    phase_timer.start();
+                }
+            }
             current = current->next;
         } while (current);
+
+        if (timing_enabled) {
+            ProbeTiming::tl_chain_traverse_ns += phase_timer.elapsedNs();
+            ProbeTiming::tl_total_probe_ns += total_timer.elapsedNs();
+        }
     }
     std::string getPretty() const override;
 };

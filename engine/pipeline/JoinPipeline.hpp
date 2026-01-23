@@ -1,6 +1,7 @@
 #pragma once
 //---------------------------------------------------------------------------
 #include "Config.hpp"
+#include "infra/ProbeTiming.hpp"
 #include "infra/QueryMemory.hpp"
 #include "infra/Scheduler.hpp"
 #include "infra/Util.hpp"
@@ -195,6 +196,10 @@ struct JoinPipeline<Target, Scan, std::tuple<Probes...>, std::index_sequence<Key
                     localState->initialized = true;
                 } else {
                     assert(localState->initialized);
+                    // Flush thread-local probe timing to global accumulators
+                    if (ProbeTiming::isEnabled()) {
+                        ProbeTiming::flushThreadLocal();
+                    }
                     callFinalize(target, localState->target);
                 }
             });
