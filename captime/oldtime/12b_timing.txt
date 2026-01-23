@@ -1,0 +1,128 @@
+Query: 12b
+Total runtime: 98.82 ms
+
+========== JOIN TIMING REPORT ==========
+[Pipeline 0] eliminateSingletons: 0 ms
+[Pipeline 0] computeSamples: 0 ms
+[Pipeline 0] joinOptimize (inputs=6): 0 ms
+[Pipeline 1] scanBuild (company_type): 0 ms
+[Pipeline 1] pipelineCompile (engine::HashtableBuild,engine::TableScan,0,std::in...): 1093 ms
+[Pipeline 1] htAlloc (tuples=2): 0 ms
+[Pipeline 1] htBuild (partitions=128): 0 ms
+[Pipeline 1] htBuildTotal (tuples=2): 0 ms
+[Pipeline 1] pipelineExec (company_type probes=0): 0 ms
+[Pipeline 1] joinOptimize (inputs=5): 0 ms
+[Pipeline 2] scanBuild (title): 0 ms
+[Pipeline 2] pipelineCompile (engine::HashtableBuild,engine::TableScan,0,std::in...): 1127 ms
+[Pipeline 2] htAlloc (tuples=2536): 0 ms
+[Pipeline 2] htBuild (partitions=128): 0 ms
+[Pipeline 2] htBuildTotal (tuples=2536): 0 ms
+[Pipeline 2] pipelineExec (title probes=0): 0 ms
+[Pipeline 2] joinOptimize (inputs=5): 0 ms
+[Pipeline 3] scanBuild (movie_info_idx): 0 ms
+[Pipeline 3] pipelineCompile (engine::HashtableBuild,engine::TableScan,0,std::in...): 0 ms
+[Pipeline 3] htAlloc (tuples=2): 0 ms
+[Pipeline 3] htBuild (partitions=128): 0 ms
+[Pipeline 3] htBuildTotal (tuples=2): 0 ms
+[Pipeline 3] pipelineExec (movie_info_idx probes=0): 0 ms
+[Pipeline 3] joinOptimize (inputs=5): 0 ms
+[Pipeline 4] scanBuild (movie_companies): 0 ms
+[Pipeline 4] pipelineCompile (engine::HashtableBuild,engine::TableScan,2,std::in...): 1225 ms
+[Pipeline 4] htAlloc (tuples=33): 0 ms
+[Pipeline 4] htBuild (partitions=128): 0 ms
+[Pipeline 4] htBuildTotal (tuples=23): 0 ms
+[Pipeline 4] pipelineExec (movie_companies probes=2): 0 ms
+[Pipeline 4] joinOptimize (inputs=3): 0 ms
+[Pipeline 5] scanBuild (company_name): 0 ms
+[Pipeline 5] pipelineCompile (engine::HashtableBuild,engine::TableScan,0,std::in...): 0 ms
+[Pipeline 5] htAlloc (tuples=84843): 0 ms
+[Pipeline 5] htBuild (partitions=128): 0 ms
+[Pipeline 5] htBuildTotal (tuples=84843): 0 ms
+[Pipeline 5] pipelineExec (company_name probes=0): 0 ms
+[Pipeline 5] joinOptimize (inputs=3): 0 ms
+[Pipeline 6] scanBuild (movie_info): 0 ms
+[Pipeline 6] pipelineCompile (engine::TableTarget,engine::TableScan,2,std::index...): 1241 ms
+[Pipeline 6] pipelineExec (movie_info probes=2): 9 ms
+[Pipeline 6] eliminateSingletons: 0 ms
+[Pipeline 6] computeSamples: 0 ms
+[Pipeline 6] joinOptimize (inputs=6): 0 ms
+[Pipeline 7] scanBuild (company_type): 0 ms
+[Pipeline 7] pipelineCompile (engine::HashtableBuild,engine::TableScan,0,std::in...): 0 ms
+[Pipeline 7] htAlloc (tuples=2): 0 ms
+[Pipeline 7] htBuild (partitions=128): 0 ms
+[Pipeline 7] htBuildTotal (tuples=2): 0 ms
+[Pipeline 7] pipelineExec (company_type probes=0): 0 ms
+[Pipeline 7] joinOptimize (inputs=5): 0 ms
+[Pipeline 8] scanBuild (title): 0 ms
+[Pipeline 8] pipelineCompile (engine::HashtableBuild,engine::TableScan,0,std::in...): 0 ms
+[Pipeline 8] htAlloc (tuples=2536): 0 ms
+[Pipeline 8] htBuild (partitions=128): 0 ms
+[Pipeline 8] htBuildTotal (tuples=2536): 0 ms
+[Pipeline 8] pipelineExec (title probes=0): 0 ms
+[Pipeline 8] joinOptimize (inputs=5): 0 ms
+[Pipeline 9] scanBuild (movie_info_idx): 0 ms
+[Pipeline 9] pipelineCompile (engine::HashtableBuild,engine::TableScan,0,std::in...): 0 ms
+[Pipeline 9] htAlloc (tuples=2): 0 ms
+[Pipeline 9] htBuild (partitions=128): 0 ms
+[Pipeline 9] htBuildTotal (tuples=2): 0 ms
+[Pipeline 9] pipelineExec (movie_info_idx probes=0): 0 ms
+[Pipeline 9] joinOptimize (inputs=5): 0 ms
+[Pipeline 10] scanBuild (movie_companies): 0 ms
+[Pipeline 10] pipelineCompile (engine::HashtableBuild,engine::TableScan,2,std::in...): 0 ms
+[Pipeline 10] htAlloc (tuples=33): 0 ms
+[Pipeline 10] htBuild (partitions=128): 0 ms
+[Pipeline 10] htBuildTotal (tuples=23): 0 ms
+[Pipeline 10] pipelineExec (movie_companies probes=2): 0 ms
+[Pipeline 10] joinOptimize (inputs=3): 0 ms
+[Pipeline 11] scanBuild (company_name): 0 ms
+[Pipeline 11] pipelineCompile (engine::HashtableBuild,engine::TableScan,0,std::in...): 0 ms
+[Pipeline 11] htAlloc (tuples=84843): 0 ms
+[Pipeline 11] htBuild (partitions=128): 0 ms
+[Pipeline 11] htBuildTotal (tuples=84843): 0 ms
+[Pipeline 11] pipelineExec (company_name probes=0): 0 ms
+[Pipeline 11] joinOptimize (inputs=3): 0 ms
+[Pipeline 12] scanBuild (movie_info): 0 ms
+[Pipeline 12] pipelineCompile (engine::TableTarget,engine::TableScan,2,std::index...): 0 ms
+[Pipeline 12] pipelineExec (movie_info probes=2): 6 ms
+[Pipeline 12] eliminateSingletons: 0 ms
+[Pipeline 12] computeSamples: 0 ms
+[Pipeline 12] joinOptimize (inputs=6): 0 ms
+[Pipeline 13] scanBuild (company_type): 0 ms
+[Pipeline 13] pipelineCompile (engine::HashtableBuild,engine::TableScan,0,std::in...): 0 ms
+[Pipeline 13] htAlloc (tuples=2): 0 ms
+[Pipeline 13] htBuild (partitions=128): 0 ms
+[Pipeline 13] htBuildTotal (tuples=2): 0 ms
+[Pipeline 13] pipelineExec (company_type probes=0): 0 ms
+[Pipeline 13] joinOptimize (inputs=5): 0 ms
+[Pipeline 14] scanBuild (title): 0 ms
+[Pipeline 14] pipelineCompile (engine::HashtableBuild,engine::TableScan,0,std::in...): 0 ms
+[Pipeline 14] htAlloc (tuples=2536): 0 ms
+[Pipeline 14] htBuild (partitions=128): 0 ms
+[Pipeline 14] htBuildTotal (tuples=2536): 0 ms
+[Pipeline 14] pipelineExec (title probes=0): 0 ms
+[Pipeline 14] joinOptimize (inputs=5): 0 ms
+[Pipeline 15] scanBuild (movie_info_idx): 0 ms
+[Pipeline 15] pipelineCompile (engine::HashtableBuild,engine::TableScan,0,std::in...): 0 ms
+[Pipeline 15] htAlloc (tuples=2): 0 ms
+[Pipeline 15] htBuild (partitions=128): 0 ms
+[Pipeline 15] htBuildTotal (tuples=2): 0 ms
+[Pipeline 15] pipelineExec (movie_info_idx probes=0): 2 ms
+[Pipeline 15] joinOptimize (inputs=5): 0 ms
+[Pipeline 16] scanBuild (movie_companies): 0 ms
+[Pipeline 16] pipelineCompile (engine::HashtableBuild,engine::TableScan,2,std::in...): 0 ms
+[Pipeline 16] htAlloc (tuples=33): 0 ms
+[Pipeline 16] htBuild (partitions=128): 0 ms
+[Pipeline 16] htBuildTotal (tuples=23): 0 ms
+[Pipeline 16] pipelineExec (movie_companies probes=2): 0 ms
+[Pipeline 16] joinOptimize (inputs=3): 0 ms
+[Pipeline 17] scanBuild (company_name): 0 ms
+[Pipeline 17] pipelineCompile (engine::HashtableBuild,engine::TableScan,0,std::in...): 0 ms
+[Pipeline 17] htAlloc (tuples=84843): 0 ms
+[Pipeline 17] htBuild (partitions=128): 0 ms
+[Pipeline 17] htBuildTotal (tuples=84843): 0 ms
+[Pipeline 17] pipelineExec (company_name probes=0): 0 ms
+[Pipeline 17] joinOptimize (inputs=3): 0 ms
+[Pipeline 18] scanBuild (movie_info): 0 ms
+[Pipeline 18] pipelineCompile (engine::TableTarget,engine::TableScan,2,std::index...): 0 ms
+[Pipeline 18] pipelineExec (movie_info probes=2): 8 ms
+=========================================
