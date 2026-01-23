@@ -165,6 +165,7 @@ set(SIGMODPC_TEAMSRC
         engine/infra/QueryMemory.cpp
         engine/infra/PageMemory.cpp
         engine/infra/JoinFilter.cpp
+        engine/infra/ProbeTiming.cpp
         engine/op/CollectorTarget.cpp
         engine/op/BT.cpp
         engine/op/Hashtable.cpp

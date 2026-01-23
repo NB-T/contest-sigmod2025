@@ -2,6 +2,7 @@
 //---------------------------------------------------------------------------
 #include "Config.hpp"
 #include "infra/BloomFilter.hpp"
+#include "infra/ProbeTiming.hpp"
 #include "infra/QueryMemory.hpp"
 #include "op/OpBase.hpp"
 #include "op/TargetBase.hpp"
@@ -307,9 +308,27 @@ struct HashtableProbe : OpBase {
     [[gnu::always_inline]] void operator()(LocalState& ls, KeyT key, ConsumerType&& consumer) {
         bloom_probes.fetch_add(1, std::memory_order_relaxed);
 
+        const bool timing_enabled = ProbeTiming::isEnabled();
+        FastTimer total_timer, phase_timer;
+
+        if (timing_enabled) {
+            total_timer.start();
+            phase_timer.start();
+            ProbeTiming::tl_probe_count++;
+        }
+
         // BF early rejection
         if (!ht->bloom_filter_.mayContain(key)) {
+            if (timing_enabled) {
+                ProbeTiming::tl_bloom_check_ns += phase_timer.elapsedNs();
+                ProbeTiming::tl_bloom_reject_count++;
+                ProbeTiming::tl_total_probe_ns += total_timer.elapsedNs();
+            }
             return;
+        }
+
+        if (timing_enabled) {
+            ProbeTiming::tl_bloom_check_ns += phase_timer.elapsedNs();
         }
 
         bloom_passes.fetch_add(1, std::memory_order_relaxed);
@@ -317,10 +336,17 @@ struct HashtableProbe : OpBase {
         // search the tree
         if (!ht->root_) {
             bloom_false_positives.fetch_add(1, std::memory_order_relaxed);
+            if (timing_enabled) {
+                ProbeTiming::tl_total_probe_ns += total_timer.elapsedNs();
+            }
             return;
         }
 
         void* current = ht->root_;
+
+        if (timing_enabled) {
+            phase_timer.start();
+        }
 
         // traverse to leaf
         for (size_t level = ht->height_; level > 1; --level) {
@@ -339,6 +365,14 @@ struct HashtableProbe : OpBase {
             current = internal->children[lo];
         }
 
+        if (timing_enabled) {
+            ProbeTiming::tl_tree_traverse_ns += phase_timer.elapsedNs();
+            if (ht->height_ > 1) {
+                ProbeTiming::tl_tree_traverse_count++;
+            }
+            phase_timer.start();
+        }
+
         // search in leaf and get duplicates
         auto* leaf = static_cast<Hashtable::LeafPage*>(current);
 
@@ -353,10 +387,16 @@ struct HashtableProbe : OpBase {
         }
 
         bool found_match = false;
+        size_t leaf_pages_this_probe = 1;
         while (leaf) {
             for (size_t i = lo; i < leaf->header.num_keys; ++i) {
                 if (leaf->keys[i] > key) {
                     if (!found_match) bloom_false_positives.fetch_add(1, std::memory_order_relaxed);
+                    if (timing_enabled) {
+                        ProbeTiming::tl_leaf_search_ns += phase_timer.elapsedNs();
+                        ProbeTiming::tl_leaf_pages_visited += leaf_pages_this_probe;
+                        ProbeTiming::tl_total_probe_ns += total_timer.elapsedNs();
+                    }
                     return;
                 }
 
@@ -364,17 +404,33 @@ struct HashtableProbe : OpBase {
                     found_match = true;
                     auto* entry = leaf->entries[i];
                     if (entry) {
+                        if (timing_enabled) {
+                            ProbeTiming::tl_leaf_search_ns += phase_timer.elapsedNs();
+                            phase_timer.start();
+                        }
                         consumer([entry](unsigned col) {
                             return entry->tuple[col];
                         });
+                        if (timing_enabled) {
+                            ProbeTiming::tl_consumer_invoke_ns += phase_timer.elapsedNs();
+                            ProbeTiming::tl_consumer_invoke_count++;
+                            phase_timer.start();
+                        }
                     }
                 }
             }
             if (leaf->header.next_page_idx == 0xFFFFFFFF) break;
             leaf = ht->leaf_pages_[leaf->header.next_page_idx];
+            leaf_pages_this_probe++;
             lo = 0;
         }
         if (!found_match) bloom_false_positives.fetch_add(1, std::memory_order_relaxed);
+
+        if (timing_enabled) {
+            ProbeTiming::tl_leaf_search_ns += phase_timer.elapsedNs();
+            ProbeTiming::tl_leaf_pages_visited += leaf_pages_this_probe;
+            ProbeTiming::tl_total_probe_ns += total_timer.elapsedNs();
+        }
     }
 
     std::string getPretty() const override;

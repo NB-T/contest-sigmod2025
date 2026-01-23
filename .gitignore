@@ -31,3 +31,5 @@ scaling_bench.pdf
 /dump
 *.png
 callgrind.out.*
+captime/oldtime/
+**__pycache__**
