@@ -18,12 +18,14 @@ scripts = [
 
 
 def main():
-    if len(sys.argv) != 3:
-        print(f"Usage: {sys.argv[0]} <oldtime_dir> <newtime_dir>", file=sys.stderr)
+    if len(sys.argv) != 4:
+        print(f"Usage: {sys.argv[0]} <oldtime_dir> <newtime_dir> <output_dir>", file=sys.stderr)
         sys.exit(1)
 
-    oldtime_dir = sys.argv[1]
-    newtime_dir = sys.argv[2]
+    oldtime_dir = str(Path(sys.argv[1]).resolve())
+    newtime_dir = str(Path(sys.argv[2]).resolve())
+    output_dir = Path(sys.argv[3]).resolve()
+    output_dir.mkdir(parents=True, exist_ok=True)
 
     for script, desc in scripts:
         print(f"\n{'#' * 80}")
@@ -32,7 +34,7 @@ def main():
         print(f"{'#' * 80}\n")
 
         result = subprocess.run(
-            [sys.executable, SCRIPT_DIR / script, oldtime_dir, newtime_dir],
+            [sys.executable, SCRIPT_DIR / script, oldtime_dir, newtime_dir, str(output_dir)],
             capture_output=False,
             cwd=SCRIPT_DIR
         )
@@ -44,11 +46,11 @@ def main():
     print(f"\n{'=' * 80}")
     print("All analyses complete!")
     print(f"{'=' * 80}")
-    print("\nGenerated files:")
+    print(f"\nGenerated files in {output_dir}:")
     for f in ['comparison.csv', 'detailed.csv', 'summary_by_group.csv']:
-        path = SCRIPT_DIR / f
+        path = output_dir / f
         if path.exists():
-            print(f"  - {f}")
+            print(f"  - {path}")
 
 
 if __name__ == '__main__':

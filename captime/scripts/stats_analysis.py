@@ -152,7 +152,7 @@ def analyze_execution_patterns(old_timings: dict, new_timings: dict):
 
 
 def main():
-    if len(sys.argv) != 3:
+    if len(sys.argv) < 3:
         print(f"Usage: {sys.argv[0]} <oldtime_dir> <newtime_dir>", file=sys.stderr)
         sys.exit(1)
 

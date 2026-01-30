@@ -151,13 +151,14 @@ def export_summary_csv(old_timings: dict, new_timings: dict, output_file: Path):
 
 
 def main():
-    if len(sys.argv) != 3:
-        print(f"Usage: {sys.argv[0]} <oldtime_dir> <newtime_dir>", file=sys.stderr)
+    if len(sys.argv) != 4:
+        print(f"Usage: {sys.argv[0]} <oldtime_dir> <newtime_dir> <output_dir>", file=sys.stderr)
         sys.exit(1)
 
     oldtime_dir = Path(sys.argv[1])
     newtime_dir = Path(sys.argv[2])
-    output_dir = Path(__file__).parent
+    output_dir = Path(sys.argv[3])
+    output_dir.mkdir(parents=True, exist_ok=True)
 
     print("Loading timing data...")
     old_timings = load_all_timings(oldtime_dir)
