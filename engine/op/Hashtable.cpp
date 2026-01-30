@@ -194,16 +194,10 @@ void HashtableBuild::buildBloomFilter(const Vector<BufferEntry>& sorted_data) {
 
     ht.bloom_filter_.allocate(bits);
 
-    // add keys in parallel
+    // add keys (non-atomic, sequential)
     size_t n = sorted_data.size();
-    if (n > 256) {
-        Scheduler::parallelFor(0, n, [&](size_t, size_t i) {
-            ht.bloom_filter_.add(sorted_data[i].key);
-        });
-    } else {
-        for (size_t i = 0; i < n; ++i) {
-            ht.bloom_filter_.add(sorted_data[i].key);
-        }
+    for (size_t i = 0; i < n; ++i) {
+        ht.bloom_filter_.add(sorted_data[i].key);
     }
 }
 //---------------------------------------------------------------------------

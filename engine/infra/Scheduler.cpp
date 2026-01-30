@@ -1,4 +1,5 @@
 #include "infra/Scheduler.hpp"
+#include "Config.hpp"
 #include "infra/PageMemory.hpp"
 #include "infra/QueryMemory.hpp"
 #include "infra/Random.hpp"
@@ -342,8 +343,11 @@ void Scheduler::start_query() {
     // Even if the worker was right before maintenanceDone.store(false), it will notice that doMaintenance is false and abort
 
     // reset bloom filter stats for new query
-    if (bloomStats.get()) {
-        HashtableProbe::resetBloomStats();
+    if constexpr (config::collectBloomStats) {
+        HashtableProbe::collect_bloom_stats = bloomStats.get();
+        if (HashtableProbe::collect_bloom_stats) {
+            HashtableProbe::resetBloomStats();
+        }
     }
 }
 //---------------------------------------------------------------------------
@@ -352,8 +356,10 @@ void Scheduler::end_query() {
     assert(!schedulerImpl->doMaintenance.load());
 
     // print bloom filter stats if enabled
-    if (bloomStats.get()) {
-        HashtableProbe::printBloomStats();
+    if constexpr (config::collectBloomStats) {
+        if (HashtableProbe::collect_bloom_stats) {
+            HashtableProbe::printBloomStats();
+        }
     }
 
     if (concurrency() > 1) {

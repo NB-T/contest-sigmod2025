@@ -13,9 +13,6 @@ import sys
 from pathlib import Path
 from parse_timing import load_all_timings
 
-SCRIPT_DIR = Path(__file__).parent
-OLDTIME_DIR = SCRIPT_DIR / 'oldtime'
-NEWTIME_DIR = SCRIPT_DIR / 'newtime'
 
 
 def format_ms(val: float) -> str:
@@ -154,9 +151,16 @@ def print_compile_time_comparison(old_timings: dict, new_timings: dict):
 
 
 def main():
+    if len(sys.argv) != 3:
+        print(f"Usage: {sys.argv[0]} <oldtime_dir> <newtime_dir>", file=sys.stderr)
+        sys.exit(1)
+
+    oldtime_dir = Path(sys.argv[1])
+    newtime_dir = Path(sys.argv[2])
+
     print("Loading timing data...")
-    old_timings = load_all_timings(OLDTIME_DIR)
-    new_timings = load_all_timings(NEWTIME_DIR)
+    old_timings = load_all_timings(oldtime_dir)
+    new_timings = load_all_timings(newtime_dir)
 
     print(f"Loaded {len(old_timings)} old timings, {len(new_timings)} new timings")
 

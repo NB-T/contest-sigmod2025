@@ -280,13 +280,16 @@ struct HashtableBuild : public TargetImpl<HashtableBuild> {
 struct HashtableProbe : OpBase {
     const Hashtable* ht;
 
+    // whether to collect bloom filter stats (controlled by BLOOM_STATS setting)
+    static inline bool collect_bloom_stats = false;
+
     // bloom filter false positive tracking
    // total probes attempted
-    static std::atomic<size_t> bloom_probes;      
+    static std::atomic<size_t> bloom_probes;
     // bloom filter returned true
-    static std::atomic<size_t> bloom_passes;      
+    static std::atomic<size_t> bloom_passes;
     // bloom passed but no match found
-    static std::atomic<size_t> bloom_false_positives; 
+    static std::atomic<size_t> bloom_false_positives;
 
     static void resetBloomStats();
     static void printBloomStats();
@@ -306,7 +309,9 @@ struct HashtableProbe : OpBase {
 
     template <typename KeyT, typename ConsumerType, typename = std::enable_if_t<Consumer<ConsumerType>>>
     [[gnu::always_inline]] void operator()(LocalState& ls, KeyT key, ConsumerType&& consumer) {
-        bloom_probes.fetch_add(1, std::memory_order_relaxed);
+        if constexpr (config::collectBloomStats) {
+            bloom_probes.fetch_add(1, std::memory_order_relaxed);
+        }
 
         const bool timing_enabled = ProbeTiming::isEnabled();
         FastTimer total_timer, phase_timer;
@@ -331,11 +336,15 @@ struct HashtableProbe : OpBase {
             ProbeTiming::tl_bloom_check_ns += phase_timer.elapsedNs();
         }
 
-        bloom_passes.fetch_add(1, std::memory_order_relaxed);
+        if constexpr (config::collectBloomStats) {
+            bloom_passes.fetch_add(1, std::memory_order_relaxed);
+        }
 
         // search the tree
         if (!ht->root_) {
-            bloom_false_positives.fetch_add(1, std::memory_order_relaxed);
+            if constexpr (config::collectBloomStats) {
+                bloom_false_positives.fetch_add(1, std::memory_order_relaxed);
+            }
             if (timing_enabled) {
                 ProbeTiming::tl_total_probe_ns += total_timer.elapsedNs();
             }
@@ -391,7 +400,9 @@ struct HashtableProbe : OpBase {
         while (leaf) {
             for (size_t i = lo; i < leaf->header.num_keys; ++i) {
                 if (leaf->keys[i] > key) {
-                    if (!found_match) bloom_false_positives.fetch_add(1, std::memory_order_relaxed);
+                    if constexpr (config::collectBloomStats) {
+                        if (!found_match) bloom_false_positives.fetch_add(1, std::memory_order_relaxed);
+                    }
                     if (timing_enabled) {
                         ProbeTiming::tl_leaf_search_ns += phase_timer.elapsedNs();
                         ProbeTiming::tl_leaf_pages_visited += leaf_pages_this_probe;
@@ -424,7 +435,9 @@ struct HashtableProbe : OpBase {
             leaf_pages_this_probe++;
             lo = 0;
         }
-        if (!found_match) bloom_false_positives.fetch_add(1, std::memory_order_relaxed);
+        if constexpr (config::collectBloomStats) {
+            if (!found_match) bloom_false_positives.fetch_add(1, std::memory_order_relaxed);
+        }
 
         if (timing_enabled) {
             ProbeTiming::tl_leaf_search_ns += phase_timer.elapsedNs();

@@ -5,13 +5,9 @@ Export timing comparison data to CSV for further analysis or visualization.
 
 import csv
 import re
+import sys
 from pathlib import Path
 from parse_timing import load_all_timings
-
-SCRIPT_DIR = Path(__file__).parent
-OLDTIME_DIR = SCRIPT_DIR / 'oldtime'
-NEWTIME_DIR = SCRIPT_DIR / 'newtime'
-OUTPUT_DIR = SCRIPT_DIR
 
 
 def export_comparison_csv(old_timings: dict, new_timings: dict, output_file: Path):
@@ -155,15 +151,23 @@ def export_summary_csv(old_timings: dict, new_timings: dict, output_file: Path):
 
 
 def main():
+    if len(sys.argv) != 3:
+        print(f"Usage: {sys.argv[0]} <oldtime_dir> <newtime_dir>", file=sys.stderr)
+        sys.exit(1)
+
+    oldtime_dir = Path(sys.argv[1])
+    newtime_dir = Path(sys.argv[2])
+    output_dir = Path(__file__).parent
+
     print("Loading timing data...")
-    old_timings = load_all_timings(OLDTIME_DIR)
-    new_timings = load_all_timings(NEWTIME_DIR)
+    old_timings = load_all_timings(oldtime_dir)
+    new_timings = load_all_timings(newtime_dir)
 
     print(f"Loaded {len(old_timings)} old timings, {len(new_timings)} new timings")
 
-    export_comparison_csv(old_timings, new_timings, OUTPUT_DIR / 'comparison.csv')
-    export_detailed_csv(old_timings, new_timings, OUTPUT_DIR / 'detailed.csv')
-    export_summary_csv(old_timings, new_timings, OUTPUT_DIR / 'summary_by_group.csv')
+    export_comparison_csv(old_timings, new_timings, output_dir / 'comparison.csv')
+    export_detailed_csv(old_timings, new_timings, output_dir / 'detailed.csv')
+    export_summary_csv(old_timings, new_timings, output_dir / 'summary_by_group.csv')
 
     print("\nDone! Generated CSV files for further analysis.")
 

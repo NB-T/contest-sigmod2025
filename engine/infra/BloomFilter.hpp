@@ -1,7 +1,6 @@
 #pragma once
 
 #include "infra/QueryMemory.hpp"
-#include <atomic>
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
@@ -39,7 +38,7 @@ class BloomFilter {
         }
     }
 
-    // add key thread-safe
+    // add key (not thread-safe)
     [[gnu::always_inline]] inline void add(uint64_t key) {
         uint64_t h1 = fmix64(key);
         uint64_t h2 = fmix64(key + 0x9e3779b97f4a7c15ULL); // golden ratio constant
@@ -47,7 +46,7 @@ class BloomFilter {
             size_t bit_pos = (h1 + i * h2) % total_bits_;
             size_t word = bit_pos / 64;
             uint64_t mask = 1ULL << (bit_pos % 64);
-            __atomic_fetch_or(&bits_[word], mask, __ATOMIC_RELAXED);
+            bits_[word] |= mask;
         }
     }
 
