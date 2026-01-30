@@ -4,6 +4,7 @@ Visualize the comparison.csv benchmark data with charts and plots.
 """
 
 import csv
+import sys
 import matplotlib.pyplot as plt
 from pathlib import Path
 
@@ -213,22 +214,29 @@ def plot_summary_stats(data, ax):
 
 
 def main():
+    if len(sys.argv) != 1:
+        print(f"Usage: {sys.argv[0]}", file=sys.stderr)
+        sys.exit(1)
+
     print(f"Loading data from {CSV_PATH}...")
     data = load_data()
     print(f"Loaded {len(data['query'])} queries")
 
-    # Create a single-plot figure (runtime comparison only)
-    fig, ax = plt.subplots(figsize=(16, 6))
-    plot_runtime_comparison(data, ax)
-    fig.tight_layout()
+    fig, axes = plt.subplots(3, 2, figsize=(18, 18))
+    fig.suptitle('Benchmark Comparison: Old vs New', fontsize=16, fontweight='bold')
 
-    # Save figure
+    plot_runtime_comparison(data, axes[0, 0])
+    plot_scatter_comparison(data, axes[0, 1])
+    plot_speedup_distribution(data, axes[1, 0])
+    plot_top_differences(data, axes[1, 1])
+    plot_breakdown_comparison(data, axes[2, 0])
+    plot_summary_stats(data, axes[2, 1])
+
+    fig.tight_layout(rect=[0, 0, 1, 0.97])
+
     output_path = SCRIPT_DIR / 'comparison_visualization.png'
     plt.savefig(output_path, dpi=150, bbox_inches='tight')
     print(f"Saved visualization to {output_path}")
-
-    # Also show if running interactively
-    plt.show()
 
 
 if __name__ == '__main__':

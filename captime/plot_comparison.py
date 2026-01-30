@@ -1,6 +1,11 @@
 import csv
+import sys
 import matplotlib.pyplot as plt
 import numpy as np
+
+if len(sys.argv) != 1:
+    print(f"Usage: {sys.argv[0]}", file=sys.stderr)
+    sys.exit(1)
 
 # Load data
 with open('comparison.csv') as f:
@@ -49,31 +54,30 @@ ax2.set_title('Slowdown Distribution')
 ax2.legend(fontsize=8)
 ax2.grid(True, alpha=0.3)
 
-# 3. Time breakdown comparison (stacked bar)
+# 3. Time breakdown comparison (grouped bar)
 ax3 = axes[1, 0]
-categories = ['Old', 'New']
-exec_sums = [old_exec.sum(), new_exec.sum()]
-htbuild_sums = [old_htbuild.sum(), new_htbuild.sum()]
-other_sums = [old_total.sum() - old_exec.sum() - old_htbuild.sum(),
-              new_total.sum() - new_exec.sum() - new_htbuild.sum()]
+components = ['Total', 'Exec', 'HT Build']
+old_vals = [old_total.sum(), old_exec.sum(), old_htbuild.sum()]
+new_vals = [new_total.sum(), new_exec.sum(), new_htbuild.sum()]
 
-x = np.arange(len(categories))
-width = 0.5
+x = np.arange(len(components))
+width = 0.35
 
-bars1 = ax3.bar(x, other_sums, width, label='Other', color='lightgray')
-bars2 = ax3.bar(x, exec_sums, width, bottom=other_sums, label='Exec', color='steelblue')
-bars3 = ax3.bar(x, htbuild_sums, width, bottom=[o+e for o,e in zip(other_sums, exec_sums)], label='HT Build', color='coral')
+bars_old = ax3.bar(x - width/2, old_vals, width, label='Old', color='steelblue', alpha=0.8)
+bars_new = ax3.bar(x + width/2, new_vals, width, label='New', color='coral', alpha=0.8)
 
 ax3.set_ylabel('Total Time (ms)')
 ax3.set_title('Time Breakdown by Component')
 ax3.set_xticks(x)
-ax3.set_xticklabels(categories)
+ax3.set_xticklabels(components)
 ax3.legend()
 ax3.grid(True, alpha=0.3, axis='y')
 
-# Add total labels on bars
-for i, total in enumerate([old_total.sum(), new_total.sum()]):
-    ax3.text(i, total + 200, f'{total:.0f}ms', ha='center', fontweight='bold')
+# Add value labels on bars
+for bars in [bars_old, bars_new]:
+    for bar in bars:
+        h = bar.get_height()
+        ax3.text(bar.get_x() + bar.get_width()/2, h + 50, f'{h:.0f}', ha='center', fontsize=7)
 
 # 4. Top 10 slowest queries
 ax4 = axes[1, 1]

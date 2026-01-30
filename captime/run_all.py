@@ -18,6 +18,13 @@ scripts = [
 
 
 def main():
+    if len(sys.argv) != 3:
+        print(f"Usage: {sys.argv[0]} <oldtime_dir> <newtime_dir>", file=sys.stderr)
+        sys.exit(1)
+
+    oldtime_dir = sys.argv[1]
+    newtime_dir = sys.argv[2]
+
     for script, desc in scripts:
         print(f"\n{'#' * 80}")
         print(f"# {desc}")
@@ -25,7 +32,7 @@ def main():
         print(f"{'#' * 80}\n")
 
         result = subprocess.run(
-            [sys.executable, SCRIPT_DIR / script],
+            [sys.executable, SCRIPT_DIR / script, oldtime_dir, newtime_dir],
             capture_output=False,
             cwd=SCRIPT_DIR
         )
