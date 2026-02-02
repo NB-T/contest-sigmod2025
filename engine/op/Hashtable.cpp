@@ -178,6 +178,17 @@ Vector<HashtableBuild::BufferEntry> HashtableBuild::collectAndSort() {
     parlay::integer_sort_inplace(slice, [](const BufferEntry& e) {
         return e.key;
     });
+	
+	
+	
+
+	      // parlay::internal::merge_sort_(slice, slice, [](const BufferEntry& a, const BufferEntry& b) { return a.key < b.key; }, true);
+
+	 /* std::sort(all_entries.begin(), all_entries.end(), [](const BufferEntry& a, const BufferEntry& b)
+			{
+				return a.key < b.key;
+			});
+			*/
 
     return all_entries;
 }

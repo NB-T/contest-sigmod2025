@@ -232,7 +232,7 @@ add_executable(
 target_include_directories(internal_runner PRIVATE include engine external/nbtlog/include)
 target_link_libraries(internal_runner PRIVATE engine re2 fmt range-v3 nlohmann_json::nlohmann_json sqlparser)
 
-option(NO_DUCK "Build without duckdb" ON)
+option(NO_DUCK "Build without duckdb" OFF)
 if(NO_DUCK)
     target_compile_definitions(internal_runner PRIVATE NO_DUCK)
 else()

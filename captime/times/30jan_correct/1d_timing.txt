@@ -1,0 +1,104 @@
+Query: 1d
+Total runtime: 11.00 ms
+
+========== JOIN TIMING REPORT ==========
+[Pipeline 0] eliminateSingletons: 0 ms
+[Pipeline 0] computeSamples: 0 ms
+[Pipeline 0] joinOptimize (inputs=3): 0 ms
+[Pipeline 1] scanBuild (movie_info_idx): 0 ms
+[Pipeline 1] pipelineCompile (engine::HashtableBuild,engine::TableScan,0,std::in...): 126 ms
+[Pipeline 1] htCollectAndSort (tuples=10): 0 ms
+[Pipeline 1] htCountUniqueKeys (keys=10): 0 ms
+[Pipeline 1] htBuildBloomFilter (bits=2048): 0 ms
+[Pipeline 1] htBuildTree (height=1 leaves=1): 0 ms
+[Pipeline 1] htBuildTotal (tuples=10): 0 ms
+[Pipeline 1] pipelineExec (movie_info_idx probes=0): 0 ms
+[Pipeline 1] joinOptimize (inputs=2): 0 ms
+[Pipeline 2] scanBuild (movie_companies): 0 ms
+[Pipeline 2] pipelineCompile (engine::HashtableBuild,engine::TableScan,0,std::in...): 152 ms
+[Pipeline 2] htCollectAndSort (tuples=5): 0 ms
+[Pipeline 2] htCountUniqueKeys (keys=3): 0 ms
+[Pipeline 2] htBuildBloomFilter (bits=2048): 0 ms
+[Pipeline 2] htBuildTree (height=1 leaves=1): 0 ms
+[Pipeline 2] htBuildTotal (tuples=5): 0 ms
+[Pipeline 2] pipelineExec (movie_companies probes=0): 3 ms
+[Pipeline 2] joinOptimize (inputs=2): 0 ms
+[Pipeline 3] scanBuild (title): 0 ms
+[Pipeline 3] pipelineCompile (engine::TableTarget,engine::TableScan,1,std::index...): 115 ms
+[Pipeline 3] pipelineExec (title probes=1): 0 ms
+[Pipeline 3] eliminateSingletons: 0 ms
+[Pipeline 3] computeSamples: 0 ms
+[Pipeline 3] joinOptimize (inputs=3): 0 ms
+[Pipeline 4] scanBuild (movie_info_idx): 0 ms
+[Pipeline 4] pipelineCompile (engine::HashtableBuild,engine::TableScan,0,std::in...): 0 ms
+[Pipeline 4] htCollectAndSort (tuples=10): 0 ms
+[Pipeline 4] htCountUniqueKeys (keys=10): 0 ms
+[Pipeline 4] htBuildBloomFilter (bits=2048): 0 ms
+[Pipeline 4] htBuildTree (height=1 leaves=1): 0 ms
+[Pipeline 4] htBuildTotal (tuples=10): 0 ms
+[Pipeline 4] pipelineExec (movie_info_idx probes=0): 0 ms
+[Pipeline 4] joinOptimize (inputs=2): 0 ms
+[Pipeline 5] scanBuild (movie_companies): 0 ms
+[Pipeline 5] pipelineCompile (engine::HashtableBuild,engine::TableScan,0,std::in...): 0 ms
+[Pipeline 5] htCollectAndSort (tuples=5): 0 ms
+[Pipeline 5] htCountUniqueKeys (keys=3): 0 ms
+[Pipeline 5] htBuildBloomFilter (bits=2048): 0 ms
+[Pipeline 5] htBuildTree (height=1 leaves=1): 0 ms
+[Pipeline 5] htBuildTotal (tuples=5): 0 ms
+[Pipeline 5] pipelineExec (movie_companies probes=0): 0 ms
+[Pipeline 5] joinOptimize (inputs=2): 0 ms
+[Pipeline 6] scanBuild (title): 0 ms
+[Pipeline 6] pipelineCompile (engine::TableTarget,engine::TableScan,1,std::index...): 0 ms
+[Pipeline 6] pipelineExec (title probes=1): 1 ms
+[Pipeline 6] eliminateSingletons: 0 ms
+[Pipeline 6] computeSamples: 0 ms
+[Pipeline 6] joinOptimize (inputs=3): 0 ms
+[Pipeline 7] scanBuild (movie_info_idx): 0 ms
+[Pipeline 7] pipelineCompile (engine::HashtableBuild,engine::TableScan,0,std::in...): 0 ms
+[Pipeline 7] htCollectAndSort (tuples=10): 0 ms
+[Pipeline 7] htCountUniqueKeys (keys=10): 0 ms
+[Pipeline 7] htBuildBloomFilter (bits=2048): 0 ms
+[Pipeline 7] htBuildTree (height=1 leaves=1): 0 ms
+[Pipeline 7] htBuildTotal (tuples=10): 0 ms
+[Pipeline 7] pipelineExec (movie_info_idx probes=0): 0 ms
+[Pipeline 7] joinOptimize (inputs=2): 0 ms
+[Pipeline 8] scanBuild (movie_companies): 0 ms
+[Pipeline 8] pipelineCompile (engine::HashtableBuild,engine::TableScan,0,std::in...): 0 ms
+[Pipeline 8] htCollectAndSort (tuples=5): 0 ms
+[Pipeline 8] htCountUniqueKeys (keys=3): 0 ms
+[Pipeline 8] htBuildBloomFilter (bits=2048): 0 ms
+[Pipeline 8] htBuildTree (height=1 leaves=1): 0 ms
+[Pipeline 8] htBuildTotal (tuples=5): 0 ms
+[Pipeline 8] pipelineExec (movie_companies probes=0): 1 ms
+[Pipeline 8] joinOptimize (inputs=2): 0 ms
+[Pipeline 9] scanBuild (title): 0 ms
+[Pipeline 9] pipelineCompile (engine::TableTarget,engine::TableScan,1,std::index...): 0 ms
+[Pipeline 9] pipelineExec (title probes=1): 0 ms
+=========================================
+
+========== PROBE TIMING BREAKDOWN ==========
+Total probes:           6
+Bloom filter:
+  Total time:           0.001 ms
+  Avg per probe:        165.0 ns
+  Rejections:           0 (0.0%)
+Tree traversal:
+  Total time:           0.000 ms
+  Traversals:           0
+Leaf search:
+  Total time:           0.002 ms
+  Leaf pages visited:   6
+  Avg per search:       313.8 ns
+Consumer invocation:
+  Total time:           0.001 ms
+  Invocations:          12
+  Avg per invocation:   89.2 ns
+Total probe time:       0.006 ms
+  Avg per probe:        917.2 ns
+Time breakdown:
+  Bloom filter:         18.0%
+  Tree traversal:       4.2%
+  Leaf search:          34.2%
+  Consumer:             19.5%
+  Overhead/other:       24.2%
+=============================================

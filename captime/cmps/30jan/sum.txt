@@ -1,0 +1,424 @@
+Loading timing data...
+Loaded 113 old timings, 113 new timings
+
+================================================================================
+QUERY-BY-QUERY COMPARISON (Total Runtime)
+================================================================================
+
+Query        Old (ms)     New (ms)                      Diff
+-------- ------------ ------------ -------------------------
+10a            114.74        46.83     -67.91 (59.2% faster)
+10b             35.07        20.83     -14.24 (40.6% faster)
+10c             36.94        32.83      -4.11 (11.1% faster)
+11a             58.95        21.34     -37.61 (63.8% faster)
+11b              6.56         7.90      +1.34 (20.4% slower)
+11c             72.74        46.12     -26.62 (36.6% faster)
+11d            119.60        57.10     -62.50 (52.3% faster)
+12a             77.72        35.89     -41.83 (53.8% faster)
+12b            100.02        78.30     -21.72 (21.7% faster)
+12c            194.70       124.13     -70.57 (36.2% faster)
+13a            273.38       130.29    -143.09 (52.3% faster)
+13b            115.36        76.09     -39.27 (34.0% faster)
+13c            124.46        75.41     -49.05 (39.4% faster)
+13d            588.19       429.51    -158.68 (27.0% faster)
+14a             79.45        39.03     -40.42 (50.9% faster)
+14b             34.72        15.03     -19.69 (56.7% faster)
+14c             67.23        49.29     -17.94 (26.7% faster)
+15a             53.88        38.75     -15.13 (28.1% faster)
+15b             10.04        12.41      +2.37 (23.6% slower)
+15c            126.84        53.24     -73.60 (58.0% faster)
+15d            170.06        75.54     -94.52 (55.6% faster)
+16a            239.19       152.64     -86.55 (36.2% faster)
+16b           1496.44      1113.26    -383.18 (25.6% faster)
+16c            521.12       309.17    -211.95 (40.7% faster)
+16d            528.23       387.42    -140.81 (26.7% faster)
+17a            632.37       602.20      -30.17 (4.8% faster)
+17b            440.75       324.86    -115.89 (26.3% faster)
+17c            400.46       305.82     -94.64 (23.6% faster)
+17d            398.84       301.70     -97.14 (24.4% faster)
+17e           2341.08      2551.21     +210.13 (9.0% slower)
+17f            454.98       864.26    +409.28 (90.0% slower)
+18a             93.99       151.84     +57.85 (61.5% slower)
+18b             34.19        29.72      -4.47 (13.1% faster)
+18c            126.75       168.30     +41.55 (32.8% slower)
+19a             45.40        41.15       -4.25 (9.4% faster)
+19b             21.30        16.39      -4.91 (23.1% faster)
+19c             80.62        83.48       +2.86 (3.5% slower)
+19d            750.97      1128.68    +377.71 (50.3% slower)
+1a              22.07        23.76       +1.69 (7.7% slower)
+1b              11.02         9.00      -2.02 (18.3% faster)
+1c               7.78         6.13      -1.65 (21.2% faster)
+1d               9.88         8.47      -1.41 (14.3% faster)
+20a            178.97       277.58     +98.61 (55.1% slower)
+20b             54.30        64.81     +10.51 (19.4% slower)
+20c            218.58       319.61    +101.03 (46.2% slower)
+21a             32.27        22.40      -9.87 (30.6% faster)
+21b             29.15        20.79      -8.36 (28.7% faster)
+21c             45.94        33.82     -12.12 (26.4% faster)
+22a             48.89        43.27      -5.62 (11.5% faster)
+22b             42.28        35.42      -6.86 (16.2% faster)
+22c             68.84        54.98     -13.86 (20.1% faster)
+22d            106.00       117.51     +11.51 (10.9% slower)
+23a             32.65        11.22     -21.43 (65.6% faster)
+23b             39.05        15.27     -23.78 (60.9% faster)
+23c             39.11        13.81     -25.30 (64.7% faster)
+24a             84.02        46.72     -37.30 (44.4% faster)
+24b             31.28        34.88      +3.60 (11.5% slower)
+25a            148.35        91.72     -56.63 (38.2% faster)
+25b             19.61        18.63       -0.98 (5.0% faster)
+25c            283.92       123.74    -160.18 (56.4% faster)
+26a            335.47       282.31     -53.16 (15.8% faster)
+26b            173.92       120.23     -53.69 (30.9% faster)
+26c            478.87       318.63    -160.24 (33.5% faster)
+27a             27.87        18.36      -9.51 (34.1% faster)
+27b             30.66        13.52     -17.14 (55.9% faster)
+27c             75.43        37.45     -37.98 (50.4% faster)
+28a            154.27        67.39     -86.88 (56.3% faster)
+28b             59.71        34.31     -25.40 (42.5% faster)
+28c            153.60        73.73     -79.87 (52.0% faster)
+29a             19.19        19.74       +0.55 (2.9% slower)
+29b             19.58        17.27      -2.31 (11.8% faster)
+29c            186.52       101.44     -85.08 (45.6% faster)
+2a              63.02        60.85       -2.17 (3.4% faster)
+2b              58.99        64.99      +6.00 (10.2% slower)
+2c              11.17        13.49      +2.32 (20.8% slower)
+2d             134.09       187.22     +53.13 (39.6% slower)
+30a            141.38        50.00     -91.38 (64.6% faster)
+30b             28.68        14.12     -14.56 (50.8% faster)
+30c            171.99        63.86    -108.13 (62.9% faster)
+31a            172.20        58.51    -113.69 (66.0% faster)
+31b             23.41        20.39      -3.02 (12.9% faster)
+31c            142.51        63.10     -79.41 (55.7% faster)
+32a             53.59        40.46     -13.13 (24.5% faster)
+32b             90.07        57.39     -32.68 (36.3% faster)
+33a             39.38        29.44      -9.94 (25.2% faster)
+33b             33.64        15.73     -17.91 (53.2% faster)
+33c             78.79        57.83     -20.96 (26.6% faster)
+3a              39.87        45.40      +5.53 (13.9% slower)
+3b              33.53        28.05      -5.48 (16.3% faster)
+3c              50.58        61.51     +10.93 (21.6% slower)
+4a              44.26        41.34       -2.92 (6.6% faster)
+4b              27.86        30.09       +2.23 (8.0% slower)
+4c              52.31        57.86      +5.55 (10.6% slower)
+5a               3.48         2.11      -1.37 (39.4% faster)
+5b               1.55         1.06      -0.49 (31.6% faster)
+5c              26.08        17.24      -8.84 (33.9% faster)
+6a              51.25        44.71      -6.54 (12.8% faster)
+6b              38.35        39.89       +1.54 (4.0% slower)
+6c              44.58        41.65       -2.93 (6.6% faster)
+6d             103.53        68.36     -35.17 (34.0% faster)
+6e              49.42        44.83       -4.59 (9.3% faster)
+6f             937.01       863.25      -73.76 (7.9% faster)
+7a             197.71       194.38       -3.33 (1.7% faster)
+7b              55.84        41.96     -13.88 (24.9% faster)
+7c             381.68       339.17     -42.51 (11.1% faster)
+8a              55.60        33.19     -22.41 (40.3% faster)
+8b               7.74         6.02      -1.72 (22.2% faster)
+8c            1827.45      2002.05     +174.60 (9.6% slower)
+8d             506.10       441.29     -64.81 (12.8% faster)
+9a              55.52        50.99       -4.53 (8.2% faster)
+9b              61.96        39.01     -22.95 (37.0% faster)
+9c             178.63       109.39     -69.24 (38.8% faster)
+9d             563.84       535.19      -28.65 (5.1% faster)
+
+------------------------------------------------------------
+TOTAL        20975.02     18473.25   -2501.77 (11.9% faster)
+
+================================================================================
+SUMMARY
+================================================================================
+Total queries compared: 113
+New approach faster:    88 (77.9%)
+New approach slower:    24 (21.2%)
+Approximately same:     1 (0.9%)
+
+Total old runtime:      20975.02 ms
+Total new runtime:      18473.25 ms
+Difference:             -2501.77 ms
+Speedup factor:         1.135x
+                        -> New is 13.5% faster overall
+
+================================================================================
+TOP 10 QUERIES WHERE NEW IS FASTER
+================================================================================
+Query        Old (ms)     New (ms)     Improvement
+-------- ------------ ------------ ---------------
+16b           1496.44      1113.26          383.18
+16c            521.12       309.17          211.95
+26c            478.87       318.63          160.24
+25c            283.92       123.74          160.18
+13d            588.19       429.51          158.68
+13a            273.38       130.29          143.09
+16d            528.23       387.42          140.81
+17b            440.75       324.86          115.89
+31a            172.20        58.51          113.69
+30c            171.99        63.86          108.13
+
+================================================================================
+TOP 10 QUERIES WHERE NEW IS SLOWER
+================================================================================
+Query        Old (ms)     New (ms)      Regression
+-------- ------------ ------------ ---------------
+17f            454.98       864.26          409.28
+19d            750.97      1128.68          377.71
+17e           2341.08      2551.21          210.13
+8c            1827.45      2002.05          174.60
+20c            218.58       319.61          101.03
+20a            178.97       277.58           98.61
+18a             93.99       151.84           57.85
+2d             134.09       187.22           53.13
+18c            126.75       168.30           41.55
+22d            106.00       117.51           11.51
+
+================================================================================
+JIT COMPILATION TIME COMPARISON
+================================================================================
+(pipelineCompile entries - typically one-time overhead, not part of hot-path)
+
+Old total compile time: 70875.00 ms
+New total compile time: 69823.00 ms
+Difference:             -1052.00 ms
+Loading timing data...
+Loaded 113 old timings, 113 new timings
+
+======================================================================
+OVERALL STATISTICS
+======================================================================
+
+Old Runtimes:
+  Count:    113
+  Sum:      20975.02 ms
+  Mean:     185.62 ms
+  Median:   67.23 ms
+  Std Dev:  334.50 ms
+  Min:      1.55 ms
+  Max:      2341.08 ms
+
+New Runtimes:
+  Count:    113
+  Sum:      18473.25 ms
+  Mean:     163.48 ms
+  Median:   49.29 ms
+  Std Dev:  351.28 ms
+  Min:      1.06 ms
+  Max:      2551.21 ms
+
+Runtime Differences (new - old):
+  Count:    113
+  Sum:      -2501.77 ms
+  Mean:     -22.14 ms
+  Median:   -14.24 ms
+  Std Dev:  86.38 ms
+  Min:      -383.18 ms
+  Max:      409.28 ms
+
+Speedup Factors (old / new):
+  Count:    113
+  Sum:      163.38 ms
+  Mean:     1.45 ms
+  Median:   1.33 ms
+  Std Dev:  0.56 ms
+  Min:      0.53 ms
+  Max:      2.94 ms
+
+======================================================================
+ANALYSIS BY RUNTIME RANGE (based on old runtime)
+======================================================================
+
+0-10ms: 6 queries
+  Old mean:      6.17 ms
+  New mean:      5.28 ms
+  Mean diff:     -0.88 ms
+  Mean speedup:  1.28x
+  Faster count:  4 (67%)
+  Slower count:  1 (17%)
+
+10-25ms: 9 queries
+  Old mean:      17.49 ms
+  New mean:      16.79 ms
+  Mean diff:     -0.70 ms
+  Mean speedup:  1.04x
+  Faster count:  5 (56%)
+  Slower count:  4 (44%)
+
+25-50ms: 27 queries
+  Old mean:      36.71 ms
+  New mean:      27.78 ms
+  Mean diff:     -8.93 ms
+  Mean speedup:  1.52x
+  Faster count:  23 (85%)
+  Slower count:  4 (15%)
+
+50-100ms: 25 queries
+  Old mean:      66.18 ms
+  New mean:      52.59 ms
+  Mean diff:     -13.59 ms
+  Mean speedup:  1.41x
+  Faster count:  19 (76%)
+  Slower count:  6 (24%)
+
+100ms+: 46 queries
+  Old mean:      394.24 ms
+  New mean:      352.73 ms
+  Mean diff:     -41.51 ms
+  Mean speedup:  1.52x
+  Faster count:  37 (80%)
+  Slower count:  9 (20%)
+
+======================================================================
+JIT COMPILATION TIME ANALYSIS
+======================================================================
+
+Old Approach - Compile Time (per query):
+  Count:    113
+  Sum:      70875.00 ms
+  Mean:     627.21 ms
+  Median:   625.00 ms
+  Std Dev:  215.47 ms
+  Min:      120.00 ms
+  Max:      1087.00 ms
+
+New Approach - Compile Time (per query):
+  Count:    113
+  Sum:      69823.00 ms
+  Mean:     617.90 ms
+  Median:   631.00 ms
+  Std Dev:  201.65 ms
+  Min:      117.00 ms
+  Max:      1042.00 ms
+
+Comparison:
+  Old total compile time: 70875.00 ms
+  New total compile time: 69823.00 ms
+  Difference: -1052.00 ms
+
+======================================================================
+EXECUTION PATTERN ANALYSIS
+======================================================================
+
+Execution Time (pipelineExec):
+  Old total: 18990.00 ms, mean: 168.05 ms
+  New total: 16648.00 ms, mean: 147.33 ms
+  Diff:      -2342.00 ms
+
+Hashtable Build Time (htBuildTotal):
+  Old total: 7298.00 ms, mean: 64.58 ms
+  New total: 6019.00 ms, mean: 53.27 ms
+  Diff:      -1279.00 ms
+Loading timing data...
+Loaded 113 old timings, 113 new timings
+
+Old total runtime: 20975.02 ms
+New total runtime: 18473.25 ms
+
+======================================================================
+OLD APPROACH (excl. compile) OPERATION BREAKDOWN
+======================================================================
+Operation                        Total (ms)    Count     Avg (ms)
+------------------------------ ------------ -------- ------------
+pipelineExec                       18990.00     2253         8.43
+htBuildTotal                        7298.00     1926         3.79
+htCollectAndSort                    3489.00     1926         1.81
+htBuildBloomFilter                  3229.00     1914         1.69
+htCountUniqueKeys                     98.00     1914         0.05
+htBuildTree                           60.00     1914         0.03
+joinOptimize                          27.00     2253         0.01
+eliminateSingletons                    0.00      339         0.00
+computeSamples                         0.00      339         0.00
+scanBuild                              0.00     2253         0.00
+------------------------------ ------------ -------- ------------
+Sum of ops                         33191.00
+Reported total runtime             20975.02
+
+======================================================================
+NEW APPROACH (excl. compile) OPERATION BREAKDOWN
+======================================================================
+Operation                        Total (ms)    Count     Avg (ms)
+------------------------------ ------------ -------- ------------
+pipelineExec                       16648.00     2253         7.39
+htBuildTotal                        6019.00     1926         3.13
+htCollectAndSort                    3335.00     1926         1.73
+htBuildBloomFilter                  2230.00     1914         1.17
+htBuildTree                           65.00     1914         0.03
+htCountUniqueKeys                     50.00     1914         0.03
+computeSamples                         8.00      339         0.02
+joinOptimize                           2.00     2253         0.00
+eliminateSingletons                    0.00      339         0.00
+scanBuild                              0.00     2253         0.00
+------------------------------ ------------ -------- ------------
+Sum of ops                         28357.00
+Reported total runtime             18473.25
+
+======================================================================
+HASHTABLE OPERATION COMPARISON
+======================================================================
+
+Old Approach HT Operations:
+Operation                   Total (ms)    Count
+------------------------- ------------ --------
+htAlloc                           0.00        0
+htBuild                           0.00        0
+htBuildTotal                   7298.00     1926
+
+New Approach HT Operations:
+Operation                   Total (ms)    Count
+------------------------- ------------ --------
+htCollectAndSort               3335.00     1926
+htCountUniqueKeys                50.00     1914
+htBuildBloomFilter             2230.00     1914
+htBuildTree                      65.00     1914
+htBuildTotal                   6019.00     1926
+
+HT Build Total Comparison:
+  Old htBuildTotal sum: 7298.00 ms
+  New htBuildTotal sum: 6019.00 ms
+  Difference: -1279.00 ms
+
+======================================================================
+PIPELINE EXECUTION TIME COMPARISON
+======================================================================
+Component                     Old (ms)     New (ms)         Diff
+------------------------- ------------ ------------ ------------
+pipelineExec                  18990.00     16648.00     -2342.00
+scanBuild                         0.00         0.00        +0.00
+joinOptimize                     27.00         2.00       -25.00
+Loading timing data...
+Loaded 113 old timings, 113 new timings
+Exported comparison to /home/nb-t/new_contest/captime/cmps/30jan/comparison.csv
+Exported detailed data to /home/nb-t/new_contest/captime/cmps/30jan/detailed.csv
+Exported summary to /home/nb-t/new_contest/captime/cmps/30jan/summary_by_group.csv
+
+Done! Generated CSV files for further analysis.
+
+################################################################################
+# Comparing runtime between old and new approaches
+# Running: compare_runtime.py
+################################################################################
+
+
+################################################################################
+# Statistical analysis
+# Running: stats_analysis.py
+################################################################################
+
+
+################################################################################
+# Operation breakdown analysis
+# Running: analyze_breakdown.py
+################################################################################
+
+
+################################################################################
+# Exporting CSV files
+# Running: export_csv.py
+################################################################################
+
+
+================================================================================
+All analyses complete!
+================================================================================
+
+Generated files in /home/nb-t/new_contest/captime/cmps/30jan:
+  - /home/nb-t/new_contest/captime/cmps/30jan/comparison.csv
+  - /home/nb-t/new_contest/captime/cmps/30jan/detailed.csv
+  - /home/nb-t/new_contest/captime/cmps/30jan/summary_by_group.csv

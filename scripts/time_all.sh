@@ -61,7 +61,7 @@ for job in "${jobs[@]}"; do
             runtimes+=("$rt")
             echo "    Run $rep: ${rt} ms"
         else
-            echo "    !!! No timing file produced for run $rep"
+            echo "    !!! No timing file produced for run $rep at ${rep_dir} ${timing_file}"
             all_ok=false
             break
         fi

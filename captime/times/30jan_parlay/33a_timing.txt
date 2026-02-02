@@ -1,0 +1,294 @@
+Query: 33a
+Total runtime: 39.38 ms
+
+========== JOIN TIMING REPORT ==========
+[Pipeline 0] eliminateSingletons: 0 ms
+[Pipeline 0] computeSamples: 0 ms
+[Pipeline 0] joinOptimize (inputs=10): 0 ms
+[Pipeline 1] scanBuild (link_type): 0 ms
+[Pipeline 1] pipelineCompile (engine::HashtableBuild,engine::TableScan,0,std::in...): 129 ms
+[Pipeline 1] htCollectAndSort (tuples=2): 0 ms
+[Pipeline 1] htCountUniqueKeys (keys=2): 0 ms
+[Pipeline 1] htBuildBloomFilter (bits=2048): 0 ms
+[Pipeline 1] htBuildTree (height=1 leaves=1): 0 ms
+[Pipeline 1] htBuildTotal (tuples=2): 0 ms
+[Pipeline 1] pipelineExec (link_type probes=0): 0 ms
+[Pipeline 1] joinOptimize (inputs=9): 0 ms
+[Pipeline 2] scanBuild (title): 0 ms
+[Pipeline 2] pipelineCompile (engine::HashtableBuild,engine::TableScan,0,std::in...): 145 ms
+[Pipeline 2] htCollectAndSort (tuples=15807): 0 ms
+[Pipeline 2] htCountUniqueKeys (keys=15807): 0 ms
+[Pipeline 2] htBuildBloomFilter (bits=316140): 1 ms
+[Pipeline 2] htBuildTree (height=2 leaves=31): 0 ms
+[Pipeline 2] htBuildTotal (tuples=15807): 2 ms
+[Pipeline 2] pipelineExec (title probes=0): 9 ms
+[Pipeline 2] joinOptimize (inputs=9): 0 ms
+[Pipeline 3] scanBuild (movie_link): 0 ms
+[Pipeline 3] pipelineCompile (engine::HashtableBuild,engine::TableScan,0,std::in...): 0 ms
+[Pipeline 3] htCollectAndSort (tuples=106): 0 ms
+[Pipeline 3] htCountUniqueKeys (keys=65): 0 ms
+[Pipeline 3] htBuildBloomFilter (bits=2120): 0 ms
+[Pipeline 3] htBuildTree (height=1 leaves=1): 0 ms
+[Pipeline 3] htBuildTotal (tuples=106): 0 ms
+[Pipeline 3] pipelineExec (movie_link probes=0): 0 ms
+[Pipeline 3] joinOptimize (inputs=9): 0 ms
+[Pipeline 4] scanBuild (movie_info_idx): 0 ms
+[Pipeline 4] pipelineCompile (engine::HashtableBuild,engine::TableScan,1,std::in...): 133 ms
+[Pipeline 4] htCollectAndSort (tuples=6): 0 ms
+[Pipeline 4] htCountUniqueKeys (keys=4): 0 ms
+[Pipeline 4] htBuildBloomFilter (bits=2048): 0 ms
+[Pipeline 4] htBuildTree (height=1 leaves=1): 0 ms
+[Pipeline 4] htBuildTotal (tuples=6): 0 ms
+[Pipeline 4] pipelineExec (movie_info_idx probes=1): 0 ms
+[Pipeline 4] joinOptimize (inputs=8): 0 ms
+[Pipeline 5] scanBuild (movie_companies): 0 ms
+[Pipeline 5] pipelineCompile (engine::HashtableBuild,engine::TableScan,2,std::in...): 110 ms
+[Pipeline 5] htCollectAndSort (tuples=11): 0 ms
+[Pipeline 5] htCountUniqueKeys (keys=9): 0 ms
+[Pipeline 5] htBuildBloomFilter (bits=2048): 0 ms
+[Pipeline 5] htBuildTree (height=1 leaves=1): 0 ms
+[Pipeline 5] htBuildTotal (tuples=11): 0 ms
+[Pipeline 5] pipelineExec (movie_companies probes=2): 0 ms
+[Pipeline 5] joinOptimize (inputs=6): 0 ms
+[Pipeline 6] scanBuild (company_name): 0 ms
+[Pipeline 6] pipelineCompile (engine::HashtableBuild,engine::TableScan,1,std::in...): 110 ms
+[Pipeline 6] htCollectAndSort (tuples=11): 0 ms
+[Pipeline 6] htCountUniqueKeys (keys=6): 0 ms
+[Pipeline 6] htBuildBloomFilter (bits=2048): 0 ms
+[Pipeline 6] htBuildTree (height=1 leaves=1): 0 ms
+[Pipeline 6] htBuildTotal (tuples=11): 0 ms
+[Pipeline 6] pipelineExec (company_name probes=1): 0 ms
+[Pipeline 6] joinOptimize (inputs=5): 0 ms
+[Pipeline 7] scanBuild (movie_info_idx): 0 ms
+[Pipeline 7] pipelineCompile (engine::HashtableBuild,engine::TableScan,1,std::in...): 108 ms
+[Pipeline 7] htCollectAndSort (tuples=10): 0 ms
+[Pipeline 7] htCountUniqueKeys (keys=5): 0 ms
+[Pipeline 7] htBuildBloomFilter (bits=2048): 0 ms
+[Pipeline 7] htBuildTree (height=1 leaves=1): 0 ms
+[Pipeline 7] htBuildTotal (tuples=10): 0 ms
+[Pipeline 7] pipelineExec (movie_info_idx probes=1): 2 ms
+[Pipeline 7] joinOptimize (inputs=4): 0 ms
+[Pipeline 8] scanBuild (title): 0 ms
+[Pipeline 8] pipelineCompile (engine::HashtableBuild,engine::TableScan,0,std::in...): 0 ms
+[Pipeline 8] htCollectAndSort (tuples=5): 0 ms
+[Pipeline 8] htCountUniqueKeys (keys=5): 0 ms
+[Pipeline 8] htBuildBloomFilter (bits=2048): 0 ms
+[Pipeline 8] htBuildTree (height=1 leaves=1): 0 ms
+[Pipeline 8] htBuildTotal (tuples=5): 0 ms
+[Pipeline 8] pipelineExec (title probes=0): 0 ms
+[Pipeline 8] joinOptimize (inputs=4): 0 ms
+[Pipeline 9] scanBuild (movie_companies): 0 ms
+[Pipeline 9] pipelineCompile (engine::HashtableBuild,engine::TableScan,2,std::in...): 116 ms
+[Pipeline 9] htCollectAndSort (tuples=28): 0 ms
+[Pipeline 9] htCountUniqueKeys (keys=12): 0 ms
+[Pipeline 9] htBuildBloomFilter (bits=2048): 0 ms
+[Pipeline 9] htBuildTree (height=1 leaves=1): 0 ms
+[Pipeline 9] htBuildTotal (tuples=28): 0 ms
+[Pipeline 9] pipelineExec (movie_companies probes=2): 0 ms
+[Pipeline 9] joinOptimize (inputs=2): 0 ms
+[Pipeline 10] scanBuild (company_name): 0 ms
+[Pipeline 10] pipelineCompile (engine::TableTarget,engine::TableScan,1,std::index...): 110 ms
+[Pipeline 10] pipelineExec (company_name probes=1): 0 ms
+[Pipeline 10] eliminateSingletons: 0 ms
+[Pipeline 10] computeSamples: 0 ms
+[Pipeline 10] joinOptimize (inputs=10): 0 ms
+[Pipeline 11] scanBuild (link_type): 0 ms
+[Pipeline 11] pipelineCompile (engine::HashtableBuild,engine::TableScan,0,std::in...): 0 ms
+[Pipeline 11] htCollectAndSort (tuples=2): 0 ms
+[Pipeline 11] htCountUniqueKeys (keys=2): 0 ms
+[Pipeline 11] htBuildBloomFilter (bits=2048): 0 ms
+[Pipeline 11] htBuildTree (height=1 leaves=1): 0 ms
+[Pipeline 11] htBuildTotal (tuples=2): 0 ms
+[Pipeline 11] pipelineExec (link_type probes=0): 0 ms
+[Pipeline 11] joinOptimize (inputs=9): 0 ms
+[Pipeline 12] scanBuild (title): 0 ms
+[Pipeline 12] pipelineCompile (engine::HashtableBuild,engine::TableScan,0,std::in...): 0 ms
+[Pipeline 12] htCollectAndSort (tuples=15807): 0 ms
+[Pipeline 12] htCountUniqueKeys (keys=15807): 0 ms
+[Pipeline 12] htBuildBloomFilter (bits=316140): 0 ms
+[Pipeline 12] htBuildTree (height=2 leaves=31): 0 ms
+[Pipeline 12] htBuildTotal (tuples=15807): 1 ms
+[Pipeline 12] pipelineExec (title probes=0): 1 ms
+[Pipeline 12] joinOptimize (inputs=9): 0 ms
+[Pipeline 13] scanBuild (movie_link): 0 ms
+[Pipeline 13] pipelineCompile (engine::HashtableBuild,engine::TableScan,0,std::in...): 0 ms
+[Pipeline 13] htCollectAndSort (tuples=106): 0 ms
+[Pipeline 13] htCountUniqueKeys (keys=65): 0 ms
+[Pipeline 13] htBuildBloomFilter (bits=2120): 0 ms
+[Pipeline 13] htBuildTree (height=1 leaves=1): 0 ms
+[Pipeline 13] htBuildTotal (tuples=106): 0 ms
+[Pipeline 13] pipelineExec (movie_link probes=0): 0 ms
+[Pipeline 13] joinOptimize (inputs=9): 9 ms
+[Pipeline 14] scanBuild (movie_info_idx): 0 ms
+[Pipeline 14] pipelineCompile (engine::HashtableBuild,engine::TableScan,1,std::in...): 0 ms
+[Pipeline 14] htCollectAndSort (tuples=6): 0 ms
+[Pipeline 14] htCountUniqueKeys (keys=4): 0 ms
+[Pipeline 14] htBuildBloomFilter (bits=2048): 0 ms
+[Pipeline 14] htBuildTree (height=1 leaves=1): 0 ms
+[Pipeline 14] htBuildTotal (tuples=6): 0 ms
+[Pipeline 14] pipelineExec (movie_info_idx probes=1): 0 ms
+[Pipeline 14] joinOptimize (inputs=8): 0 ms
+[Pipeline 15] scanBuild (movie_companies): 0 ms
+[Pipeline 15] pipelineCompile (engine::HashtableBuild,engine::TableScan,2,std::in...): 0 ms
+[Pipeline 15] htCollectAndSort (tuples=11): 0 ms
+[Pipeline 15] htCountUniqueKeys (keys=9): 0 ms
+[Pipeline 15] htBuildBloomFilter (bits=2048): 0 ms
+[Pipeline 15] htBuildTree (height=1 leaves=1): 0 ms
+[Pipeline 15] htBuildTotal (tuples=11): 0 ms
+[Pipeline 15] pipelineExec (movie_companies probes=2): 0 ms
+[Pipeline 15] joinOptimize (inputs=6): 0 ms
+[Pipeline 16] scanBuild (company_name): 0 ms
+[Pipeline 16] pipelineCompile (engine::HashtableBuild,engine::TableScan,1,std::in...): 0 ms
+[Pipeline 16] htCollectAndSort (tuples=11): 0 ms
+[Pipeline 16] htCountUniqueKeys (keys=6): 0 ms
+[Pipeline 16] htBuildBloomFilter (bits=2048): 0 ms
+[Pipeline 16] htBuildTree (height=1 leaves=1): 0 ms
+[Pipeline 16] htBuildTotal (tuples=11): 0 ms
+[Pipeline 16] pipelineExec (company_name probes=1): 0 ms
+[Pipeline 16] joinOptimize (inputs=5): 0 ms
+[Pipeline 17] scanBuild (movie_info_idx): 0 ms
+[Pipeline 17] pipelineCompile (engine::HashtableBuild,engine::TableScan,1,std::in...): 0 ms
+[Pipeline 17] htCollectAndSort (tuples=10): 0 ms
+[Pipeline 17] htCountUniqueKeys (keys=5): 0 ms
+[Pipeline 17] htBuildBloomFilter (bits=2048): 0 ms
+[Pipeline 17] htBuildTree (height=1 leaves=1): 0 ms
+[Pipeline 17] htBuildTotal (tuples=10): 0 ms
+[Pipeline 17] pipelineExec (movie_info_idx probes=1): 0 ms
+[Pipeline 17] joinOptimize (inputs=4): 0 ms
+[Pipeline 18] scanBuild (title): 0 ms
+[Pipeline 18] pipelineCompile (engine::HashtableBuild,engine::TableScan,0,std::in...): 0 ms
+[Pipeline 18] htCollectAndSort (tuples=5): 0 ms
+[Pipeline 18] htCountUniqueKeys (keys=5): 0 ms
+[Pipeline 18] htBuildBloomFilter (bits=2048): 0 ms
+[Pipeline 18] htBuildTree (height=1 leaves=1): 0 ms
+[Pipeline 18] htBuildTotal (tuples=5): 0 ms
+[Pipeline 18] pipelineExec (title probes=0): 0 ms
+[Pipeline 18] joinOptimize (inputs=4): 0 ms
+[Pipeline 19] scanBuild (movie_companies): 0 ms
+[Pipeline 19] pipelineCompile (engine::HashtableBuild,engine::TableScan,2,std::in...): 0 ms
+[Pipeline 19] htCollectAndSort (tuples=28): 0 ms
+[Pipeline 19] htCountUniqueKeys (keys=12): 0 ms
+[Pipeline 19] htBuildBloomFilter (bits=2048): 0 ms
+[Pipeline 19] htBuildTree (height=1 leaves=1): 0 ms
+[Pipeline 19] htBuildTotal (tuples=28): 0 ms
+[Pipeline 19] pipelineExec (movie_companies probes=2): 0 ms
+[Pipeline 19] joinOptimize (inputs=2): 0 ms
+[Pipeline 20] scanBuild (company_name): 0 ms
+[Pipeline 20] pipelineCompile (engine::TableTarget,engine::TableScan,1,std::index...): 0 ms
+[Pipeline 20] pipelineExec (company_name probes=1): 0 ms
+[Pipeline 20] eliminateSingletons: 0 ms
+[Pipeline 20] computeSamples: 0 ms
+[Pipeline 20] joinOptimize (inputs=10): 0 ms
+[Pipeline 21] scanBuild (link_type): 0 ms
+[Pipeline 21] pipelineCompile (engine::HashtableBuild,engine::TableScan,0,std::in...): 0 ms
+[Pipeline 21] htCollectAndSort (tuples=2): 0 ms
+[Pipeline 21] htCountUniqueKeys (keys=2): 0 ms
+[Pipeline 21] htBuildBloomFilter (bits=2048): 0 ms
+[Pipeline 21] htBuildTree (height=1 leaves=1): 0 ms
+[Pipeline 21] htBuildTotal (tuples=2): 0 ms
+[Pipeline 21] pipelineExec (link_type probes=0): 0 ms
+[Pipeline 21] joinOptimize (inputs=9): 0 ms
+[Pipeline 22] scanBuild (title): 0 ms
+[Pipeline 22] pipelineCompile (engine::HashtableBuild,engine::TableScan,0,std::in...): 0 ms
+[Pipeline 22] htCollectAndSort (tuples=15807): 1 ms
+[Pipeline 22] htCountUniqueKeys (keys=15807): 0 ms
+[Pipeline 22] htBuildBloomFilter (bits=316140): 0 ms
+[Pipeline 22] htBuildTree (height=2 leaves=31): 0 ms
+[Pipeline 22] htBuildTotal (tuples=15807): 1 ms
+[Pipeline 22] pipelineExec (title probes=0): 2 ms
+[Pipeline 22] joinOptimize (inputs=9): 0 ms
+[Pipeline 23] scanBuild (movie_link): 0 ms
+[Pipeline 23] pipelineCompile (engine::HashtableBuild,engine::TableScan,0,std::in...): 0 ms
+[Pipeline 23] htCollectAndSort (tuples=106): 0 ms
+[Pipeline 23] htCountUniqueKeys (keys=65): 0 ms
+[Pipeline 23] htBuildBloomFilter (bits=2120): 0 ms
+[Pipeline 23] htBuildTree (height=1 leaves=1): 0 ms
+[Pipeline 23] htBuildTotal (tuples=106): 0 ms
+[Pipeline 23] pipelineExec (movie_link probes=0): 0 ms
+[Pipeline 23] joinOptimize (inputs=9): 0 ms
+[Pipeline 24] scanBuild (movie_info_idx): 0 ms
+[Pipeline 24] pipelineCompile (engine::HashtableBuild,engine::TableScan,1,std::in...): 0 ms
+[Pipeline 24] htCollectAndSort (tuples=6): 0 ms
+[Pipeline 24] htCountUniqueKeys (keys=4): 0 ms
+[Pipeline 24] htBuildBloomFilter (bits=2048): 0 ms
+[Pipeline 24] htBuildTree (height=1 leaves=1): 0 ms
+[Pipeline 24] htBuildTotal (tuples=6): 0 ms
+[Pipeline 24] pipelineExec (movie_info_idx probes=1): 0 ms
+[Pipeline 24] joinOptimize (inputs=8): 0 ms
+[Pipeline 25] scanBuild (movie_companies): 0 ms
+[Pipeline 25] pipelineCompile (engine::HashtableBuild,engine::TableScan,2,std::in...): 0 ms
+[Pipeline 25] htCollectAndSort (tuples=11): 0 ms
+[Pipeline 25] htCountUniqueKeys (keys=9): 0 ms
+[Pipeline 25] htBuildBloomFilter (bits=2048): 0 ms
+[Pipeline 25] htBuildTree (height=1 leaves=1): 0 ms
+[Pipeline 25] htBuildTotal (tuples=11): 0 ms
+[Pipeline 25] pipelineExec (movie_companies probes=2): 0 ms
+[Pipeline 25] joinOptimize (inputs=6): 0 ms
+[Pipeline 26] scanBuild (company_name): 0 ms
+[Pipeline 26] pipelineCompile (engine::HashtableBuild,engine::TableScan,1,std::in...): 0 ms
+[Pipeline 26] htCollectAndSort (tuples=11): 0 ms
+[Pipeline 26] htCountUniqueKeys (keys=6): 0 ms
+[Pipeline 26] htBuildBloomFilter (bits=2048): 0 ms
+[Pipeline 26] htBuildTree (height=1 leaves=1): 0 ms
+[Pipeline 26] htBuildTotal (tuples=11): 0 ms
+[Pipeline 26] pipelineExec (company_name probes=1): 0 ms
+[Pipeline 26] joinOptimize (inputs=5): 0 ms
+[Pipeline 27] scanBuild (movie_info_idx): 0 ms
+[Pipeline 27] pipelineCompile (engine::HashtableBuild,engine::TableScan,1,std::in...): 0 ms
+[Pipeline 27] htCollectAndSort (tuples=10): 0 ms
+[Pipeline 27] htCountUniqueKeys (keys=5): 0 ms
+[Pipeline 27] htBuildBloomFilter (bits=2048): 0 ms
+[Pipeline 27] htBuildTree (height=1 leaves=1): 0 ms
+[Pipeline 27] htBuildTotal (tuples=10): 0 ms
+[Pipeline 27] pipelineExec (movie_info_idx probes=1): 0 ms
+[Pipeline 27] joinOptimize (inputs=4): 0 ms
+[Pipeline 28] scanBuild (title): 0 ms
+[Pipeline 28] pipelineCompile (engine::HashtableBuild,engine::TableScan,0,std::in...): 0 ms
+[Pipeline 28] htCollectAndSort (tuples=5): 0 ms
+[Pipeline 28] htCountUniqueKeys (keys=5): 0 ms
+[Pipeline 28] htBuildBloomFilter (bits=2048): 0 ms
+[Pipeline 28] htBuildTree (height=1 leaves=1): 0 ms
+[Pipeline 28] htBuildTotal (tuples=5): 0 ms
+[Pipeline 28] pipelineExec (title probes=0): 0 ms
+[Pipeline 28] joinOptimize (inputs=4): 0 ms
+[Pipeline 29] scanBuild (movie_companies): 0 ms
+[Pipeline 29] pipelineCompile (engine::HashtableBuild,engine::TableScan,2,std::in...): 0 ms
+[Pipeline 29] htCollectAndSort (tuples=28): 0 ms
+[Pipeline 29] htCountUniqueKeys (keys=12): 0 ms
+[Pipeline 29] htBuildBloomFilter (bits=2048): 0 ms
+[Pipeline 29] htBuildTree (height=1 leaves=1): 0 ms
+[Pipeline 29] htBuildTotal (tuples=28): 0 ms
+[Pipeline 29] pipelineExec (movie_companies probes=2): 0 ms
+[Pipeline 29] joinOptimize (inputs=2): 0 ms
+[Pipeline 30] scanBuild (company_name): 0 ms
+[Pipeline 30] pipelineCompile (engine::TableTarget,engine::TableScan,1,std::index...): 0 ms
+[Pipeline 30] pipelineExec (company_name probes=1): 0 ms
+=========================================
+
+========== PROBE TIMING BREAKDOWN ==========
+Total probes:           300
+Bloom filter:
+  Total time:           0.033 ms
+  Avg per probe:        108.9 ns
+  Rejections:           0 (0.0%)
+Tree traversal:
+  Total time:           0.010 ms
+  Traversals:           27
+  Avg per traversal:    363.5 ns
+Leaf search:
+  Total time:           0.049 ms
+  Leaf pages visited:   300
+  Avg per search:       162.1 ns
+Consumer invocation:
+  Total time:           0.079 ms
+  Invocations:          333
+  Avg per invocation:   237.2 ns
+Total probe time:       0.212 ms
+  Avg per probe:        706.8 ns
+Time breakdown:
+  Bloom filter:         15.4%
+  Tree traversal:       4.6%
+  Leaf search:          22.9%
+  Consumer:             37.2%
+  Overhead/other:       19.8%
+=============================================
