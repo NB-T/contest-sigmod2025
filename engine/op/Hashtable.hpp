@@ -314,10 +314,9 @@ struct HashtableProbe : OpBase {
         }
 
         const bool timing_enabled = ProbeTiming::isEnabled();
-        FastTimer total_timer, phase_timer;
+        FastTimer phase_timer;
 
         if (timing_enabled) {
-            total_timer.start();
             phase_timer.start();
             ProbeTiming::tl_probe_count++;
         }
@@ -327,7 +326,6 @@ struct HashtableProbe : OpBase {
             if (timing_enabled) {
                 ProbeTiming::tl_bloom_check_ns += phase_timer.elapsedNs();
                 ProbeTiming::tl_bloom_reject_count++;
-                ProbeTiming::tl_total_probe_ns += total_timer.elapsedNs();
             }
             return;
         }
@@ -344,9 +342,6 @@ struct HashtableProbe : OpBase {
         if (!ht->root_) {
             if constexpr (config::collectBloomStats) {
                 bloom_false_positives.fetch_add(1, std::memory_order_relaxed);
-            }
-            if (timing_enabled) {
-                ProbeTiming::tl_total_probe_ns += total_timer.elapsedNs();
             }
             return;
         }
@@ -406,7 +401,6 @@ struct HashtableProbe : OpBase {
                     if (timing_enabled) {
                         ProbeTiming::tl_leaf_search_ns += phase_timer.elapsedNs();
                         ProbeTiming::tl_leaf_pages_visited += leaf_pages_this_probe;
-                        ProbeTiming::tl_total_probe_ns += total_timer.elapsedNs();
                     }
                     return;
                 }
@@ -423,8 +417,6 @@ struct HashtableProbe : OpBase {
                             return entry->tuple[col];
                         });
                         if (timing_enabled) {
-                            ProbeTiming::tl_consumer_invoke_ns += phase_timer.elapsedNs();
-                            ProbeTiming::tl_consumer_invoke_count++;
                             phase_timer.start();
                         }
                     }
@@ -442,7 +434,6 @@ struct HashtableProbe : OpBase {
         if (timing_enabled) {
             ProbeTiming::tl_leaf_search_ns += phase_timer.elapsedNs();
             ProbeTiming::tl_leaf_pages_visited += leaf_pages_this_probe;
-            ProbeTiming::tl_total_probe_ns += total_timer.elapsedNs();
         }
     }
 

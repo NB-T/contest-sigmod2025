@@ -1,5 +1,6 @@
 #include "Execute.hpp"
 #include "infra/JoinTiming.hpp"
+#include "infra/ProbeTiming.hpp"
 #include "infra/Scheduler.hpp"
 #include "op/TableScan.hpp"
 #include "query/PlanImport.hpp"
@@ -224,12 +225,10 @@ static std::tuple<bool, size_t, std::string_view> run(engine::DataSource& db, en
             fprintf(timing_file, "Query: %s\n", std::string(query.name).c_str());
             fprintf(timing_file, "Total runtime: %.2f ms\n", duration / 1000.0f);
             JoinTiming::printToFile(timing_file);
-            ProbeTiming::printToFile(timing_file);
             fclose(timing_file);
         }
         // Also print to stderr
         JoinTiming::print();
-        ProbeTiming::print();
     }
 
     fmt::print("\rChecking query: {}         ", query.name);
