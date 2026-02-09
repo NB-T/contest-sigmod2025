@@ -193,22 +193,26 @@ Vector<HashtableBuild::BufferEntry> HashtableBuild::collectAndSort() {
     return all_entries;
 }
 //---------------------------------------------------------------------------
-void HashtableBuild::buildBloomFilter(const Vector<BufferEntry>& sorted_data) {
+void HashtableBuild::buildBloomFilter(const Vector<BufferEntry>& sorted_data, size_t unique_keys) {
     if (sorted_data.empty()) return;
 
     // determine bloom filter size
     size_t bits = bloom_filter_bits_;
     if (bits == 0) {
-        // default 20 bits per key for ~0.01% false positive rate
-        bits = std::max(sorted_data.size() * 20, size_t(2048));
+        // default 20 bits per unique key for ~0.036% false positive rate with 3 hashes
+        bits = std::max(unique_keys * 20, size_t(2048));
     }
 
     ht.bloom_filter_.allocate(bits);
 
-    // add keys (non-atomic, sequential)
     size_t n = sorted_data.size();
-    for (size_t i = 0; i < n; ++i) {
-        ht.bloom_filter_.add(sorted_data[i].key);
+
+    // sorted_data is sorted by key, so duplicates are contiguous — skip them
+    ht.bloom_filter_.add(sorted_data[0].key);
+    for (size_t i = 1; i < n; ++i) {
+        if (sorted_data[i].key != sorted_data[i - 1].key) {
+            ht.bloom_filter_.add(sorted_data[i].key);
+        }
     }
 }
 //---------------------------------------------------------------------------
@@ -440,7 +444,7 @@ void HashtableBuild::finishConsume() {
 
     // bloom filter
     ManualTimer bloomTimer;
-    buildBloomFilter(sorted_data);
+    buildBloomFilter(sorted_data, unique_keys);
     bloomTimer.record("htBuildBloomFilter", "bits=" + std::to_string(ht.bloom_filter_.getTotalBits()));
 
     // build tree bottom up

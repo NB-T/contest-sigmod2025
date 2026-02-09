@@ -8,11 +8,35 @@
 #include "op/TargetBase.hpp"
 #include "query/DataSource.hpp"
 
+#if defined(__x86_64__) && defined(__AVX512F__)
+#include <immintrin.h>
+#endif
+
 #include <atomic>
 #include <string>
 #include <vector>
 //---------------------------------------------------------------------------
 namespace engine {
+//---------------------------------------------------------------------------
+#ifdef __AVX512F__
+/// AVX-512 linear scan lower bound on sorted uint64_t keys.
+/// Returns the index of the first key >= target, or n if none.
+[[gnu::always_inline]]
+static inline size_t simdLowerBound(const uint64_t* keys, size_t n, uint64_t key) {
+    const __m512i target = _mm512_set1_epi64(static_cast<long long>(key));
+    size_t i = 0;
+    for (; i + 8 <= n; i += 8) {
+        __m512i chunk = _mm512_loadu_si512(keys + i);
+        __mmask8 ge_mask = _mm512_cmp_epu64_mask(chunk, target, _MM_CMPINT_NLT);
+        if (ge_mask != 0)
+            return i + __builtin_ctz(ge_mask);
+    }
+    for (; i < n; i++) {
+        if (keys[i] >= key) return i;
+    }
+    return n;
+}
+#endif
 //---------------------------------------------------------------------------
 /// Page size for B+ tree nodes (matches DataSource::PAGE_SIZE)
 static constexpr size_t BTREE_PAGE_SIZE = DataSource::PAGE_SIZE;
@@ -139,27 +163,33 @@ class Hashtable {
         void* current = root_;
         for (size_t level = height_; level > 1; --level) {
             auto* internal = static_cast<InternalPage*>(current);
-            size_t lo = 0, hi = internal->header.num_keys;
-            while (lo < hi) {
-                size_t mid = (lo + hi) / 2;
-                if (internal->keys[mid] < key)
-                    lo = mid + 1;
-                else
-                    hi = mid;
+#ifdef __AVX512F__
+            size_t lo = simdLowerBound(internal->keys, internal->header.num_keys, key);
+#else
+            size_t lo = 0, n = internal->header.num_keys;
+            while (n > 1) {
+                size_t half = n / 2;
+                lo += (internal->keys[lo + half - 1] < key) * half;
+                n -= half;
             }
+            lo += (n == 1 && internal->keys[lo] < key);
+#endif
             current = internal->children[lo];
         }
 
-        // binary search
+        // search in leaf
         auto* leaf = static_cast<LeafPage*>(current);
-        size_t lo = 0, hi = leaf->header.num_keys;
-        while (lo < hi) {
-            size_t mid = (lo + hi) / 2;
-            if (leaf->keys[mid] < key)
-                lo = mid + 1;
-            else
-                hi = mid;
+#ifdef __AVX512F__
+        size_t lo = simdLowerBound(leaf->keys, leaf->header.num_keys, key);
+#else
+        size_t lo = 0, n = leaf->header.num_keys;
+        while (n > 1) {
+            size_t half = n / 2;
+            lo += (leaf->keys[lo + half - 1] < key) * half;
+            n -= half;
         }
+        lo += (n == 1 && leaf->keys[lo] < key);
+#endif
 
         return lo < leaf->header.num_keys && leaf->keys[lo] == key;
     }
@@ -271,7 +301,7 @@ struct HashtableBuild : public TargetImpl<HashtableBuild> {
     /// Collect and sort all buffer entries
     Vector<BufferEntry> collectAndSort();
     /// Build bloom filter from sorted entries
-    void buildBloomFilter(const Vector<BufferEntry>& sorted_data);
+    void buildBloomFilter(const Vector<BufferEntry>& sorted_data, size_t unique_keys);
     /// Build B+ tree bottom-up from sorted entries
     void buildTreeBottomUp(Vector<BufferEntry>& sorted_data);
 };
@@ -300,7 +330,9 @@ struct HashtableProbe : OpBase {
 
     explicit HashtableProbe(const Hashtable* ht) : ht(ht) {}
 
-    void prepare(LocalState& ls, uint64_t key) {
+    [[gnu::always_inline]] void prepare(LocalState& ls, uint64_t key) {
+        // Prefetch bloom filter cache lines for this key
+        ht->bloom_filter_.prefetchFor(key);
         // Prefetch root page
         if (ht->root_) {
             __builtin_prefetch(ht->root_, 0, 0);
@@ -356,17 +388,20 @@ struct HashtableProbe : OpBase {
         for (size_t level = ht->height_; level > 1; --level) {
             auto* internal = static_cast<Hashtable::InternalPage*>(current);
 
-            // Binary search for child
-            size_t lo = 0, hi = internal->header.num_keys;
-            while (lo < hi) {
-                size_t mid = (lo + hi) / 2;
-                if (internal->keys[mid] < key) {
-                    lo = mid + 1;
-                } else {
-                    hi = mid;
-                }
+#ifdef __AVX512F__
+            size_t lo = simdLowerBound(internal->keys, internal->header.num_keys, key);
+#else
+            size_t lo = 0, n = internal->header.num_keys;
+            while (n > 1) {
+                size_t half = n / 2;
+                lo += (internal->keys[lo + half - 1] < key) * half;
+                n -= half;
             }
+            lo += (n == 1 && internal->keys[lo] < key);
+#endif
             current = internal->children[lo];
+            // Prefetch next level page
+            __builtin_prefetch(current, 0, 0);
         }
 
         if (timing_enabled) {
@@ -380,15 +415,17 @@ struct HashtableProbe : OpBase {
         // search in leaf and get duplicates
         auto* leaf = static_cast<Hashtable::LeafPage*>(current);
 
-        size_t lo = 0, hi = leaf->header.num_keys;
-        while (lo < hi) {
-            size_t mid = (lo + hi) / 2;
-            if (leaf->keys[mid] < key) {
-                lo = mid + 1;
-            } else {
-                hi = mid;
-            }
+#ifdef __AVX512F__
+        size_t lo = simdLowerBound(leaf->keys, leaf->header.num_keys, key);
+#else
+        size_t lo = 0, n = leaf->header.num_keys;
+        while (n > 1) {
+            size_t half = n / 2;
+            lo += (leaf->keys[lo + half - 1] < key) * half;
+            n -= half;
         }
+        lo += (n == 1 && leaf->keys[lo] < key);
+#endif
 
         bool found_match = false;
         size_t leaf_pages_this_probe = 1;
