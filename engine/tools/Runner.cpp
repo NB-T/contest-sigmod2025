@@ -223,7 +223,7 @@ static std::tuple<bool, size_t, std::string_view> run(engine::DataSource& db, en
       FILE* timing_file = fopen(timing_filename.c_str(), "w");
       if (timing_file) {
          fprintf(timing_file, "Query: %s\n", std::string(query.name).c_str());
-         fprintf(timing_file, "Total runtime: %.2f ms\n", duration / 1000.0f);
+         fprintf(timing_file, "Total runtime: %.2f ms\n", duration / rpts / 1000.0f);
          JoinTiming::printToFile(timing_file);
          fclose(timing_file);
       }
@@ -252,6 +252,7 @@ int main(int argc, char* argv[]) {
 
    // Check for timing environment variable (JOIN_TIMING=1 or TIMING=1)
    const char* timing_env = std::getenv("JOIN_TIMING");
+   std::cout << "timing_env: " << timing_env << std::endl;
    bool timing_enabled = enableTiming.get() || (timing_env && std::string(timing_env) == "1");
 
    // Enable timing based on setting

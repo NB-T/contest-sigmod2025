@@ -7,6 +7,8 @@
 #include "query/RuntimeValue.hpp"
 
 #include <parlay/primitives.h>
+#include <parlay/internal/bucket_sort.h>
+#include <parlay/internal/semisort.h>
 #include <parlay/slice.h>
 
 #include <algorithm>
@@ -174,16 +176,17 @@ Vector<HashtableBuild::BufferEntry> HashtableBuild::collectAndSort() {
     }
 
     // sort with parlay::integer_sort_inplace
-    auto slice = parlay::make_slice(all_entries.data(), all_entries.data() + all_entries.size());
-    parlay::integer_sort_inplace(slice, [](const BufferEntry& e) {
-        return e.key;
-    });
-	
-	
-	
+     auto slice = parlay::make_slice(all_entries.data(), all_entries.data() + all_entries.size());
+    // parlay::integer_sort_inplace(slice, [](const BufferEntry& e) { return e.key; });
 
-	      // parlay::internal::merge_sort_(slice, slice, [](const BufferEntry& a, const BufferEntry& b) { return a.key < b.key; }, true);
+    // bucket sort
+    // parlay::internal::bucket_sort(slice, [](const BufferEntry& a, const BufferEntry& b) { return a.key < b.key; }, false);
 
+    // sample sort
+    parlay::internal::sample_sort_inplace(slice, [](const BufferEntry& a, const BufferEntry& b) { return a.key < b.key; });
+
+    // merge sort
+    // parlay::internal::merge_sort_inplace(slice, [](const BufferEntry& a, const BufferEntry& b) { return a.key < b.key; });
 	 /* std::sort(all_entries.begin(), all_entries.end(), [](const BufferEntry& a, const BufferEntry& b)
 			{
 				return a.key < b.key;

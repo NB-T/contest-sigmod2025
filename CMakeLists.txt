@@ -190,7 +190,7 @@ add_library(engine
         SHARED
         ${SIGMODPC_TEAMSRC}
 )
-target_include_directories(engine PRIVATE include engine  ${CMAKE_CURRENT_BINARY_DIR}/include external/nbtlog/include)
+target_include_directories(engine PRIVATE include engine  ${CMAKE_CURRENT_BINARY_DIR}/include external/nbtlog/include external/parlaylib/include)
 add_dependencies(engine generate_jit_options)
 target_link_libraries(engine PRIVATE re2 fmt range-v3 nlohmann_json::nlohmann_json sqlparser)
 target_compile_definitions(engine PRIVATE SIGMOD_LOCAL)
