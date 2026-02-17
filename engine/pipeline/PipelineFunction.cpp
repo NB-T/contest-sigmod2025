@@ -1,6 +1,7 @@
 #include "pipeline/PipelineFunction.hpp"
 #include "JITOptions.hpp"
 #include <algorithm>
+#include <cstdlib>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -53,8 +54,19 @@ struct CompiledFunction {
 #endif
 #endif
 //---------------------------------------------------------------------------
+/// Check if batched pipeline mode is enabled
+bool isBatchedPipelineEnabled() {
+    static bool val = [] {
+        const char* env = std::getenv("BATCHED_PIPELINE");
+        return env && env[0] == '1';
+    }();
+    return val;
+}
+//---------------------------------------------------------------------------
 CompiledFunction compileFunction(std::string_view name) {
     using namespace std::string_literals;
+    bool batched = isBatchedPipelineEnabled();
+
     auto dumpdir = std::filesystem::path("dump");
     std::filesystem::create_directories(dumpdir);
     std::string filename{name};
@@ -64,8 +76,11 @@ CompiledFunction compileFunction(std::string_view name) {
     }
 
     auto basePath = (dumpdir / filename).string();
-    auto cppPath = basePath + ".cpp";
+    auto cppPath = basePath;
+    if (batched) cppPath += "_batched";
+    cppPath += ".cpp";
     auto soPath = basePath;
+    if (batched) soPath += "_batched";
 #ifdef NDEBUG
     soPath += "_ndebug";
 #endif
@@ -75,15 +90,27 @@ CompiledFunction compileFunction(std::string_view name) {
     auto oPath = soPath + ".o";
     soPath += ".so";
     std::ofstream out(cppPath);
-    out <<
+    if (batched) {
+        out <<
+R"(#include "pipeline/PipelineGenBatched.hpp"
+using namespace engine;
+extern "C" __attribute__((visibility("default"))) void pipelineEntry(TargetBase& target,ScanBase& scan,engine::span<const DefaultProbeParameter> probes,engine::span<const unsigned> keyOffsets,engine::span<const unsigned> outputAttributeOffsets) {
+    PipelineFunctions::runPipeline<)"
+            << name <<
+R"(>(target, scan, probes, keyOffsets, outputAttributeOffsets);
+}
+)";
+    } else {
+        out <<
 R"(#include "pipeline/PipelineGen.hpp"
 using namespace engine;
 extern "C" __attribute__((visibility("default"))) void pipelineEntry(TargetBase& target,ScanBase& scan,engine::span<const DefaultProbeParameter> probes,engine::span<const unsigned> keyOffsets,engine::span<const unsigned> outputAttributeOffsets) {
     PipelineFunctions::runPipeline<)"
-        << name <<
+            << name <<
 R"(>(target, scan, probes, keyOffsets, outputAttributeOffsets);
 }
 )";
+    }
     out.flush();
     if (!out)
         throw std::runtime_error("Failed while writing " + filename + ".cpp");
@@ -132,6 +159,7 @@ std::unordered_map<std::string, CompiledFunction> compiledFunctions;
 //---------------------------------------------------------------------------
 PipelineFunction PipelineFunctions::compilePipeline(std::string_view nameRaw) {
     std::string name{nameRaw};
+    if (isBatchedPipelineEnabled()) name += "_batched";
     if (auto it = compiledFunctions.find(name); it != compiledFunctions.end()) {
         return it->second.func;
     } else {
