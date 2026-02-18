@@ -1,0 +1,134 @@
+Query: 8d
+Total runtime: 65.72 ms
+
+========== JOIN TIMING REPORT ==========
+[Pipeline 1] htCollectAndSort (tuples=84843): 4 ms
+[Pipeline 1] htCountUniqueKeys (keys=84843): 0 ms
+[Pipeline 1] htBuildBloomFilter (bits=2097152): 4 ms
+[Pipeline 1] htBuildTree (height=2 leaves=167): 0 ms
+[Pipeline 1] htBuildTotal (tuples=84843): 9 ms
+[Pipeline 1] pipelineExec (company_name probes=0): 10 ms
+[Pipeline 2] htCollectAndSort (tuples=276403): 3 ms
+[Pipeline 2] htCountUniqueKeys (keys=41121): 0 ms
+[Pipeline 2] htBuildBloomFilter (bits=1048576): 1 ms
+[Pipeline 2] htBuildTree (height=3 leaves=541): 0 ms
+[Pipeline 2] htBuildTotal (tuples=276403): 5 ms
+[Pipeline 2] pipelineExec (cast_info probes=0): 11 ms
+[Pipeline 3] htCollectAndSort (tuples=13425): 0 ms
+[Pipeline 3] htCountUniqueKeys (keys=8014): 0 ms
+[Pipeline 3] htBuildBloomFilter (bits=262144): 0 ms
+[Pipeline 3] htBuildTree (height=2 leaves=27): 0 ms
+[Pipeline 3] htBuildTotal (tuples=13425): 0 ms
+[Pipeline 3] pipelineExec (aka_name probes=0): 2 ms
+[Pipeline 4] htCollectAndSort (tuples=113842): 2 ms
+[Pipeline 4] htCountUniqueKeys (keys=108596): 0 ms
+[Pipeline 4] htBuildBloomFilter (bits=4194304): 4 ms
+[Pipeline 4] htBuildTree (height=2 leaves=223): 0 ms
+[Pipeline 4] htBuildTotal (tuples=113842): 7 ms
+[Pipeline 4] pipelineExec (name probes=1): 17 ms
+[Pipeline 4] probeBloomFilter (total_ns=1115416 probes=11152 rejects=2978): 1 ms
+[Pipeline 4] probeTreeTraversal (total_ns=1140164 count=8174): 1 ms
+[Pipeline 4] probeLeafSearch (total_ns=9699313 pages=8395): 9 ms
+[Pipeline 4] probeTotal (total_ns=11954893 probes=11152): 11 ms
+[Pipeline 5] htCollectAndSort (tuples=218966): 3 ms
+[Pipeline 5] htCountUniqueKeys (keys=108424): 0 ms
+[Pipeline 5] htBuildBloomFilter (bits=4194304): 3 ms
+[Pipeline 5] htBuildTree (height=2 leaves=429): 0 ms
+[Pipeline 5] htBuildTotal (tuples=218966): 8 ms
+[Pipeline 5] pipelineExec (title probes=2): 25 ms
+[Pipeline 5] probeBloomFilter (total_ns=17078371 probes=223622 rejects=0): 17 ms
+[Pipeline 5] probeTreeTraversal (total_ns=22067448 count=223622): 22 ms
+[Pipeline 5] probeLeafSearch (total_ns=62277617 pages=224092): 62 ms
+[Pipeline 5] probeTotal (total_ns=101423436 probes=223622): 101 ms
+[Pipeline 6] pipelineExec (movie_companies probes=1): 18 ms
+[Pipeline 6] probeBloomFilter (total_ns=11614525 probes=156646 rejects=0): 11 ms
+[Pipeline 6] probeTreeTraversal (total_ns=20342382 count=156646): 20 ms
+[Pipeline 6] probeLeafSearch (total_ns=42412655 pages=157275): 42 ms
+[Pipeline 6] probeTotal (total_ns=74369562 probes=156646): 74 ms
+[Pipeline 7] htCollectAndSort (tuples=84843): 1 ms
+[Pipeline 7] htCountUniqueKeys (keys=84843): 0 ms
+[Pipeline 7] htBuildBloomFilter (bits=2097152): 2 ms
+[Pipeline 7] htBuildTree (height=2 leaves=167): 0 ms
+[Pipeline 7] htBuildTotal (tuples=84843): 3 ms
+[Pipeline 7] pipelineExec (company_name probes=0): 4 ms
+[Pipeline 8] htCollectAndSort (tuples=276403): 2 ms
+[Pipeline 8] htCountUniqueKeys (keys=41121): 0 ms
+[Pipeline 8] htBuildBloomFilter (bits=1048576): 0 ms
+[Pipeline 8] htBuildTree (height=3 leaves=541): 0 ms
+[Pipeline 8] htBuildTotal (tuples=276403): 3 ms
+[Pipeline 8] pipelineExec (cast_info probes=0): 9 ms
+[Pipeline 9] htCollectAndSort (tuples=13425): 0 ms
+[Pipeline 9] htCountUniqueKeys (keys=8014): 0 ms
+[Pipeline 9] htBuildBloomFilter (bits=262144): 0 ms
+[Pipeline 9] htBuildTree (height=2 leaves=27): 0 ms
+[Pipeline 9] htBuildTotal (tuples=13425): 0 ms
+[Pipeline 9] pipelineExec (aka_name probes=0): 1 ms
+[Pipeline 10] htCollectAndSort (tuples=113842): 1 ms
+[Pipeline 10] htCountUniqueKeys (keys=108596): 0 ms
+[Pipeline 10] htBuildBloomFilter (bits=4194304): 1 ms
+[Pipeline 10] htBuildTree (height=2 leaves=223): 0 ms
+[Pipeline 10] htBuildTotal (tuples=113842): 3 ms
+[Pipeline 10] pipelineExec (name probes=1): 8 ms
+[Pipeline 10] probeBloomFilter (total_ns=461783 probes=11152 rejects=2978): 0 ms
+[Pipeline 10] probeTreeTraversal (total_ns=578388 count=8174): 0 ms
+[Pipeline 10] probeLeafSearch (total_ns=4724005 pages=8395): 4 ms
+[Pipeline 10] probeTotal (total_ns=5764176 probes=11152): 5 ms
+[Pipeline 11] htCollectAndSort (tuples=218966): 2 ms
+[Pipeline 11] htCountUniqueKeys (keys=108424): 0 ms
+[Pipeline 11] htBuildBloomFilter (bits=4194304): 2 ms
+[Pipeline 11] htBuildTree (height=2 leaves=429): 0 ms
+[Pipeline 11] htBuildTotal (tuples=218966): 4 ms
+[Pipeline 11] pipelineExec (title probes=2): 15 ms
+[Pipeline 11] probeBloomFilter (total_ns=7642019 probes=223622 rejects=0): 7 ms
+[Pipeline 11] probeTreeTraversal (total_ns=12170144 count=223622): 12 ms
+[Pipeline 11] probeLeafSearch (total_ns=30196635 pages=224092): 30 ms
+[Pipeline 11] probeTotal (total_ns=50008798 probes=223622): 50 ms
+[Pipeline 12] pipelineExec (movie_companies probes=1): 12 ms
+[Pipeline 12] probeBloomFilter (total_ns=5040634 probes=156646 rejects=0): 5 ms
+[Pipeline 12] probeTreeTraversal (total_ns=8674192 count=156646): 8 ms
+[Pipeline 12] probeLeafSearch (total_ns=23006643 pages=157275): 23 ms
+[Pipeline 12] probeTotal (total_ns=36721469 probes=156646): 36 ms
+[Pipeline 13] htCollectAndSort (tuples=84843): 1 ms
+[Pipeline 13] htCountUniqueKeys (keys=84843): 0 ms
+[Pipeline 13] htBuildBloomFilter (bits=2097152): 1 ms
+[Pipeline 13] htBuildTree (height=2 leaves=167): 0 ms
+[Pipeline 13] htBuildTotal (tuples=84843): 2 ms
+[Pipeline 13] pipelineExec (company_name probes=0): 3 ms
+[Pipeline 14] htCollectAndSort (tuples=276403): 1 ms
+[Pipeline 14] htCountUniqueKeys (keys=41121): 0 ms
+[Pipeline 14] htBuildBloomFilter (bits=1048576): 0 ms
+[Pipeline 14] htBuildTree (height=3 leaves=541): 0 ms
+[Pipeline 14] htBuildTotal (tuples=276403): 3 ms
+[Pipeline 14] pipelineExec (cast_info probes=0): 9 ms
+[Pipeline 15] htCollectAndSort (tuples=13425): 0 ms
+[Pipeline 15] htCountUniqueKeys (keys=8014): 0 ms
+[Pipeline 15] htBuildBloomFilter (bits=262144): 0 ms
+[Pipeline 15] htBuildTree (height=2 leaves=27): 0 ms
+[Pipeline 15] htBuildTotal (tuples=13425): 0 ms
+[Pipeline 15] pipelineExec (aka_name probes=0): 1 ms
+[Pipeline 16] htCollectAndSort (tuples=113842): 1 ms
+[Pipeline 16] htCountUniqueKeys (keys=108596): 0 ms
+[Pipeline 16] htBuildBloomFilter (bits=4194304): 1 ms
+[Pipeline 16] htBuildTree (height=2 leaves=223): 0 ms
+[Pipeline 16] htBuildTotal (tuples=113842): 3 ms
+[Pipeline 16] pipelineExec (name probes=1): 7 ms
+[Pipeline 16] probeBloomFilter (total_ns=416561 probes=11152 rejects=2978): 0 ms
+[Pipeline 16] probeTreeTraversal (total_ns=519475 count=8174): 0 ms
+[Pipeline 16] probeLeafSearch (total_ns=4285482 pages=8395): 4 ms
+[Pipeline 16] probeTotal (total_ns=5221518 probes=11152): 5 ms
+[Pipeline 17] htCollectAndSort (tuples=218966): 2 ms
+[Pipeline 17] htCountUniqueKeys (keys=108424): 0 ms
+[Pipeline 17] htBuildBloomFilter (bits=4194304): 2 ms
+[Pipeline 17] htBuildTree (height=2 leaves=429): 0 ms
+[Pipeline 17] htBuildTotal (tuples=218966): 5 ms
+[Pipeline 17] pipelineExec (title probes=2): 15 ms
+[Pipeline 17] probeBloomFilter (total_ns=7758997 probes=223622 rejects=0): 7 ms
+[Pipeline 17] probeTreeTraversal (total_ns=9960256 count=223622): 9 ms
+[Pipeline 17] probeLeafSearch (total_ns=29103832 pages=224092): 29 ms
+[Pipeline 17] probeTotal (total_ns=46823085 probes=223622): 46 ms
+[Pipeline 18] pipelineExec (movie_companies probes=1): 11 ms
+[Pipeline 18] probeBloomFilter (total_ns=5281829 probes=156646 rejects=0): 5 ms
+[Pipeline 18] probeTreeTraversal (total_ns=9018745 count=156646): 9 ms
+[Pipeline 18] probeLeafSearch (total_ns=19498883 pages=157275): 19 ms
+[Pipeline 18] probeTotal (total_ns=33799457 probes=156646): 33 ms
+=========================================

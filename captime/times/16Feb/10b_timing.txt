@@ -1,0 +1,86 @@
+Query: 10b
+Total runtime: 3.59 ms
+
+========== JOIN TIMING REPORT ==========
+[Pipeline 1] htCollectAndSort (tuples=4): 0 ms
+[Pipeline 1] htCountUniqueKeys (keys=4): 0 ms
+[Pipeline 1] htBuildBloomFilter (bits=2048): 0 ms
+[Pipeline 1] htBuildTree (height=1 leaves=1): 0 ms
+[Pipeline 1] htBuildTotal (tuples=4): 0 ms
+[Pipeline 1] pipelineExec (company_type probes=0): 0 ms
+[Pipeline 2] htCollectAndSort (tuples=1361): 1 ms
+[Pipeline 2] htCountUniqueKeys (keys=1361): 0 ms
+[Pipeline 2] htBuildBloomFilter (bits=32768): 0 ms
+[Pipeline 2] htBuildTree (height=2 leaves=3): 0 ms
+[Pipeline 2] htBuildTotal (tuples=1361): 1 ms
+[Pipeline 2] pipelineExec (company_name probes=0): 1 ms
+[Pipeline 3] htCollectAndSort (tuples=13): 0 ms
+[Pipeline 3] htCountUniqueKeys (keys=13): 0 ms
+[Pipeline 3] htBuildBloomFilter (bits=2048): 0 ms
+[Pipeline 3] htBuildTree (height=1 leaves=1): 0 ms
+[Pipeline 3] htBuildTotal (tuples=13): 0 ms
+[Pipeline 3] pipelineExec (cast_info probes=0): 0 ms
+[Pipeline 4] htCollectAndSort (tuples=3): 0 ms
+[Pipeline 4] htCountUniqueKeys (keys=3): 0 ms
+[Pipeline 4] htBuildBloomFilter (bits=2048): 0 ms
+[Pipeline 4] htBuildTree (height=1 leaves=1): 0 ms
+[Pipeline 4] htBuildTotal (tuples=3): 0 ms
+[Pipeline 4] pipelineExec (title probes=0): 0 ms
+[Pipeline 5] htCollectAndSort (tuples=0): 0 ms
+[Pipeline 5] htBuildTotal (empty): 0 ms
+[Pipeline 5] pipelineExec (movie_companies probes=2): 0 ms
+[Pipeline 6] htCollectAndSort (tuples=4): 0 ms
+[Pipeline 6] htCountUniqueKeys (keys=4): 0 ms
+[Pipeline 6] htBuildBloomFilter (bits=2048): 0 ms
+[Pipeline 6] htBuildTree (height=1 leaves=1): 0 ms
+[Pipeline 6] htBuildTotal (tuples=4): 0 ms
+[Pipeline 6] pipelineExec (company_type probes=0): 0 ms
+[Pipeline 7] htCollectAndSort (tuples=1361): 0 ms
+[Pipeline 7] htCountUniqueKeys (keys=1361): 0 ms
+[Pipeline 7] htBuildBloomFilter (bits=32768): 0 ms
+[Pipeline 7] htBuildTree (height=2 leaves=3): 0 ms
+[Pipeline 7] htBuildTotal (tuples=1361): 0 ms
+[Pipeline 7] pipelineExec (company_name probes=0): 0 ms
+[Pipeline 8] htCollectAndSort (tuples=13): 0 ms
+[Pipeline 8] htCountUniqueKeys (keys=13): 0 ms
+[Pipeline 8] htBuildBloomFilter (bits=2048): 0 ms
+[Pipeline 8] htBuildTree (height=1 leaves=1): 0 ms
+[Pipeline 8] htBuildTotal (tuples=13): 0 ms
+[Pipeline 8] pipelineExec (cast_info probes=0): 0 ms
+[Pipeline 9] htCollectAndSort (tuples=3): 0 ms
+[Pipeline 9] htCountUniqueKeys (keys=3): 0 ms
+[Pipeline 9] htBuildBloomFilter (bits=2048): 0 ms
+[Pipeline 9] htBuildTree (height=1 leaves=1): 0 ms
+[Pipeline 9] htBuildTotal (tuples=3): 0 ms
+[Pipeline 9] pipelineExec (title probes=0): 0 ms
+[Pipeline 10] htCollectAndSort (tuples=0): 0 ms
+[Pipeline 10] htBuildTotal (empty): 0 ms
+[Pipeline 10] pipelineExec (movie_companies probes=2): 1 ms
+[Pipeline 11] htCollectAndSort (tuples=4): 0 ms
+[Pipeline 11] htCountUniqueKeys (keys=4): 0 ms
+[Pipeline 11] htBuildBloomFilter (bits=2048): 0 ms
+[Pipeline 11] htBuildTree (height=1 leaves=1): 0 ms
+[Pipeline 11] htBuildTotal (tuples=4): 0 ms
+[Pipeline 11] pipelineExec (company_type probes=0): 0 ms
+[Pipeline 12] htCollectAndSort (tuples=1361): 0 ms
+[Pipeline 12] htCountUniqueKeys (keys=1361): 0 ms
+[Pipeline 12] htBuildBloomFilter (bits=32768): 0 ms
+[Pipeline 12] htBuildTree (height=2 leaves=3): 0 ms
+[Pipeline 12] htBuildTotal (tuples=1361): 0 ms
+[Pipeline 12] pipelineExec (company_name probes=0): 0 ms
+[Pipeline 13] htCollectAndSort (tuples=13): 0 ms
+[Pipeline 13] htCountUniqueKeys (keys=13): 0 ms
+[Pipeline 13] htBuildBloomFilter (bits=2048): 0 ms
+[Pipeline 13] htBuildTree (height=1 leaves=1): 0 ms
+[Pipeline 13] htBuildTotal (tuples=13): 0 ms
+[Pipeline 13] pipelineExec (cast_info probes=0): 0 ms
+[Pipeline 14] htCollectAndSort (tuples=3): 0 ms
+[Pipeline 14] htCountUniqueKeys (keys=3): 0 ms
+[Pipeline 14] htBuildBloomFilter (bits=2048): 0 ms
+[Pipeline 14] htBuildTree (height=1 leaves=1): 0 ms
+[Pipeline 14] htBuildTotal (tuples=3): 0 ms
+[Pipeline 14] pipelineExec (title probes=0): 0 ms
+[Pipeline 15] htCollectAndSort (tuples=0): 0 ms
+[Pipeline 15] htBuildTotal (empty): 0 ms
+[Pipeline 15] pipelineExec (movie_companies probes=2): 0 ms
+=========================================

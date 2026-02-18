@@ -1,0 +1,50 @@
+Query: 32a
+Total runtime: 3.81 ms
+
+========== JOIN TIMING REPORT ==========
+[Pipeline 1] htCollectAndSort (tuples=18): 0 ms
+[Pipeline 1] htCountUniqueKeys (keys=18): 0 ms
+[Pipeline 1] htBuildBloomFilter (bits=2048): 0 ms
+[Pipeline 1] htBuildTree (height=1 leaves=1): 0 ms
+[Pipeline 1] htBuildTotal (tuples=18): 0 ms
+[Pipeline 1] pipelineExec (link_type probes=0): 0 ms
+[Pipeline 2] htCollectAndSort (tuples=29997): 2 ms
+[Pipeline 2] htCountUniqueKeys (keys=6411): 0 ms
+[Pipeline 2] htBuildBloomFilter (bits=131072): 0 ms
+[Pipeline 2] htBuildTree (height=2 leaves=59): 0 ms
+[Pipeline 2] htBuildTotal (tuples=29997): 2 ms
+[Pipeline 2] pipelineExec (movie_link probes=0): 3 ms
+[Pipeline 3] htCollectAndSort (tuples=0): 0 ms
+[Pipeline 3] htBuildTotal (empty): 0 ms
+[Pipeline 3] pipelineExec (movie_keyword probes=1): 0 ms
+[Pipeline 4] htCollectAndSort (tuples=18): 0 ms
+[Pipeline 4] htCountUniqueKeys (keys=18): 0 ms
+[Pipeline 4] htBuildBloomFilter (bits=2048): 0 ms
+[Pipeline 4] htBuildTree (height=1 leaves=1): 0 ms
+[Pipeline 4] htBuildTotal (tuples=18): 0 ms
+[Pipeline 4] pipelineExec (link_type probes=0): 0 ms
+[Pipeline 5] htCollectAndSort (tuples=29997): 0 ms
+[Pipeline 5] htCountUniqueKeys (keys=6411): 0 ms
+[Pipeline 5] htBuildBloomFilter (bits=131072): 0 ms
+[Pipeline 5] htBuildTree (height=2 leaves=59): 0 ms
+[Pipeline 5] htBuildTotal (tuples=29997): 0 ms
+[Pipeline 5] pipelineExec (movie_link probes=0): 1 ms
+[Pipeline 6] htCollectAndSort (tuples=0): 0 ms
+[Pipeline 6] htBuildTotal (empty): 0 ms
+[Pipeline 6] pipelineExec (movie_keyword probes=1): 0 ms
+[Pipeline 7] htCollectAndSort (tuples=18): 0 ms
+[Pipeline 7] htCountUniqueKeys (keys=18): 0 ms
+[Pipeline 7] htBuildBloomFilter (bits=2048): 0 ms
+[Pipeline 7] htBuildTree (height=1 leaves=1): 0 ms
+[Pipeline 7] htBuildTotal (tuples=18): 0 ms
+[Pipeline 7] pipelineExec (link_type probes=0): 0 ms
+[Pipeline 8] htCollectAndSort (tuples=29997): 0 ms
+[Pipeline 8] htCountUniqueKeys (keys=6411): 0 ms
+[Pipeline 8] htBuildBloomFilter (bits=131072): 0 ms
+[Pipeline 8] htBuildTree (height=2 leaves=59): 0 ms
+[Pipeline 8] htBuildTotal (tuples=29997): 0 ms
+[Pipeline 8] pipelineExec (movie_link probes=0): 1 ms
+[Pipeline 9] htCollectAndSort (tuples=0): 0 ms
+[Pipeline 9] htBuildTotal (empty): 0 ms
+[Pipeline 9] pipelineExec (movie_keyword probes=1): 0 ms
+=========================================
