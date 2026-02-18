@@ -91,6 +91,25 @@ class BloomFilter {
         __builtin_prefetch(bits_ + (h1 & num_blocks_mask_) * 8, 0, 0);
     }
 
+    // Global bit index for hash function hash_i for a given key.
+    // Requires the filter to be allocated first.
+    [[nodiscard]] [[gnu::always_inline]]
+    inline uint64_t globalBitIndex(uint64_t key, size_t hash_i) const {
+        uint64_t h1 = fmix64(key);
+        uint64_t h2 = fmix64(key + 0x9e3779b97f4a7c15ULL);
+        size_t block_idx = h1 & num_blocks_mask_;
+        size_t bit_pos   = (h2 >> (hash_i * 9)) & 0x1FF;
+        return static_cast<uint64_t>(block_idx * 512 + bit_pos);
+    }
+
+    // Atomically set a single bit by its global index.
+    [[gnu::always_inline]]
+    inline void setBitAtomic(uint64_t global_bit_idx) {
+        __atomic_or_fetch(bits_ + (global_bit_idx >> 6),
+                          1ULL << (global_bit_idx & 63),
+                          __ATOMIC_RELAXED);
+    }
+
     [[nodiscard]] size_t getTotalBits() const { return total_bits_; }
 
     [[nodiscard]] bool isAllocated() const { return bits_ != nullptr; }

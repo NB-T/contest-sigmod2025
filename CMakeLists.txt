@@ -109,6 +109,7 @@ FetchContent_Declare(
 
 option(ENABLE_SANITIZER "Enable Address and Undefined Behavior Sanitizer" OFF)
 option(ENABLE_PERFETTO "Enable Perfetto tracing" OFF)
+option(ENABLE_LOG "Enable debug logging (std::cerr pipeline info, etc.)" OFF)
 
 # If ENABLE_SANITIZER is set to ON, we need to set the sanitizer flags for the compiler.
 if(ENABLE_SANITIZER)
@@ -250,6 +251,11 @@ endif()
 
 if(ENABLE_PERFEVENT)
     target_compile_definitions(internal_runner PRIVATE PERFEVENT)
+endif()
+
+if(ENABLE_LOG)
+    target_compile_definitions(engine PRIVATE ENABLE_LOG)
+    target_compile_definitions(internal_runner PRIVATE ENABLE_LOG)
 endif()
 
 target_compile_definitions(internal_runner PRIVATE SIGMOD_LOCAL)

@@ -614,6 +614,7 @@ bool QueryPlan::runPipeline(const PlanPipeline& pipeline, double cardinalityEsti
     std::cout << "====================" << std::endl;
     */
 
+#ifdef ENABLE_LOG
    std::cerr << "[ Probe side (scan): " << scan.getTableName()
              << " | rows=" << scanInput.getUnfilteredRows()
              << " | estimated_card=" << scanInput.cardinality << " ]" << std::endl;
@@ -625,6 +626,7 @@ bool QueryPlan::runPipeline(const PlanPipeline& pipeline, double cardinalityEsti
                 << " | leaf_pages=" << bt->htSize() << " ]" << std::endl;
    }
    std::cerr << "=====================" << std::endl;
+#endif
 
    // Run the pipeline
    ManualTimer pipelineExecTimer;

@@ -252,7 +252,9 @@ int main(int argc, char* argv[]) {
 
    // Check for timing environment variable (JOIN_TIMING=1 or TIMING=1)
    const char* timing_env = std::getenv("JOIN_TIMING");
+#ifdef ENABLE_LOG
    std::cout << "timing_env: " << timing_env << std::endl;
+#endif
    bool timing_enabled = enableTiming.get() || (timing_env && std::string(timing_env) == "1");
 
    // Enable timing based on setting

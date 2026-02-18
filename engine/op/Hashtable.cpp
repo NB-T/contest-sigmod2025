@@ -6,6 +6,7 @@
 #include "query/DataSource.hpp"
 #include "query/RuntimeValue.hpp"
 
+#include <parlay/parallel.h>
 #include <parlay/primitives.h>
 #include <parlay/internal/bucket_sort.h>
 #include <parlay/internal/semisort.h>
@@ -199,24 +200,35 @@ Vector<HashtableBuild::BufferEntry> HashtableBuild::collectAndSort() {
 void HashtableBuild::buildBloomFilter(const Vector<BufferEntry>& sorted_data, size_t unique_keys) {
     if (sorted_data.empty()) return;
 
-    // determine bloom filter size
+    // 1. Allocate bloom filter
     size_t bits = bloom_filter_bits_;
     if (bits == 0) {
         // default 20 bits per unique key for ~0.036% false positive rate with 3 hashes
         bits = std::max(unique_keys * 20, size_t(2048));
     }
-
     ht.bloom_filter_.allocate(bits);
 
     size_t n = sorted_data.size();
+    constexpr size_t NUM_HASHES = BloomFilter::NUM_HASHES;
 
-    // sorted_data is sorted by key, so duplicates are contiguous — skip them
-    ht.bloom_filter_.add(sorted_data[0].key);
-    for (size_t i = 1; i < n; ++i) {
-        if (sorted_data[i].key != sorted_data[i - 1].key) {
-            ht.bloom_filter_.add(sorted_data[i].key);
+    // 2. Compute all n × NUM_HASHES global bit positions in parallel
+    Vector<uint64_t> bit_indices(n * NUM_HASHES);
+    parlay::parallel_for(0, n, [&](size_t i) {
+        for (size_t h = 0; h < NUM_HASHES; ++h) {
+            bit_indices[i * NUM_HASHES + h] = ht.bloom_filter_.globalBitIndex(sorted_data[i].key, h);
         }
-    }
+    });
+
+    // 3. Semisort to group duplicate bit positions contiguously
+    auto slice = parlay::make_slice(bit_indices.data(), bit_indices.data() + bit_indices.size());
+    parlay::internal::semisort_equal_inplace(slice, [](uint64_t x) { return x; });
+
+    // 4. Set each unique bit once (atomics kept for word-level race safety)
+    parlay::parallel_for(0, bit_indices.size(), [&](size_t i) {
+        if (i == 0 || bit_indices[i] != bit_indices[i - 1]) {
+            ht.bloom_filter_.setBitAtomic(bit_indices[i]);
+        }
+    });
 }
 //---------------------------------------------------------------------------
 void HashtableBuild::buildTreeBottomUp(Vector<BufferEntry>& sorted_data) {
