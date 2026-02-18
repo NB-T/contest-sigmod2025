@@ -102,12 +102,13 @@ class BloomFilter {
         return static_cast<uint64_t>(block_idx * 512 + bit_pos);
     }
 
-    // Atomically set a single bit by its global index.
+    // Set a single bit by its global index.
     [[gnu::always_inline]]
-    inline void setBitAtomic(uint64_t global_bit_idx) {
-        __atomic_or_fetch(bits_ + (global_bit_idx >> 6),
+    inline void setBit(uint64_t global_bit_idx) {
+        /* __atomic_or_fetch(bits_ + (global_bit_idx >> 6),
                           1ULL << (global_bit_idx & 63),
-                          __ATOMIC_RELAXED);
+                          __ATOMIC_RELAXED); */
+        bits_[global_bit_idx >> 6] |= (1ULL << (global_bit_idx & 63));
     }
 
     [[nodiscard]] size_t getTotalBits() const { return total_bits_; }
