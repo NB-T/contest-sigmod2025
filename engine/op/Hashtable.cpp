@@ -219,14 +219,31 @@ void HashtableBuild::buildBloomFilter(const Vector<BufferEntry>& sorted_data, si
       }
    });
 
-   // 3. Semisort to group duplicate bit positions contiguously
+   // 3. Sort bit indices so same-block indices are contiguous and in order
    auto slice = parlay::make_slice(bit_indices.data(), bit_indices.data() + bit_indices.size());
-   parlay::internal::semisort_equal_inplace(slice, [](uint64_t x) { return x; });
+   parlay::integer_sort_inplace(slice, [](uint64_t x) { return x; });
 
-   // 4. Set each unique bit once (atomics kept for word-level race safety)
-   parlay::parallel_for(0, bit_indices.size(), [&](size_t i) {
-      if (i == 0 || bit_indices[i] != bit_indices[i - 1]) {
-         ht.bloom_filter_.setBit(bit_indices[i]);
+   // 4. Scan for chunk boundaries: each chunk covers one 512-bit (64-byte) bloom block.
+   //    Consecutive chunk starts differ by >= 512 bit-index units, so no two chunks
+   //    share a uint64_t word — setBit() needs no atomics.
+   Vector<size_t> chunk_starts;
+   chunk_starts.push_back(0);
+   for (size_t i = 1; i < bit_indices.size(); ++i) {
+      // New chunk whenever the 512-bit block index changes (block = bit_idx >> 9)
+      if ((bit_indices[i] >> 9) != (bit_indices[i - 1] >> 9)) {
+         chunk_starts.push_back(i);
+      }
+   }
+
+   // 5. Each thread owns one chunk (one 64-byte block) — no atomics needed
+   size_t num_chunks = chunk_starts.size();
+   parlay::parallel_for(0, num_chunks, [&](size_t c) {
+      size_t start = chunk_starts[c];
+      size_t end = (c + 1 < num_chunks) ? chunk_starts[c + 1] : bit_indices.size();
+      for (size_t i = start; i < end; ++i) {
+         if (i == start || bit_indices[i] != bit_indices[i - 1]) {
+            ht.bloom_filter_.setBit(bit_indices[i]);
+         }
       }
    });
 }
