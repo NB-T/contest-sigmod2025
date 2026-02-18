@@ -1,0 +1,32 @@
+Query: 5a
+Total runtime: 1.13 ms
+
+========== JOIN TIMING REPORT ==========
+[Pipeline 1] htCollectAndSort (tuples=113): 0 ms
+[Pipeline 1] htCountUniqueKeys (keys=113): 0 ms
+[Pipeline 1] htBuildBloomFilter (bits=4096): 1 ms
+[Pipeline 1] htBuildTree (height=1 leaves=1): 0 ms
+[Pipeline 1] htBuildTotal (tuples=113): 1 ms
+[Pipeline 1] pipelineExec (info_type probes=0): 1 ms
+[Pipeline 2] htCollectAndSort (tuples=0): 0 ms
+[Pipeline 2] htBuildTotal (empty): 0 ms
+[Pipeline 2] pipelineExec (movie_companies probes=0): 0 ms
+[Pipeline 3] htCollectAndSort (tuples=113): 0 ms
+[Pipeline 3] htCountUniqueKeys (keys=113): 0 ms
+[Pipeline 3] htBuildBloomFilter (bits=4096): 0 ms
+[Pipeline 3] htBuildTree (height=1 leaves=1): 0 ms
+[Pipeline 3] htBuildTotal (tuples=113): 0 ms
+[Pipeline 3] pipelineExec (info_type probes=0): 0 ms
+[Pipeline 4] htCollectAndSort (tuples=0): 0 ms
+[Pipeline 4] htBuildTotal (empty): 0 ms
+[Pipeline 4] pipelineExec (movie_companies probes=0): 0 ms
+[Pipeline 5] htCollectAndSort (tuples=113): 0 ms
+[Pipeline 5] htCountUniqueKeys (keys=113): 0 ms
+[Pipeline 5] htBuildBloomFilter (bits=4096): 0 ms
+[Pipeline 5] htBuildTree (height=1 leaves=1): 0 ms
+[Pipeline 5] htBuildTotal (tuples=113): 0 ms
+[Pipeline 5] pipelineExec (info_type probes=0): 0 ms
+[Pipeline 6] htCollectAndSort (tuples=0): 0 ms
+[Pipeline 6] htBuildTotal (empty): 0 ms
+[Pipeline 6] pipelineExec (movie_companies probes=0): 0 ms
+=========================================
