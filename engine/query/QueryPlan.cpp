@@ -812,7 +812,9 @@ void QueryPlan::computeSamples() {
 }
 //---------------------------------------------------------------------------
 ColumnarTable QueryPlan::run(std::chrono::microseconds& total_ignored_compile_time) {
+#ifdef ENABLE_LOG
    ManualTimer queryTimer;
+#endif
 
    for (unsigned eq = 0; eq < equivalenceSets.size(); eq++) {
       assert(!equivalenceSets[eq].empty());

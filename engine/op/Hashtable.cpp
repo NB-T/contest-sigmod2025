@@ -413,12 +413,18 @@ void HashtableBuild::buildTreeBottomUp(Vector<BufferEntry>& sorted_data) {
 }
 //---------------------------------------------------------------------------
 void HashtableBuild::finishConsume() {
+#ifdef ENABLE_LOG
    ManualTimer totalBuildTimer;
+#endif
 
    // collect and sort
+#ifdef ENABLE_LOG
    ManualTimer collectSortTimer;
+#endif
    auto sorted_data = collectAndSort();
+#ifdef ENABLE_LOG
    collectSortTimer.record("htCollectAndSort", "tuples=" + std::to_string(sorted_data.size()));
+#endif
 
    ht.num_tuples = sorted_data.size();
 
@@ -427,12 +433,16 @@ void HashtableBuild::finishConsume() {
       ht.num_tuples = 0;
       ht.num_keys = 0;
       ht.height_ = 0;
+#ifdef ENABLE_LOG
       totalBuildTimer.record("htBuildTotal", "empty");
+#endif
       return;
    }
 
    // count unique keys
+#ifdef ENABLE_LOG
    ManualTimer countKeysTimer;
+#endif
    size_t unique_keys = 1;
    bool has_duplicates = false;
    for (size_t i = 1; i < sorted_data.size(); ++i) {
@@ -455,17 +465,27 @@ void HashtableBuild::finishConsume() {
          }
       }
    }
+#ifdef ENABLE_LOG
    countKeysTimer.record("htCountUniqueKeys", "keys=" + std::to_string(unique_keys));
+#endif
 
    // bloom filter
+#ifdef ENABLE_LOG
    ManualTimer bloomTimer;
+#endif
    buildBloomFilter(sorted_data, unique_keys);
+#ifdef ENABLE_LOG
    bloomTimer.record("htBuildBloomFilter", "bits=" + std::to_string(ht.bloom_filter_.getTotalBits()));
+#endif
 
    // build tree bottom up
+#ifdef ENABLE_LOG
    ManualTimer treeTimer;
+#endif
    buildTreeBottomUp(sorted_data);
+#ifdef ENABLE_LOG
    treeTimer.record("htBuildTree", "height=" + std::to_string(ht.height_) + " leaves=" + std::to_string(ht.leaf_pages_.size()));
+#endif
 
    // cleanup local states
    if constexpr (!std::is_trivially_destructible_v<LocalState>) {
@@ -474,7 +494,9 @@ void HashtableBuild::finishConsume() {
       }
    }
 
+#ifdef ENABLE_LOG
    totalBuildTimer.record("htBuildTotal", "tuples=" + std::to_string(ht.num_tuples));
+#endif
 }
 //---------------------------------------------------------------------------
 HashtableBuild::HashtableBuild(Hashtable& ht, size_t card_estimate, size_t bloom_filter_bits)
