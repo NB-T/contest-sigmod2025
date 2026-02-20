@@ -1,0 +1,71 @@
+Query: 8b
+Total runtime: 2.00 ms
+
+========== JOIN TIMING REPORT ==========
+[Pipeline 1] pipelineExec (title probes=0): 0 ms
+[Pipeline 2] pipelineExec (movie_companies probes=0): 0 ms
+[Pipeline 3] pipelineExec (cast_info probes=2): 0 ms
+[Pipeline 3] probeBloomFilter (total_ns=8367 probes=50 rejects=0): 0 ms
+[Pipeline 3] probeTreeTraversal (total_ns=6863 count=0): 0 ms
+[Pipeline 3] probeLeafSearch (total_ns=17749 pages=50): 0 ms
+[Pipeline 3] probeTotal (total_ns=32979 probes=50): 0 ms
+[Pipeline 4] pipelineExec (name probes=1): 0 ms
+[Pipeline 4] probeBloomFilter (total_ns=111 probes=2 rejects=0): 0 ms
+[Pipeline 4] probeTreeTraversal (total_ns=62 count=0): 0 ms
+[Pipeline 4] probeLeafSearch (total_ns=607 pages=2): 0 ms
+[Pipeline 4] probeTotal (total_ns=780 probes=2): 0 ms
+[Pipeline 5] pipelineExec (company_name probes=1): 0 ms
+[Pipeline 5] probeBloomFilter (total_ns=358 probes=2 rejects=0): 0 ms
+[Pipeline 5] probeTreeTraversal (total_ns=295 count=0): 0 ms
+[Pipeline 5] probeLeafSearch (total_ns=1125 pages=2): 0 ms
+[Pipeline 5] probeTotal (total_ns=1778 probes=2): 0 ms
+[Pipeline 6] pipelineExec (aka_name probes=1): 0 ms
+[Pipeline 6] probeBloomFilter (total_ns=830 probes=3 rejects=0): 0 ms
+[Pipeline 6] probeTreeTraversal (total_ns=144 count=0): 0 ms
+[Pipeline 6] probeLeafSearch (total_ns=870 pages=3): 0 ms
+[Pipeline 6] probeTotal (total_ns=1844 probes=3): 0 ms
+[Pipeline 7] pipelineExec (title probes=0): 0 ms
+[Pipeline 8] pipelineExec (movie_companies probes=0): 0 ms
+[Pipeline 9] pipelineExec (cast_info probes=2): 0 ms
+[Pipeline 9] probeBloomFilter (total_ns=6600 probes=50 rejects=0): 0 ms
+[Pipeline 9] probeTreeTraversal (total_ns=4649 count=0): 0 ms
+[Pipeline 9] probeLeafSearch (total_ns=13675 pages=50): 0 ms
+[Pipeline 9] probeTotal (total_ns=24924 probes=50): 0 ms
+[Pipeline 10] pipelineExec (name probes=1): 0 ms
+[Pipeline 10] probeBloomFilter (total_ns=313 probes=2 rejects=0): 0 ms
+[Pipeline 10] probeTreeTraversal (total_ns=272 count=0): 0 ms
+[Pipeline 10] probeLeafSearch (total_ns=1131 pages=2): 0 ms
+[Pipeline 10] probeTotal (total_ns=1716 probes=2): 0 ms
+[Pipeline 11] pipelineExec (company_name probes=1): 0 ms
+[Pipeline 11] probeBloomFilter (total_ns=266 probes=2 rejects=0): 0 ms
+[Pipeline 11] probeTreeTraversal (total_ns=212 count=0): 0 ms
+[Pipeline 11] probeLeafSearch (total_ns=659 pages=2): 0 ms
+[Pipeline 11] probeTotal (total_ns=1137 probes=2): 0 ms
+[Pipeline 12] pipelineExec (aka_name probes=1): 0 ms
+[Pipeline 12] probeBloomFilter (total_ns=470 probes=3 rejects=0): 0 ms
+[Pipeline 12] probeTreeTraversal (total_ns=382 count=0): 0 ms
+[Pipeline 12] probeLeafSearch (total_ns=2138 pages=3): 0 ms
+[Pipeline 12] probeTotal (total_ns=2990 probes=3): 0 ms
+[Pipeline 13] pipelineExec (title probes=0): 0 ms
+[Pipeline 14] pipelineExec (movie_companies probes=0): 0 ms
+[Pipeline 15] pipelineExec (cast_info probes=2): 0 ms
+[Pipeline 15] probeBloomFilter (total_ns=6506 probes=50 rejects=0): 0 ms
+[Pipeline 15] probeTreeTraversal (total_ns=4634 count=0): 0 ms
+[Pipeline 15] probeLeafSearch (total_ns=12696 pages=50): 0 ms
+[Pipeline 15] probeTotal (total_ns=23836 probes=50): 0 ms
+[Pipeline 16] pipelineExec (name probes=1): 0 ms
+[Pipeline 16] probeBloomFilter (total_ns=274 probes=2 rejects=0): 0 ms
+[Pipeline 16] probeTreeTraversal (total_ns=257 count=0): 0 ms
+[Pipeline 16] probeLeafSearch (total_ns=925 pages=2): 0 ms
+[Pipeline 16] probeTotal (total_ns=1456 probes=2): 0 ms
+[Pipeline 17] pipelineExec (company_name probes=1): 0 ms
+[Pipeline 17] probeBloomFilter (total_ns=246 probes=2 rejects=0): 0 ms
+[Pipeline 17] probeTreeTraversal (total_ns=247 count=0): 0 ms
+[Pipeline 17] probeLeafSearch (total_ns=700 pages=2): 0 ms
+[Pipeline 17] probeTotal (total_ns=1193 probes=2): 0 ms
+[Pipeline 18] pipelineExec (aka_name probes=1): 0 ms
+[Pipeline 18] probeBloomFilter (total_ns=298 probes=3 rejects=0): 0 ms
+[Pipeline 18] probeTreeTraversal (total_ns=95 count=0): 0 ms
+[Pipeline 18] probeLeafSearch (total_ns=529 pages=3): 0 ms
+[Pipeline 18] probeTotal (total_ns=922 probes=3): 0 ms
+=========================================

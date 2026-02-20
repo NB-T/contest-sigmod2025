@@ -1,0 +1,8 @@
+Query: 5b
+Total runtime: 1.36 ms
+
+========== JOIN TIMING REPORT ==========
+[Pipeline 1] pipelineExec (movie_companies probes=0): 0 ms
+[Pipeline 2] pipelineExec (movie_companies probes=0): 0 ms
+[Pipeline 3] pipelineExec (movie_companies probes=0): 0 ms
+=========================================

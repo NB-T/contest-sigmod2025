@@ -1,0 +1,71 @@
+Query: 28c
+Total runtime: 21.08 ms
+
+========== JOIN TIMING REPORT ==========
+[Pipeline 1] pipelineExec (kind_type probes=0): 0 ms
+[Pipeline 2] pipelineExec (keyword probes=0): 0 ms
+[Pipeline 3] pipelineExec (company_type probes=0): 0 ms
+[Pipeline 4] pipelineExec (movie_keyword probes=0): 11 ms
+[Pipeline 5] pipelineExec (complete_cast probes=0): 1 ms
+[Pipeline 6] pipelineExec (movie_info_idx probes=0): 3 ms
+[Pipeline 7] pipelineExec (title probes=0): 2 ms
+[Pipeline 8] pipelineExec (movie_info probes=2): 1 ms
+[Pipeline 8] probeBloomFilter (total_ns=172844 probes=1494 rejects=151): 0 ms
+[Pipeline 8] probeTreeTraversal (total_ns=126054 count=1343): 0 ms
+[Pipeline 8] probeLeafSearch (total_ns=404306 pages=1344): 0 ms
+[Pipeline 8] probeTotal (total_ns=703204 probes=1494): 0 ms
+[Pipeline 9] pipelineExec (movie_companies probes=2): 1 ms
+[Pipeline 9] probeBloomFilter (total_ns=855227 probes=8517 rejects=237): 0 ms
+[Pipeline 9] probeTreeTraversal (total_ns=765118 count=8280): 0 ms
+[Pipeline 9] probeLeafSearch (total_ns=2172089 pages=8298): 2 ms
+[Pipeline 9] probeTotal (total_ns=3792434 probes=8517): 3 ms
+[Pipeline 10] pipelineExec (company_name probes=2): 2 ms
+[Pipeline 10] probeBloomFilter (total_ns=691096 probes=5330 rejects=0): 0 ms
+[Pipeline 10] probeTreeTraversal (total_ns=835077 count=5330): 0 ms
+[Pipeline 10] probeLeafSearch (total_ns=2889761 pages=5393): 2 ms
+[Pipeline 10] probeTotal (total_ns=4415934 probes=5330): 4 ms
+[Pipeline 11] pipelineExec (kind_type probes=0): 0 ms
+[Pipeline 12] pipelineExec (keyword probes=0): 0 ms
+[Pipeline 13] pipelineExec (company_type probes=0): 0 ms
+[Pipeline 14] pipelineExec (movie_keyword probes=0): 6 ms
+[Pipeline 15] pipelineExec (complete_cast probes=0): 1 ms
+[Pipeline 16] pipelineExec (movie_info_idx probes=0): 3 ms
+[Pipeline 17] pipelineExec (title probes=0): 1 ms
+[Pipeline 18] pipelineExec (movie_info probes=2): 0 ms
+[Pipeline 18] probeBloomFilter (total_ns=96867 probes=1494 rejects=151): 0 ms
+[Pipeline 18] probeTreeTraversal (total_ns=79304 count=1343): 0 ms
+[Pipeline 18] probeLeafSearch (total_ns=263793 pages=1344): 0 ms
+[Pipeline 18] probeTotal (total_ns=439964 probes=1494): 0 ms
+[Pipeline 19] pipelineExec (movie_companies probes=2): 1 ms
+[Pipeline 19] probeBloomFilter (total_ns=537694 probes=8517 rejects=237): 0 ms
+[Pipeline 19] probeTreeTraversal (total_ns=470132 count=8280): 0 ms
+[Pipeline 19] probeLeafSearch (total_ns=1337439 pages=8298): 1 ms
+[Pipeline 19] probeTotal (total_ns=2345265 probes=8517): 2 ms
+[Pipeline 20] pipelineExec (company_name probes=2): 1 ms
+[Pipeline 20] probeBloomFilter (total_ns=295871 probes=5330 rejects=0): 0 ms
+[Pipeline 20] probeTreeTraversal (total_ns=356501 count=5330): 0 ms
+[Pipeline 20] probeLeafSearch (total_ns=1294074 pages=5393): 1 ms
+[Pipeline 20] probeTotal (total_ns=1946446 probes=5330): 1 ms
+[Pipeline 21] pipelineExec (kind_type probes=0): 0 ms
+[Pipeline 22] pipelineExec (keyword probes=0): 0 ms
+[Pipeline 23] pipelineExec (company_type probes=0): 0 ms
+[Pipeline 24] pipelineExec (movie_keyword probes=0): 4 ms
+[Pipeline 25] pipelineExec (complete_cast probes=0): 1 ms
+[Pipeline 26] pipelineExec (movie_info_idx probes=0): 1 ms
+[Pipeline 27] pipelineExec (title probes=0): 1 ms
+[Pipeline 28] pipelineExec (movie_info probes=2): 1 ms
+[Pipeline 28] probeBloomFilter (total_ns=71609 probes=1494 rejects=151): 0 ms
+[Pipeline 28] probeTreeTraversal (total_ns=58924 count=1343): 0 ms
+[Pipeline 28] probeLeafSearch (total_ns=196942 pages=1344): 0 ms
+[Pipeline 28] probeTotal (total_ns=327475 probes=1494): 0 ms
+[Pipeline 29] pipelineExec (movie_companies probes=2): 1 ms
+[Pipeline 29] probeBloomFilter (total_ns=383103 probes=8517 rejects=237): 0 ms
+[Pipeline 29] probeTreeTraversal (total_ns=343191 count=8280): 0 ms
+[Pipeline 29] probeLeafSearch (total_ns=981474 pages=8298): 0 ms
+[Pipeline 29] probeTotal (total_ns=1707768 probes=8517): 1 ms
+[Pipeline 30] pipelineExec (company_name probes=2): 1 ms
+[Pipeline 30] probeBloomFilter (total_ns=240200 probes=5330 rejects=0): 0 ms
+[Pipeline 30] probeTreeTraversal (total_ns=289829 count=5330): 0 ms
+[Pipeline 30] probeLeafSearch (total_ns=1077392 pages=5393): 1 ms
+[Pipeline 30] probeTotal (total_ns=1607421 probes=5330): 1 ms
+=========================================

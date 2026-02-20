@@ -1,0 +1,11 @@
+Query: 5a
+Total runtime: 1.46 ms
+
+========== JOIN TIMING REPORT ==========
+[Pipeline 1] pipelineExec (info_type probes=0): 0 ms
+[Pipeline 2] pipelineExec (movie_companies probes=0): 0 ms
+[Pipeline 3] pipelineExec (info_type probes=0): 0 ms
+[Pipeline 4] pipelineExec (movie_companies probes=0): 0 ms
+[Pipeline 5] pipelineExec (info_type probes=0): 0 ms
+[Pipeline 6] pipelineExec (movie_companies probes=0): 0 ms
+=========================================

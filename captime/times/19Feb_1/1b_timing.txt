@@ -1,0 +1,26 @@
+Query: 1b
+Total runtime: 3.51 ms
+
+========== JOIN TIMING REPORT ==========
+[Pipeline 1] pipelineExec (movie_info_idx probes=0): 1 ms
+[Pipeline 2] pipelineExec (title probes=0): 0 ms
+[Pipeline 3] pipelineExec (movie_companies probes=1): 0 ms
+[Pipeline 3] probeBloomFilter (total_ns=388 probes=3 rejects=0): 0 ms
+[Pipeline 3] probeTreeTraversal (total_ns=208 count=0): 0 ms
+[Pipeline 3] probeLeafSearch (total_ns=1925 pages=3): 0 ms
+[Pipeline 3] probeTotal (total_ns=2521 probes=3): 0 ms
+[Pipeline 4] pipelineExec (movie_info_idx probes=0): 0 ms
+[Pipeline 5] pipelineExec (title probes=0): 0 ms
+[Pipeline 6] pipelineExec (movie_companies probes=1): 0 ms
+[Pipeline 6] probeBloomFilter (total_ns=518 probes=3 rejects=0): 0 ms
+[Pipeline 6] probeTreeTraversal (total_ns=201 count=0): 0 ms
+[Pipeline 6] probeLeafSearch (total_ns=1308 pages=3): 0 ms
+[Pipeline 6] probeTotal (total_ns=2027 probes=3): 0 ms
+[Pipeline 7] pipelineExec (movie_info_idx probes=0): 0 ms
+[Pipeline 8] pipelineExec (title probes=0): 0 ms
+[Pipeline 9] pipelineExec (movie_companies probes=1): 0 ms
+[Pipeline 9] probeBloomFilter (total_ns=362 probes=3 rejects=0): 0 ms
+[Pipeline 9] probeTreeTraversal (total_ns=240 count=0): 0 ms
+[Pipeline 9] probeLeafSearch (total_ns=888 pages=3): 0 ms
+[Pipeline 9] probeTotal (total_ns=1490 probes=3): 0 ms
+=========================================

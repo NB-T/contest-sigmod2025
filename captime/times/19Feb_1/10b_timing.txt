@@ -1,0 +1,20 @@
+Query: 10b
+Total runtime: 4.43 ms
+
+========== JOIN TIMING REPORT ==========
+[Pipeline 1] pipelineExec (company_type probes=0): 0 ms
+[Pipeline 2] pipelineExec (company_name probes=0): 0 ms
+[Pipeline 3] pipelineExec (cast_info probes=0): 0 ms
+[Pipeline 4] pipelineExec (title probes=0): 0 ms
+[Pipeline 5] pipelineExec (movie_companies probes=2): 0 ms
+[Pipeline 6] pipelineExec (company_type probes=0): 0 ms
+[Pipeline 7] pipelineExec (company_name probes=0): 0 ms
+[Pipeline 8] pipelineExec (cast_info probes=0): 0 ms
+[Pipeline 9] pipelineExec (title probes=0): 0 ms
+[Pipeline 10] pipelineExec (movie_companies probes=2): 0 ms
+[Pipeline 11] pipelineExec (company_type probes=0): 0 ms
+[Pipeline 12] pipelineExec (company_name probes=0): 0 ms
+[Pipeline 13] pipelineExec (cast_info probes=0): 0 ms
+[Pipeline 14] pipelineExec (title probes=0): 0 ms
+[Pipeline 15] pipelineExec (movie_companies probes=2): 0 ms
+=========================================

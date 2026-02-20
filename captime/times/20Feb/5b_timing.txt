@@ -1,0 +1,14 @@
+Query: 5b
+Total runtime: 0.60 ms
+
+========== JOIN TIMING REPORT ==========
+[Pipeline 1] htCollectAndSort (tuples=0): 0 ms
+[Pipeline 1] htBuildTotal (empty): 0 ms
+[Pipeline 1] pipelineExec (movie_companies probes=0): 0 ms
+[Pipeline 2] htCollectAndSort (tuples=0): 0 ms
+[Pipeline 2] htBuildTotal (empty): 0 ms
+[Pipeline 2] pipelineExec (movie_companies probes=0): 0 ms
+[Pipeline 3] htCollectAndSort (tuples=0): 0 ms
+[Pipeline 3] htBuildTotal (empty): 0 ms
+[Pipeline 3] pipelineExec (movie_companies probes=0): 0 ms
+=========================================
