@@ -3,6 +3,6 @@
 PARENT=$(cd "$(dirname "$0")/.." && pwd)
 
 cd $PARENT  
-cmake --build build -- -j $(nproc)
+cmake --build build --target internal_runner -- -j $(nproc)
 
 cd -
